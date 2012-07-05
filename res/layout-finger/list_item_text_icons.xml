@@ -65,7 +65,14 @@
             />
 
         </LinearLayout>
-
+		<TextView 
+			android:textAppearance="?android:textAppearanceSmall" 
+			android:gravity="left|center" 
+			android:layout_gravity="center_vertical" 
+			android:id="@+id/city_local" 
+			android:layout_width="wrap_content" 
+			android:layout_height="wrap_content" 
+			android:layout_alignParentRight="true" />
         <TextView
             android:id="@+id/footer"
             android:layout_width="wrap_content"

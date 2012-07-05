@@ -63,6 +63,13 @@
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:textColor="?android:attr/textColorPrimaryInverse"
             />
+            <TextView 
+				android:textAppearance="?android:textAppearanceSmall" 
+				android:textColor="?android:textColorPrimaryInverse" 
+				android:id="@+id/city_local1" 
+				android:layout_width="wrap_content" 
+				android:layout_height="wrap_content" 
+			/>
 
         </LinearLayout>
 

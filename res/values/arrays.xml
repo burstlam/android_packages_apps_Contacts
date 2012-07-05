@@ -105,5 +105,23 @@
     <item>#</item>
     <item>+</item>
   </string-array>
+    <array name="ip_dial_prefxs">
+        <item>@string/custom_prefx</item>
+        <item>@string/prefix_cm1</item>
+        <item>@string/prefix_cm2</item>
+        <item>@string/prefix_cu1</item>
+        <item>@string/prefix_cu2</item>
+        <item>@string/prefix_ct1</item>
+        <item>@string/prefix_ct2</item>
+    </array>
+    <string-array name="ip_dial_numbers">
+        <item>0</item>
+        <item>17951</item>
+        <item>12593</item>
+        <item>17911</item>
+        <item>10193</item>
+        <item>17909</item>
+        <item>11808</item>
+    </string-array>
 
 </resources>

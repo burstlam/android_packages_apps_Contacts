@@ -107,4 +107,15 @@
         android:ellipsize="marquee"
         android:gravity="center_vertical"
     />
+    <TextView 
+		android:textAppearance="?android:textAppearanceSmall" 
+		android:id="@+id/city_local" 
+		android:layout_width="wrap_content" 
+		android:layout_height="wrap_content" 
+		android:layout_marginRight="5.0dip" 
+		android:layout_marginBottom="-5.0dip" 
+		android:maxLength="10" 
+		android:layout_toLeftOf="@id/divider" 
+		android:layout_above="@id/date" 
+		android:layout_alignWithParentIfMissing="true" />
 </merge>

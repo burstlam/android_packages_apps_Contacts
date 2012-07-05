@@ -99,9 +99,6 @@
     <!-- Menu item used to delete a specific contact -->
     <string name="menu_deleteContact">Delete contact</string>
 
-    <!-- Menu item used to view the call history for a specific contact -->
-    <string name="menu_contactHistory">View contact history</string>
-
     <!-- Menu item used to call a specific contact when viewing the details of that contact. -->
     <string name="menu_call">Call contact</string>
 
@@ -1232,12 +1229,11 @@
     <string name="summaryoff_disable_num_check">LAB and menu will be enabled only if at least one number is entered (except voicemail)</string>
     <string name="title_enable_haptic_feedback">Enable haptic feedback</string>
     <string name="summary_enable_haptic_feedback">Uses keypad tap pattern - see CyanogenMod settings to adjust</string>
-    <string name="title_format_phone_number">Format phone number</string>
-    <string name="summary_format_phone_number">Enable phone number formatting in dialer</string>
     <string name="title_change_digits_color">Change digits color</string>
     <string name="title_digits_color_pressed">Digits color (pressed)</string>
     <string name="title_digits_color_focused">Digits color (focused)</string>
     <string name="title_digits_color_unselected">Digits color (not selected)</string>
+    <string name="matched_text_color">Text color (t9 matched)</string>
     <string name="title_choose_color">Choose a color</string>
     <string name="instructions_choose_color">Tap on center color to confirm.\nPress back to cancel.</string>
     <string name="entry_no_vm_handler">None (Dial Voicemail Number)</string>
@@ -1251,9 +1247,6 @@
     <string name="title_cl_ask_before_clear">Ask before clearing</string>
     <string name="summaryon_cl_ask_before_clear">Ask before clearing call log</string>
     <string name="summaryoff_cl_ask_before_clear">Call logs will be cleared without asking</string>
-    <string name="title_cl_show_groups">Show groups</string>
-    <string name="summaryon_cl_show_groups">Show groups in call log</string>
-    <string name="summaryoff_cl_show_groups">Hide groups in call log</string>
     
     <!-- Preferences: Contacts -->
     <string name="title_contacts_show_pic">Show contact pictures</string>
@@ -1306,7 +1299,7 @@
     <string name="summary_about_credits">Wysie, ChainsDD, geesun, niuchl, rac2030, sileht and the rest of XDA! :)</string>
 
     <string name="t9_default_sort">1</string>
-    <string name="t9_sort_title">T9 sorting mode</string>
+    <string name="t9_sort_title">T9 Sorting mode</string>
     <string name="t9_sort_summary">Choose how to filter T9 results</string>
     <string name="t9_sort_name">Name matches first</string>
     <string name="t9_sort_number">Number matches first</string>
@@ -1323,5 +1316,30 @@
     <string name="t9_map_row_7">7pqrsßɾṕŕśřš</string>
     <string name="t9_map_row_8">8tuvúùüûű</string>
     <string name="t9_map_row_9">9wxyzýẃź</string>
-
+	<string name="smart_dial">T9 dial</string>
+	<string name="t9_dial_photo_load_title">contacts photo pre_load</string>
+	<string name="t9_dial_photo_load_summary">Do you want the contacts photo load immediately?Turn off this option will make your operation more smoothly</string>
+	<string name="ip_dial">IP dial</string>
+    <string name="title_dial_ip_prefx">IP dial prefix</string>
+    <string name="summary_dial_ip_prefx">Select IP dial prefix</string>
+    <string name="title_dial_ip_prefx_custom">Custom IP dial prefix</string>
+    <string name="summary_dial_ip_prefx_custom">Custom prefix when use IP dial</string>
+    <string name="title_dial_ip_local">Area Code</string>
+    <string name="summary_dial_ip_local">Area code of the location</string>
+    <string name="title_dial_ip_smart">Smart IP dial</string>
+    <string name="summary_dial_ip_smart">According to attribution to add IP prefix</string>
+    <string name="title_dial_ip_smart_pad">Smart IP Dialpad</string>
+    <string name="summary_dial_ip_smart_pad">Enable smart IP dial in dialpad</string>
+    <string name="cancel">Cancel</string>
+    <string name="custom_prefx">Custom Prefix</string>
+    <string name="prefix_cm1">China Mobile 17951</string>
+    <string name="prefix_cm2">China Mobile 12593</string>
+    <string name="prefix_cu1">China Unicom 17911</string>
+    <string name="prefix_cu2">China Unicom 10193</string>
+    <string name="prefix_ct1">China Telecom 17909</string>
+    <string name="prefix_ct2">China Telecom 11808</string>
+	<string name="title_display_location">Display attribution</string>
+    <string name="summary_display_location">Display phone number attribution</string>
+    <string name="revision">Revision:V1.2.1</string>
+    <string name="revision_info">T9 Initials retrieval and location display added by dss16694（sunx）at 2012/3/20</string>
 </resources>

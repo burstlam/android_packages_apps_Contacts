@@ -41,8 +41,6 @@
     <string name="menu_removeStar" msgid="5844227078364227030">"从收藏中删除"</string>
     <string name="menu_editContact" msgid="3452858480713561396">"编辑联系人"</string>
     <string name="menu_deleteContact" msgid="1916555454274101750">"删除联系人"</string>
-    <!-- Menu item used to view the call history for a specific contact -->
-    <string name="menu_contactHistory">查看联系人历史记录</string>
     <string name="menu_call" msgid="3992595586042260618">"呼叫联系人"</string>
     <string name="menu_sendSMS" msgid="5535886767547006515">"向联系人发送短信"</string>
     <string name="menu_sendEmail" msgid="7293508859242926187">"发送电子邮件"</string>
@@ -437,6 +435,7 @@
     <string name="title_digits_color_pressed">数字颜色 (点击时)</string>
     <string name="title_digits_color_focused">数字颜色 (已输入)</string>
     <string name="title_digits_color_unselected">数字颜色 (未选中)</string>
+    <string name="matched_text_color">文字颜色 (t9匹配)</string>
     <string name="title_choose_color">选择一个颜色</string>
     <string name="instructions_choose_color">触摸中间的颜色以确定选择。\n按返回按钮取消操作。</string>
     <string name="entry_no_vm_handler">无 (拨打语音信箱号码)</string>
@@ -450,9 +449,6 @@
     <string name="title_cl_ask_before_clear">清除时需要确认</string>
     <string name="summaryon_cl_ask_before_clear">在清除通话记录时需要确认</string>
     <string name="summaryoff_cl_ask_before_clear">在清除通话记录时不需确认</string>
-    <string name="title_cl_show_groups">显示分组</string>
-    <string name="summaryon_cl_show_groups">在拨号日志中显示分组</string>
-    <string name="summaryoff_cl_show_groups">在拨号日志中隐藏分组</string>
  
     <!-- Preferences: Contacts -->
     <string name="title_contacts_show_pic">显示联系人照片</string>
@@ -510,5 +506,30 @@
     <string name="t9_dial_click_title">拨打选中的联系人</string>
     <string name="t9_dial_click_summary">在T9中拨打选中的联系人</string>
     <string name="t9_add_to_contacts">添加到联系人</string>
-
+	<string name="smart_dial">T9拨号</string>
+	<string name="t9_dial_photo_load_title">实时加载头像</string>
+	<string name="t9_dial_photo_load_summary">是否需要实时加载联系人头像？关掉此选项将使操作更流畅(头像将在拨号器切换到后台时加载)</string>
+	<string name="ip_dial">IP 拨号</string>
+    <string name="title_dial_ip_prefx">IP拨号前缀</string>
+    <string name="summary_dial_ip_prefx">选择IP拨号前缀</string>
+    <string name="title_dial_ip_prefx_custom">自定义IP拨号前缀</string>
+    <string name="summary_dial_ip_prefx_custom">自定义IP拨号时使用的前缀</string>
+    <string name="title_dial_ip_local">电话区号</string>
+    <string name="summary_dial_ip_local">所在地的电话区号(例如 010)</string>
+    <string name="title_dial_ip_smart">使用智能IP拨号</string>
+    <string name="summary_dial_ip_smart">拨号时自动根据归属地添加IP前缀</string>
+    <string name="title_dial_ip_smart_pad">在拨号面板中使用</string>
+    <string name="summary_dial_ip_smart_pad">在拨号面板中使用IP智能拨号</string>
+    <string name="cancel">取消</string>
+    <string name="custom_prefx">自定义前缀</string>
+    <string name="prefix_cm1">中国移动 17951 (神州行)</string>
+    <string name="prefix_cm2">中国移动 12593 (动感地带)</string>
+    <string name="prefix_cu1">中国联通 17911</string>
+    <string name="prefix_cu2">中国联通 10193</string>
+    <string name="prefix_ct1">中国电信 17909</string>
+    <string name="prefix_ct2">中国电信 11808</string>
+    <string name="title_display_location">显示归属地</string>
+    <string name="summary_display_location">显示电话号码归属地信息</string>
+    <string name="revision">修订版本:V1.2.1</string>
+    <string name="revision_info">T9首字母快搜和归属地显示(归属地代码参考自安极网ROM)由dss16694(sunx)添加于2012/3/22</string>
 </resources>

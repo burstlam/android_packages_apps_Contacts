@@ -18,6 +18,7 @@ package com.android.contacts;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.EditTextPreference;
 import android.preference.Preference;
 import android.preference.ListPreference;
 import android.preference.CheckBoxPreference;
@@ -28,6 +29,10 @@ import android.content.pm.PackageManager;
 import android.content.Intent;
 import java.util.List;
 import java.util.ArrayList;
+
+
+import com.android.phone.location.PhoneLocation;
+
 import android.content.pm.ResolveInfo;
 
 import android.util.Log;
@@ -41,12 +46,19 @@ public class ContactsPreferences extends PreferenceActivity implements Preferenc
     private static final String PRESSED_DIGIT_COLOR = "pressed_digits_color";
     private static final String FOCUSED_DIGIT_COLOR = "focused_digits_color";
     private static final String UNSELECTED_DIGIT_COLOR = "unselected_digits_color";
+    private static final String MATCHED_TEXT_COLOR = "matched_text_color";
     private static final String DEFAULT_PHONE_TAB = "misc_default_phone_tab";
+    private static final String PREFIX = "dial_ip_list";
+    private static final String CITY_CODE = "dial_ip_local";
+	private static final String CUSTOM_PREFIX = "dial_ip_prefix";
 
     private ListPreference mVMButton;
     private ListPreference mVMHandler;
     private ListPreference mDefaultPhoneTab;
-    private Preference colorFocused, colorPressed, colorUnselected;
+    private ListPreference mPrefix;
+    private Preference colorFocused, colorPressed, colorUnselected,colormatched;
+    private EditTextPreference mCityCode,mCustomPrefix;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,36 +70,82 @@ public class ContactsPreferences extends PreferenceActivity implements Preferenc
         mVMButton = (ListPreference) findPreference(VM_BUTTON);
         mVMHandler = (ListPreference) findPreference(VM_HANDLER);
         mDefaultPhoneTab = (ListPreference) findPreference(DEFAULT_PHONE_TAB);
+        mPrefix = (ListPreference)findPreference(PREFIX);
         colorPressed = (Preference) findPreference(PRESSED_DIGIT_COLOR);
         colorFocused = (Preference) findPreference(FOCUSED_DIGIT_COLOR);
         colorUnselected = (Preference) findPreference(UNSELECTED_DIGIT_COLOR);
-
+        colormatched = (Preference) findPreference(MATCHED_TEXT_COLOR);
+        
+        mCityCode = (EditTextPreference)findPreference(CITY_CODE);
+		mCustomPrefix = (EditTextPreference)findPreference(CUSTOM_PREFIX);
+        
+		mCityCode.setOnPreferenceChangeListener(this);
+		mCustomPrefix.setOnPreferenceChangeListener(this);
         mVMButton.setOnPreferenceChangeListener(this);
         mVMHandler.setOnPreferenceChangeListener(this);
         mDefaultPhoneTab.setOnPreferenceChangeListener(this);
+        mPrefix.setOnPreferenceChangeListener(this);
         loadHandlers();
 
         updatePrefs(mVMButton, mVMButton.getValue());
         updatePrefs(mVMHandler, mVMHandler.getValue());
         updatePrefs(mDefaultPhoneTab, mDefaultPhoneTab.getValue());
+        updatePrefs(mPrefix, mPrefix.getValue());
+        updateEditPrefs(mCityCode,mCityCode.getText());
+        updateEditPrefs(mCustomPrefix,mCustomPrefix.getText());
     }    
-    
+
     public boolean onPreferenceChange (Preference preference, Object newValue) {
-        updatePrefs(preference, newValue);
+    	if(preference.getKey().equals(VM_BUTTON) || preference.getKey().equals(VM_HANDLER) || preference.getKey().equals(DEFAULT_PHONE_TAB)||preference.getKey().equals(PREFIX)){
+    		updatePrefs(preference, newValue);
+    	}else{
+    		updateEditPrefs(preference, newValue);
+    	}
+        
+        
         return true;
     }
 
     private void updatePrefs(Preference preference, Object newValue) {  
         ListPreference p = (ListPreference) findPreference(preference.getKey());
+
         
-        try {       
-            p.setSummary(p.getEntries()[p.findIndexOfValue((String) newValue)]);
+        try {  
+        	int i = p.findIndexOfValue((String)newValue);
+            p.setSummary(p.getEntries()[i]);
+            
+            if (p.getKey().equals(PREFIX))
+				if (i == 0)
+					mCustomPrefix.setEnabled(true);
+				else
+					mCustomPrefix.setEnabled(false);
         } catch (ArrayIndexOutOfBoundsException e) {
-            if (p.getKey().equals(VM_BUTTON) || p.getKey().equals(VM_HANDLER) || p.getKey().equals(DEFAULT_PHONE_TAB)) {
+            if (p.getKey().equals(VM_BUTTON) || p.getKey().equals(VM_HANDLER) || p.getKey().equals(DEFAULT_PHONE_TAB)||p.getKey().equals(PREFIX)) {
                 p.setValue("0");
             }
             updatePrefs(p, p.getValue());
         }
+        
+    }
+    
+    private void updateEditPrefs(Preference preference, Object obj){
+    	String s = preference.getKey();
+    	EditTextPreference EditTextPreference = (EditTextPreference)findPreference(s);
+		String s1 = (String)obj;
+		if (s1 != null && s1.length() > 0){
+			if (s.equals("dial_ip_local")){
+				String s2 = PhoneLocation.getCityFromPhone(s1);
+				if (s2 != null){
+					s1 = (new StringBuilder()).append(s1).append(" (").append(s2).append(")").toString();
+				}
+			}
+			EditTextPreference.setSummary(s1);
+		}else{
+			if (s.equals("dial_ip_local"))
+				EditTextPreference.setSummary(R.string.summary_dial_ip_local);
+			else
+				EditTextPreference.setSummary(R.string.summary_dial_ip_prefx_custom);
+		}
     }
 
     private void loadHandlers () {
@@ -144,6 +202,13 @@ public class ContactsPreferences extends PreferenceActivity implements Preferenc
             cp.show();
             return true;
         }
+        else if (preference == colormatched) {
+            ColorPickerDialog cp = new ColorPickerDialog(this,
+                mColorMatchedListener,
+                readColorMatched());
+            cp.show();
+            return true;
+        }
         
         return false;
     }
@@ -188,6 +253,20 @@ public class ContactsPreferences extends PreferenceActivity implements Preferenc
     private int readColorUnselected() {
         SharedPreferences mPrefs = colorPressed.getSharedPreferences();
 		return mPrefs.getInt(UNSELECTED_DIGIT_COLOR, -1);
-    }    
+    }
+
+    ColorPickerDialog.OnColorChangedListener mColorMatchedListener = 
+            new ColorPickerDialog.OnColorChangedListener() {
+                public void colorChanged(int color) {
+                    SharedPreferences.Editor editor = colorPressed.getEditor();
+    				editor.putInt(MATCHED_TEXT_COLOR, color);
+    				editor.commit();
+                }
+        };
+    private int readColorMatched() {
+        SharedPreferences mPrefs = colorPressed.getSharedPreferences();
+        return mPrefs.getInt(MATCHED_TEXT_COLOR, -1);
+    }
+    
     
 }

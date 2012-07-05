@@ -17,7 +17,74 @@
 <!-- This is a primitive example showing the different types of preferences available. -->
 <PreferenceScreen
         xmlns:android="http://schemas.android.com/apk/res/android">
+ 
+    <PreferenceCategory android:title="@string/smart_dial">
+    	<CheckBoxPreference
+            android:key="t9_state"
+            android:title="@string/t9_state_title"
+            android:persistent="true"
+            android:defaultValue="true"
+            android:summary="@string/t9_state_summary" />
+        <CheckBoxPreference
+            android:key="t9_dial_onclick"
+            android:title="@string/t9_dial_click_title"
+            android:persistent="true"
+            android:dependency="t9_state"
+            android:summary="@string/t9_dial_click_summary" />
+        <CheckBoxPreference
+            android:key="t9_dial_photo_load"
+            android:title="@string/t9_dial_photo_load_title"
+            android:persistent="true"
+            android:dependency="t9_state"
+            android:defaultValue="true"
+            android:summary="@string/t9_dial_photo_load_summary" />
+        <ListPreference
+            android:key="t9_sort"
+            android:defaultValue="@string/t9_default_sort"
+            android:title="@string/t9_sort_title"
+            android:dependency="t9_state"
+            android:summary="@string/t9_sort_summary"
+            android:entries="@array/t9_sort_entries"
+            android:entryValues="@array/t9_sort_values"
+            android:dialogTitle="@string/t9_sort_title" />
+    </PreferenceCategory>
+    
+    <PreferenceCategory android:title="@string/ip_dial">
+		<ListPreference 
+        	android:entries="@array/ip_dial_prefxs" 
+			android:title="@string/title_dial_ip_prefx" 
+			android:key="dial_ip_list" 
+			android:summary="@string/summary_dial_ip_prefx" 
+			android:defaultValue="0" 
+			android:dialogTitle="@string/summary_dial_ip_prefx" 
+			android:entryValues="@array/ip_dial_numbers" />
+		<EditTextPreference
+			android:title="@string/title_dial_ip_prefx_custom" 
+			android:key="dial_ip_prefix" 
+			android:summary="@string/summary_dial_ip_prefx_custom" 
+			android:dialogTitle="@string/title_dial_ip_prefx_custom" />
+        <EditTextPreference 
+			android:title="@string/title_dial_ip_local" 
+			android:key="dial_ip_local" 
+			android:summary="@string/summary_dial_ip_local" 
+			android:dialogTitle="@string/title_dial_ip_local" 
+			android:dialogMessage="@string/summary_dial_ip_local" />
+        <CheckBoxPreference 
+			android:title="@string/title_dial_ip_smart" 
+			android:key="dial_ip_smart" 
+			android:summary="@string/summary_dial_ip_smart" 
+			android:dependency="dial_ip_local" 
+			android:defaultValue="false" />
+        <CheckBoxPreference 
+			android:title="@string/title_dial_ip_smart_pad" 
+			android:key="dial_ip_smart_pad" 
+			android:summary="@string/summary_dial_ip_smart_pad" 
+			android:dependency="dial_ip_smart" 
+			android:defaultValue="false" />
+    </PreferenceCategory>
+
     <PreferenceCategory android:title="@string/dialerIconLabel">
+
         <CheckBoxPreference
             android:key="dial_retrieve_last"
             android:title="@string/title_last_dialled"
@@ -57,11 +124,6 @@
             android:title="@string/title_enable_haptic_feedback"
             android:summary="@string/summary_enable_haptic_feedback"
             android:defaultValue="true" />
-        <CheckBoxPreference
-            android:key="dial_format_phone_number"
-            android:title="@string/title_format_phone_number"
-            android:summary="@string/summary_format_phone_number"
-            android:defaultValue="true" />
         <PreferenceScreen
             android:key="dial_digits_color"
             android:title="@string/title_change_digits_color">  
@@ -77,28 +139,12 @@
                     android:key="unselected_digits_color"
                     android:title="@string/title_digits_color_unselected"
                     android:defaultValue="-1" />
+                <Preference
+                    android:key="matched_text_color"
+                    android:title="@string/matched_text_color"
+                    android:defaultValue="-1" />
         </PreferenceScreen>
-        <CheckBoxPreference
-            android:key="t9_state"
-            android:title="@string/t9_state_title"
-            android:persistent="true"
-            android:defaultValue="true"
-            android:summary="@string/t9_state_summary" />
-        <CheckBoxPreference
-            android:key="t9_dial_onclick"
-            android:title="@string/t9_dial_click_title"
-            android:persistent="true"
-            android:dependency="t9_state"
-            android:summary="@string/t9_dial_click_summary" />
-        <ListPreference
-            android:key="t9_sort"
-            android:defaultValue="@string/t9_default_sort"
-            android:title="@string/t9_sort_title"
-            android:dependency="t9_state"
-            android:summary="@string/t9_sort_summary"
-            android:entries="@array/t9_sort_entries"
-            android:entryValues="@array/t9_sort_values"
-            android:dialogTitle="@string/t9_sort_title" />
+        
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/recentCallsIconLabel">
         <CheckBoxPreference
@@ -124,12 +170,6 @@
             android:dependency="cl_exact_time"
             android:defaultValue="true" />
         <CheckBoxPreference
-            android:key="cl_show_groups"
-            android:title="@string/title_cl_show_groups"
-            android:summaryOn="@string/summaryon_cl_show_groups"
-            android:summaryOff="@string/summaryoff_cl_show_groups"
-            android:defaultValue="true" />
-        <CheckBoxPreference
             android:key="cl_ask_before_clear"
             android:title="@string/title_cl_ask_before_clear"
             android:summaryOn="@string/summaryon_cl_ask_before_clear"
@@ -145,14 +185,7 @@
         <CheckBoxPreference
             android:key="contacts_show_pic"
             android:title="@string/title_contacts_show_pic"
-            android:defaultValue="true" />
-        <!--
-        <CheckBoxPreference
-            android:key="contacts_show_count"
-            android:title="@string/title_contacts_show_count"
-            android:summary="@string/summary_contacts_show_count"
-            android:defaultValue="true" />
-        -->
+            android:defaultValue="true" ></CheckBoxPreference>
         <CheckBoxPreference
             android:key="contacts_show_alphabetical_separators"
             android:title="@string/title_contacts_show_separators"
@@ -195,6 +228,11 @@
             android:defaultValue="false" />
     </PreferenceCategory>  
     <PreferenceCategory android:title="@string/title_misc_category">
+		<CheckBoxPreference 
+			android:title="@string/title_display_location" 
+			android:key="misc_display_location" 
+			android:summary="@string/summary_display_location" 
+			android:defaultValue="true" />
         <CheckBoxPreference
             android:key="misc_sensor_rotation"
             android:title="@string/title_sensor_rotation"
@@ -230,11 +268,15 @@
                 android:summary="@string/summary_about_version"
                 android:enabled="false" />
             <Preference
+                android:key="revision"
+                android:title="@string/revision"
+                android:summary="@string/revision_info"
+                android:enabled="false" />
+            <Preference
                 android:key="about_credits"
                 android:title="@string/title_about_credits"
                 android:summary="@string/summary_about_credits"
                 android:enabled="false" />
         </PreferenceScreen>
     </PreferenceCategory>
-    
 </PreferenceScreen>

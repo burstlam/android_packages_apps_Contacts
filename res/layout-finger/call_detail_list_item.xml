@@ -64,6 +64,12 @@
                 android:textAppearance="?android:attr/textAppearanceSmall"
             />
         </LinearLayout>
+        <TextView 
+			android:textAppearance="?android:textAppearanceSmall" 
+			android:id="@+id/city_local1" 
+			android:layout_width="wrap_content" 
+			android:layout_height="wrap_content" 
+		/>
 
     </LinearLayout>
 

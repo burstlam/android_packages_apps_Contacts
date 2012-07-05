@@ -17,16 +17,19 @@
 package com.android.contacts;
 
 import com.android.internal.telephony.CallerInfo;
+import com.android.phone.location.PhoneLocation;
 
 import android.app.ListActivity;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.provider.CallLog;
 import android.provider.CallLog.Calls;
 import android.provider.ContactsContract.Contacts;
@@ -61,6 +64,7 @@ public class CallDetailActivity extends ListActivity implements
     private ImageView mCallTypeIcon;
     private TextView mCallTime;
     private TextView mCallDuration;
+    private TextView mCityView;
 
     private String mNumber = null;
 
@@ -91,12 +95,16 @@ public class CallDetailActivity extends ListActivity implements
     static final int COLUMN_INDEX_TYPE = 2;
     static final int COLUMN_INDEX_LABEL = 3;
     static final int COLUMN_INDEX_NUMBER = 4;
+    
+    private static SharedPreferences ePrefs;
 
     @Override
     protected void onCreate(Bundle icicle) {
         super.onCreate(icicle);
 
         setContentView(R.layout.call_detail);
+        
+        ePrefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
 
         mInflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
         mResources = getResources();
@@ -105,6 +113,7 @@ public class CallDetailActivity extends ListActivity implements
         mCallTypeIcon = (ImageView) findViewById(R.id.icon);
         mCallTime = (TextView) findViewById(R.id.time);
         mCallDuration = (TextView) findViewById(R.id.duration);
+        mCityView = (TextView)findViewById(R.id.city_local1);
 
         getListView().setOnItemClickListener(this);
     }
@@ -112,6 +121,7 @@ public class CallDetailActivity extends ListActivity implements
     @Override
     public void onResume() {
         super.onResume();
+        PhoneLocation.updatePrefixLoacl(ePrefs);
         updateData(getIntent().getData());
     }
 
@@ -123,8 +133,9 @@ public class CallDetailActivity extends ListActivity implements
                 TelephonyManager tm = (TelephonyManager)
                         getSystemService(Context.TELEPHONY_SERVICE);
                 if (tm.getCallState() == TelephonyManager.CALL_STATE_IDLE) {
+                	String dailNumber=PhoneLocation.getPrefixNumberSmart(mNumber);
                     Intent callIntent = new Intent(Intent.ACTION_CALL_PRIVILEGED,
-                            Uri.fromParts("tel", mNumber, null));
+                            Uri.fromParts("tel", dailNumber, null));
                     startActivity(callIntent);
                     StickyTabs.saveTab(this, getIntent());
                     return true;
@@ -217,15 +228,30 @@ public class CallDetailActivity extends ListActivity implements
                         } else {
                             mNumber = PhoneNumberUtils.formatNumber(mNumber);
                         }
+                        try
+                		{
+                			mCityView.setVisibility(8);
+                			if (ePrefs.getBoolean("misc_display_location", true))
+                			{
+                				String s = PhoneLocation.getCityFromPhone(mNumber);
+                				if (s != null)
+                				{
+                					mCityView.setText(s);
+                					mCityView.setVisibility(View.VISIBLE);
+                				}
+                			}
+                		}
+                		catch (Exception exception) { }
                     } finally {
                         if (phonesCursor != null) phonesCursor.close();
                     }
+                    
 
                     // Build list of various available actions
                     List<ViewEntry> actions = new ArrayList<ViewEntry>();
 
                     Intent callIntent = new Intent(Intent.ACTION_CALL_PRIVILEGED,
-                            Uri.fromParts("tel", mNumber, null));
+                            Uri.fromParts("tel", PhoneLocation.getPrefixNumberSmart(mNumber), null));
                     ViewEntry entry = new ViewEntry(android.R.drawable.sym_action_call, callText,
                             callIntent);
                     entry.number = mNumber;
@@ -353,6 +379,15 @@ public class CallDetailActivity extends ListActivity implements
 
                 TextView number = (TextView) convertView.findViewById(R.id.number);
                 number.setText(entry.number);
+                TextView city=(TextView) convertView.findViewById(R.id.city_local1);
+                try{
+                	String s = PhoneLocation.getCityFromPhone(entry.number, CallDetailActivity.ePrefs);
+                    if (s != null){
+                    	city.setText(s);
+                    	city.setVisibility(0);
+                    }
+                }catch (Exception exception) { }
+                
             }
 
             return convertView;

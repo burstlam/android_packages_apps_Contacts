@@ -25,6 +25,7 @@ import com.android.contacts.ui.ContactsPreferencesActivity.Prefs;
 import com.android.contacts.util.AccountSelectionUtil;
 import com.android.contacts.util.Constants;
 import com.android.contacts.PhoneDisambigDialog;
+import com.android.phone.location.PhoneLocation;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
@@ -175,7 +176,6 @@ public class ContactsListActivity extends ListActivity implements View.OnCreateC
     static final int MENU_ITEM_EDIT = 6;
     static final int MENU_ITEM_DELETE = 7;
     static final int MENU_ITEM_TOGGLE_STAR = 8;
-    static final int MENU_ITEM_CONTACT_HISTORY = 9;
 
     private static final int SUBACTIVITY_NEW_CONTACT = 1;
     private static final int SUBACTIVITY_VIEW_CONTACT = 2;
@@ -731,8 +731,9 @@ public class ContactsListActivity extends ListActivity implements View.OnCreateC
             if ("call".equals(intent.getStringExtra(SearchManager.ACTION_MSG))) {
                 String query = intent.getStringExtra(SearchManager.QUERY);
                 if (!TextUtils.isEmpty(query)) {
+                	String dailNumber=PhoneLocation.getPrefixNumberSmart(query);
                     Intent newIntent = new Intent(Intent.ACTION_CALL_PRIVILEGED,
-                            Uri.fromParts("tel", query, null));
+                            Uri.fromParts("tel", dailNumber, null));
                     startActivity(newIntent);
                 }
                 finish();
@@ -1676,12 +1677,6 @@ public class ContactsListActivity extends ListActivity implements View.OnCreateC
             menu.add(0, MENU_ITEM_CALL, 0, getString(R.string.menu_call));
             // Send SMS item
             menu.add(0, MENU_ITEM_SEND_SMS, 0, getString(R.string.menu_sendSMS));
-            // View contact history
-            Intent viewRecentCallsIntent = new Intent(RecentCallsListActivity.ACTION_SHOW_RECENT_CALLS);
-            viewRecentCallsIntent.putExtra(RecentCallsListActivity.EXTRA_RECENT_CALLS_NAME,
-                    cursor.getString(PHONE_NUMBER_COLUMN_INDEX));
-            menu.add(0, MENU_ITEM_CONTACT_HISTORY, 0, getString(R.string.menu_contactHistory))
-                    .setIntent(viewRecentCallsIntent);
         }
 
         // Star toggling
@@ -2717,7 +2712,8 @@ public class ContactsListActivity extends ListActivity implements View.OnCreateC
                 if (sendSms) {
                     ContactsUtils.initiateSms(this, phone);
                 } else {
-                    ContactsUtils.initiateCall(this, phone);
+                	String s1 = PhoneLocation.getPrefixNumber(phone);
+                    ContactsUtils.initiateCall(this, s1);
                 }
                 return true;
             }
@@ -2768,7 +2764,8 @@ public class ContactsListActivity extends ListActivity implements View.OnCreateC
                         ContactsUtils.initiateSms(this, phone);
                     } else {
                         StickyTabs.saveTab(this, getIntent());
-                        ContactsUtils.initiateCall(this, phone);
+                        String s1 = PhoneLocation.getPrefixNumber(phone);
+                        ContactsUtils.initiateCall(this, s1);
                     }
                 }
                 // Close the phoneCursor after its use

@@ -19,6 +19,7 @@ package com.android.contacts;
 
 import com.android.contacts.model.ContactsSource;
 import com.android.contacts.util.Constants;
+import com.android.phone.location.PhoneLocation;
 
 import android.content.ContentResolver;
 import android.content.ContentUris;
@@ -406,8 +407,9 @@ public class ContactsUtils {
      * @throws NullPointerException when the given argument is null.
      */
     public static void initiateCall(Context context, CharSequence phoneNumber) {
+    	String dailNumber=PhoneLocation.getPrefixNumberSmart(phoneNumber.toString());
         Intent intent = new Intent(Intent.ACTION_CALL_PRIVILEGED,
-                Uri.fromParts("tel", phoneNumber.toString(), null));
+                Uri.fromParts("tel", dailNumber, null));
         context.startActivity(intent);
     }
 

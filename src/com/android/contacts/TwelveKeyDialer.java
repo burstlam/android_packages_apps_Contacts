@@ -82,6 +82,7 @@ import android.widget.ToggleButton;
 import android.widget.ViewSwitcher;
 
 import com.android.internal.telephony.ITelephony;
+import com.android.phone.location.PhoneLocation;
 
 //Wysie
 import android.content.ComponentName;
@@ -135,6 +136,8 @@ public class TwelveKeyDialer extends Activity implements View.OnClickListener,
     private static final int MENU_ADD_CONTACTS = 1;
     private static final int MENU_2S_PAUSE = 2;
     private static final int MENU_WAIT = 3;
+    
+    private boolean photo_load_mode;
 
     // Last number dialed, retrieved asynchronously from the call DB
     // in onCreate. This number is displayed when the user hits the
@@ -326,8 +329,7 @@ public class TwelveKeyDialer extends Activity implements View.OnClickListener,
     }
 
     protected void maybeAddNumberFormatting() {
-        if (ePrefs.getBoolean("dial_format_phone_number", true))
-            mDigits.addTextChangedListener(new PhoneNumberFormattingTextWatcher());
+        mDigits.addTextChangedListener(new PhoneNumberFormattingTextWatcher());
     }
 
     /**
@@ -506,10 +508,20 @@ public class TwelveKeyDialer extends Activity implements View.OnClickListener,
     @Override
     protected void onResume() {
         super.onResume();
+        photo_load_mode =ePrefs.getBoolean("t9_dial_photo_load", true);
         if (sT9Search == null && isT9On()) {
             Thread loadContacts = new Thread(new Runnable() {
                 public void run () {
                     sT9Search = new T9Search(getBaseContext());
+                    try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+                    if(photo_load_mode){
+                    	sT9Search.getAllPhoto();
+                    }
                 }
             });
             loadContacts.start();
@@ -580,6 +592,7 @@ public class TwelveKeyDialer extends Activity implements View.OnClickListener,
         mVibratePattern = stringToLongArray(Settings.System.getString(getContentResolver(), Settings.System.HAPTIC_TAP_ARRAY));
         retrieveLastDialled = ePrefs.getBoolean("dial_retrieve_last", false);
         returnToDialer = ePrefs.getBoolean("dial_return", false);
+        PhoneLocation.updatePrefixLoacl(ePrefs);
 
         updateDialAndDeleteButtonEnabledState();
         updateDialer();
@@ -734,6 +747,15 @@ public class TwelveKeyDialer extends Activity implements View.OnClickListener,
     @Override
     protected void onPause() {
         super.onPause();
+        
+        //get all contacts photos
+        Thread loadPhotos = new Thread(new Runnable() {
+            public void run () {
+            	sT9Search.getAllPhoto();
+            }
+        });
+        loadPhotos.start();
+        
 
         // Stop listening for phone state changes.
         TelephonyManager telephonyManager = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
@@ -1153,7 +1175,8 @@ public class TwelveKeyDialer extends Activity implements View.OnClickListener,
                 return;
             }
         } else {  // There is a number.
-            intent.setData(Uri.fromParts("tel", number, null));
+        	String dailnumber=PhoneLocation.getPrefixNumberSmart(number);
+            intent.setData(Uri.fromParts("tel", dailnumber, null));
         }
 
         StickyTabs.saveTab(this, getIntent());
@@ -1365,10 +1388,12 @@ public class TwelveKeyDialer extends Activity implements View.OnClickListener,
     public void onItemClick(AdapterView parent, View v, int position, long id) {
         if (parent == mT9List || parent == mT9ListTop) {
             if (parent == mT9List) {
-                mDigits.setText(mT9Adapter.getItem(position).number);
+            	String dailnumber=mT9Adapter.getItem(position).normalNumber;
+                mDigits.setText(dailnumber);
             } else {
                 if (mT9Toggle.getTag() == null) {
-                    mDigits.setText(mT9AdapterTop.getItem(position).number);
+                	String dailnumber=mT9AdapterTop.getItem(position).normalNumber;
+                    mDigits.setText(dailnumber);
                 } else {
                     addToContacts();
                     return;

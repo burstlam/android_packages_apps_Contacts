@@ -41,7 +41,6 @@
     <string name="menu_removeStar" msgid="5844227078364227030">"Eliminar de \"Favoritos\""</string>
     <string name="menu_editContact" msgid="3452858480713561396">"Editar contacto"</string>
     <string name="menu_deleteContact" msgid="1916555454274101750">"Eliminar contacto"</string>
-    <string name="menu_contactHistory">Historial de llamadas</string>
     <string name="menu_call" msgid="3992595586042260618">"Llamar al contacto"</string>
     <string name="menu_sendSMS" msgid="5535886767547006515">"Enviar SMS al contacto"</string>
     <string name="menu_sendEmail" msgid="7293508859242926187">"Enviar correo-e"</string>
@@ -425,8 +424,6 @@
     <string name="summaryoff_disable_num_check">LAB y menú se habilitan sólo si al menos un número se introduce (con excepción de buzón de voz)</string>
     <string name="title_enable_haptic_feedback">Habilitar retrovibración</string>
     <string name="summary_enable_haptic_feedback">Usa patrón de teclado - vea configuración CyanogenMod para ajustar</string>
-    <string name="title_format_phone_number">Números con formato</string>
-    <string name="summary_format_phone_number">Habilita la separación de dígitos mediante guiones</string>
     <string name="title_change_digits_color">Cambiar color de los dígitos</string>
     <string name="title_digits_color_pressed">Color dígitos (presionado)</string>
     <string name="title_digits_color_focused">Color dígitos (centrado)</string>
@@ -442,9 +439,6 @@
     <string name="title_cl_ask_before_clear">Preguntar antes de borrar</string>
     <string name="summaryon_cl_ask_before_clear">Preguntar antes de borrar registro de llamadas</string>
     <string name="summaryoff_cl_ask_before_clear">Los registros de llamadas se borrarán sin preguntar</string>
-    <string name="title_cl_show_groups">Mostrar por grupos</string>
-    <string name="summaryon_cl_show_groups">Las llamadas se mostrarán agrupadas en el historial</string>
-    <string name="summaryoff_cl_show_groups">Las llamadas no se mostrarán agrupadas en el historial</string>
     <string name="title_contacts_show_pic">Mostrar imágenes de contactos</string>
     <string name="title_contacts_show_dial_button">Mostrar botón de marcación</string>
     <string name="summary_contacts_show_dial_button">Mostrar botón de marcación en contactos con números</string>

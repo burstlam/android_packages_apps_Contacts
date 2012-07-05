@@ -1,31 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-	xmlns:android="http://schemas.android.com/apk/res/android"
-	android:layout_width="fill_parent"
-	android:layout_height="wrap_content">
-	<QuickContactBadge
-		android:id="@+id/rowBadge"
-		android:layout_width="40dp"
-		android:layout_height="40dp"
-		android:layout_marginLeft="5dp"
-		android:layout_marginRight="5dp"
-		android:focusable="false" />
-	<LinearLayout
-		android:layout_weight="1"
-		android:layout_width="wrap_content"
-		android:layout_height="match_parent"
-		android:orientation="vertical">
-		<TextView
-			android:id="@+id/rowName"
-			android:layout_weight="0.5"
-			android:gravity="center_vertical"
-			android:layout_width="match_parent"
-			android:layout_height="match_parent" />
-		<TextView
-			android:id="@+id/rowNumber"
-			android:layout_weight="0.5"
-			android:gravity="center_vertical"
-			android:layout_width="match_parent"
-			android:layout_height="match_parent" />
-	</LinearLayout>
+<LinearLayout android:layout_width="fill_parent" android:layout_height="wrap_content"
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <QuickContactBadge android:id="@+id/rowBadge" android:focusable="false" android:layout_width="40.0dip" android:layout_height="40.0dip" android:layout_marginLeft="5.0dip" android:layout_marginRight="5.0dip" />
+    <LinearLayout android:orientation="vertical" android:layout_width="wrap_content" android:layout_height="fill_parent" android:layout_weight="1.0">
+        <LinearLayout android:gravity="left" android:orientation="horizontal" android:layout_width="fill_parent" android:layout_height="fill_parent" android:layout_weight="0.5">
+            <TextView android:gravity="center_vertical" android:id="@+id/rowName" android:layout_width="fill_parent" android:layout_height="fill_parent" android:layout_weight="0.5" />
+            <TextView android:gravity="right|center" android:id="@+id/city_local" android:layout_width="fill_parent" android:layout_height="fill_parent" android:layout_weight="0.3" />
+        </LinearLayout>
+        
+        <LinearLayout android:gravity="left" android:orientation="horizontal" android:layout_width="fill_parent" android:layout_height="fill_parent" android:layout_weight="0.5">
+            <TextView android:gravity="center_vertical" android:id="@+id/rowNumber" android:layout_width="fill_parent" android:layout_height="fill_parent" android:layout_weight="0.2" />
+            <TextView android:gravity="right|center" android:id="@+id/rowPinyin" android:layout_width="fill_parent" android:layout_height="fill_parent" android:layout_weight="0.3" />
+        </LinearLayout>
+    </LinearLayout>
 </LinearLayout>

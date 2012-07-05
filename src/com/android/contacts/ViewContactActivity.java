@@ -25,6 +25,7 @@ import com.android.contacts.util.DataStatus;
 import com.android.contacts.util.NotifyingAsyncQueryHandler;
 import com.android.internal.telephony.ITelephony;
 import com.android.internal.widget.ContactHeaderWidget;
+import com.android.phone.location.PhoneLocation;
 import com.google.android.collect.Lists;
 import com.google.android.collect.Maps;
 
@@ -129,6 +130,8 @@ public class ViewContactActivity extends Activity
     private ContentResolver mResolver;
     private ViewAdapter mAdapter;
     private int mNumPhoneNumbers = 0;
+    
+    private boolean mShowLocaticon=true;
 
     /**
      * A list of distinct contact IDs included in the current contact.
@@ -267,7 +270,9 @@ public class ViewContactActivity extends Activity
         super.onResume();
         
         //Wysie: Read from preference
-        mShowSmsLinksForAllPhones = !ePrefs.getBoolean("contacts_show_text_mobile_only", false);        
+        mShowSmsLinksForAllPhones = !ePrefs.getBoolean("contacts_show_text_mobile_only", false);      
+        mShowLocaticon = ePrefs.getBoolean("misc_display_location", true);
+		PhoneLocation.updatePrefixLoacl(ePrefs);
         
         startEntityQuery();
     }
@@ -983,7 +988,7 @@ public class ViewContactActivity extends Activity
                         mNumPhoneNumbers++;
 
                         entry.intent = new Intent(Intent.ACTION_CALL_PRIVILEGED,
-                                Uri.fromParts(Constants.SCHEME_TEL, entry.data, null));
+                                Uri.fromParts(Constants.SCHEME_TEL, PhoneLocation.getPrefixNumber(entry.data, ePrefs), null));
                         entry.secondaryIntent = new Intent(Intent.ACTION_SENDTO,
                                 Uri.fromParts(Constants.SCHEME_SMSTO, entry.data, null));
 
@@ -1284,7 +1289,7 @@ public class ViewContactActivity extends Activity
         public ImageView primaryIcon;
         public ImageView secondaryActionButton;
         public View secondaryActionDivider;
-
+        public TextView cityView;
         // Need to keep track of this too
         ViewEntry entry;
     }
@@ -1329,6 +1334,7 @@ public class ViewContactActivity extends Activity
                         R.id.secondary_action_button);
                 views.secondaryActionButton.setOnClickListener(this);
                 views.secondaryActionDivider = v.findViewById(R.id.divider);
+                views.cityView=(TextView) v.findViewById(R.id.city_local);
 
                 // Set the text size of data row (phone number, email, address, etc.)
                 float fontSize = Float.parseFloat(ePrefs.getString("misc_data_font_size", "14"));
@@ -1371,7 +1377,23 @@ public class ViewContactActivity extends Activity
                     data.setText(entry.data);
                 }
                 setMaxLines(data, entry.maxLines);
+                if (entry.mimetype.equals("vnd.android.cursor.item/phone_v2"))
+					try
+					{
+						views.cityView.setVisibility(8);
+						if (mShowLocaticon)
+						{
+							String s = PhoneLocation.getCityFromPhone(entry.data);
+							if (s != null)
+							{
+								views.cityView.setText(s);
+								views.cityView.setVisibility(0);
+							}
+						}
+					}
+					catch (Exception exception) { }
             }
+            
 
             // Set the footer
             if (!TextUtils.isEmpty(entry.footerLine)) {

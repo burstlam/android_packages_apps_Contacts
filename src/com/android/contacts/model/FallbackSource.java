@@ -44,7 +44,7 @@ import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
 
-import java.text.ParsePosition;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -467,7 +467,7 @@ public class FallbackSource extends ContactsSource {
             kind.typeList.add(buildEventType(Event.TYPE_OTHER));
 
             kind.fieldList = Lists.newArrayList();
-            kind.fieldList.add(new EventDateEditField(context, false));
+            kind.fieldList.add(new EventDateEditField(false));
         }
 
         return kind;
@@ -741,13 +741,9 @@ public class FallbackSource extends ContactsSource {
 
         private CharSequence parseDate(Context context, CharSequence value) {
             Date date = EventDateConverter.parseDateFromDb(value);
-
             if (date != null) {
-                java.text.DateFormat format = DateFormat.getLongDateFormat(context);
-                format.setTimeZone(EventDateConverter.sUtcTimeZone);
-                return format.format(date);
+                return DateFormat.getLongDateFormat(context).format(date);
             }
-
             return value;
         }
 
@@ -770,16 +766,7 @@ public class FallbackSource extends ContactsSource {
         private static SimpleDateFormat sDateFormat =
                 new SimpleDateFormat("yyyy-MM-dd", Locale.US);
         private static SimpleDateFormat sFullDateFormat =
-                new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US);
-
-        public static final TimeZone sUtcTimeZone = TimeZone.getTimeZone("UTC");
-
-        static {
-            sDateFormat.setLenient(true);
-            sDateFormat.setTimeZone(sUtcTimeZone);
-            sFullDateFormat.setLenient(true);
-            sFullDateFormat.setTimeZone(sUtcTimeZone);
-        }
+                new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ", Locale.US);
 
         public static Date parseDateFromDb(CharSequence value) {
             if (value == null) {
@@ -787,7 +774,14 @@ public class FallbackSource extends ContactsSource {
             }
 
             String valueString = value.toString();
-            Date date = parseDate(valueString, sFullDateFormat);
+
+            /*
+             * Try the most comprehensive format first.
+             * Some servers (e.g. Exchange) use 'Z' as timezone, indicating
+             * that the time is in UTC. The SimpleDateFormat routines don't
+             * support that format, so replace 'Z' by 'GMT'.
+             */
+            Date date = parseDate(valueString.replace("Z", "GMT"), sFullDateFormat);
             if (date != null) {
                 return date;
             }
@@ -796,13 +790,12 @@ public class FallbackSource extends ContactsSource {
         }
 
         private static Date parseDate(String value, SimpleDateFormat format) {
-            ParsePosition position = new ParsePosition(0);
-            Date date = format.parse(value, position);
-
-            if (position.getIndex() == value.length()) {
-                return date;
+            try {
+                /* Reset format time zone in case it was changed by a previous run */
+                format.setTimeZone(TimeZone.getDefault());
+                return format.parse(value);
+            } catch (ParseException e) {
             }
-
             return null;
         }
 
@@ -814,14 +807,9 @@ public class FallbackSource extends ContactsSource {
     protected static class EventDateEditField extends EditField {
         private View.OnClickListener mListener;
         private boolean mAllowClear;
-        private Date mDate;
-        private java.text.DateFormat mFormat;
 
-        public EventDateEditField(final Context context, boolean allowClear) {
+        public EventDateEditField(boolean allowClear) {
             super(Event.START_DATE, R.string.label_date, FLAGS_DATE);
-
-            mFormat = DateFormat.getDateFormat(context);
-            mFormat.setTimeZone(EventDateConverter.sUtcTimeZone);
 
             mAllowClear = allowClear;
             mListener = new View.OnClickListener() {
@@ -836,19 +824,22 @@ public class FallbackSource extends ContactsSource {
         private void openDatePicker(final EditText edit) {
             final Context context = edit.getContext();
             String value = edit.getText().toString();
-            final Calendar cal = Calendar.getInstance(EventDateConverter.sUtcTimeZone, Locale.US);
+            final Calendar cal = Calendar.getInstance();
 
-            if (mDate != null) {
-                cal.setTime(mDate);
+            try {
+                Date date = DateFormat.getDateFormat(context).parse(value);
+                cal.setTime(date);
+            } catch (ParseException e) {
+                /* use today in that case */
             }
 
             final DatePickerDialog.OnDateSetListener dateListener =
                     new DatePickerDialog.OnDateSetListener() {
                 @Override
                 public void onDateSet(DatePicker view, int year, int month, int day) {
+                    final Context c = view.getContext();
                     cal.set(year, month, day);
-                    mDate = cal.getTime();
-                    edit.setText(mFormat.format(mDate));
+                    edit.setText(DateFormat.getDateFormat(c).format(cal.getTime()));
                 }
             };
 
@@ -863,7 +854,6 @@ public class FallbackSource extends ContactsSource {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         edit.setText(null);
-                        mDate = null;
                     }
                 });
             }
@@ -873,17 +863,19 @@ public class FallbackSource extends ContactsSource {
 
         @Override
         public CharSequence fromValue(Context context, CharSequence value) {
-            mDate = EventDateConverter.parseDateFromDb(value);
-            if (mDate != null) {
-                return mFormat.format(mDate);
+            Date date = EventDateConverter.parseDateFromDb(value);
+            if (date != null) {
+                return DateFormat.getDateFormat(context).format(date);
             }
             return null;
         }
 
         @Override
         public CharSequence toValue(Context context, CharSequence value) {
-            if (mDate != null) {
-                return EventDateConverter.formatDateForDb(mDate);
+            try {
+                Date date = DateFormat.getDateFormat(context).parse(value.toString());
+                return EventDateConverter.formatDateForDb(date);
+            } catch (ParseException e) {
             }
             return null;
         }
