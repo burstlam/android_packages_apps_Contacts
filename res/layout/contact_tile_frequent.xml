@@ -24,22 +24,23 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" >
 
+        <!-- Wang: -->
         <com.android.contacts.widget.LayoutSuppressingQuickContactBadge
             android:id="@+id/contact_tile_quick"
             android:layout_width="64dip"
             android:layout_height="64dip"
-            android:layout_alignParentRight="true"
+            android:layout_alignParentLeft="true"
             android:scaleType="centerCrop"
             android:focusable="true" />
-
+        <!-- Wang: -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="64dip"
             android:orientation="vertical"
             android:layout_alignParentBottom="true"
             android:gravity="center_vertical"
-            android:paddingRight="80dip"
-            android:paddingLeft="8dip">
+            android:paddingRight="8dip"
+            android:paddingLeft="80dip">
 
             <TextView
                 android:id="@+id/contact_tile_name"
