@@ -137,23 +137,30 @@ class T9Search {
     private static final char FIRST_UNIHAN = '\u3400';
     /** shutao 2012-10-19*/
     public void nameToPinYinAndNumber(String name , ContactItem contactInfo){
-    	int nameLength = name.length();
+    	 ArrayList<Boolean> isBoolean = new ArrayList<Boolean>();
+     	 int nameLength = name.length();
     	 final StringBuilder sb = new StringBuilder();
     	 final StringBuilder sbNumber = new StringBuilder();
     	 final StringBuilder sbFirst = new StringBuilder();
+    	 boolean [] isindex = new boolean[contactInfo.name.length()];
+    	 MyLog("contactInfo . name size = "+contactInfo.name.length());
     	 boolean isFirst = true;
     	 int cmp;
+    	 int hanziNum = 0;
     	 for (int i = 0; i < nameLength; i++) {
+    	
+    		 
     		 final char character = name.charAt(i);
     		 final String letter = Character.toString(character);
     		 cmp = COLLATOR.compare(letter, FIRST_PINYIN_UNIHAN);
     		
     		 if(character == ' '){
 //    			 MyLog("name char "+"= "+character);
+    			
     			 isFirst = true;
     		 }else if (character < 256) {
     			 
-//    			 MyLog("name char 256= "+character);
+    			 MyLog("name char 256= "+character);
     			 if(character>=65 && character <=90){
 //    				 MyLog("name char 256= "+(char)(character+32));
     				 char num = LetterToNumber(character);
@@ -161,39 +168,64 @@ class T9Search {
     				 if(!isFirst){
         				 sb.append((char)(character+32));
     				 }else{
+    					 
+    					 hanziNum++;
+    					 isBoolean.add(true);
+    					 MyLog("hanziNum = "+hanziNum);
     					 sb.append(character);
     					 sbFirst.append(num);
     					 isFirst = false;
     				 }
     				 
-    			 }else{
+    			 }else if (character>=48 && character <=57){
+    				 sbFirst.append(character);
+    				 sb.append(character);
+    				 sbNumber.append(character);
+    				 hanziNum ++ ;
+    				 isBoolean.add(true);
+    				 MyLog("hanziNum = "+hanziNum);
+    			 }
+    			 else{
     				 isFirst = false;
-        			 sb.append(character);
-        			 sbNumber.append(LetterToNumber(character));
+    				 hanziNum ++ ;
+    				 isBoolean.add(false);
+    				 MyLog("hanziNum = "+hanziNum);
+//        			 sb.append(character);
+//        			 sbNumber.append(LetterToNumber(character));
     			 }
 
     		 }else if(character<FIRST_UNIHAN){
-//    			 MyLog("name char u3400= "+character);
-    			 sb.append(character);
-    			 sbNumber.append(LetterToNumber(character));
+    			 MyLog("name char u3400= "+character);
+    			 hanziNum ++ ;
+    			 isBoolean.add(false);
+    			 MyLog("hanziNum = "+hanziNum);
+//    			 sb.append(character);
+//    			 sbNumber.append(LetterToNumber(character));
     		 }else if(cmp < 0){
-//    			 MyLog("name cmp "+"= "+character);
-    			 sb.append(character);
-    			 sbNumber.append(LetterToNumber(character));
+    			 MyLog("name cmp =<0 "+character);
+    			 hanziNum ++ ;
+    			 isBoolean.add(false);
+    			 MyLog("hanziNum = "+hanziNum);
+//    			 sb.append(character);
+//    			 sbNumber.append(LetterToNumber(character));
     		 }else{
     			 cmp = COLLATOR.compare(letter, LAST_PINYIN_UNIHAN);
     			 if(cmp >0){
-//    				 MyLog("name cmp "+"= "+character);
-    				 
-    				 sb.append(character);
-    				 sbNumber.append(LetterToNumber(character));
+    				 MyLog("name cmp = >0 "+character);
+    				 hanziNum ++ ;
+    				 isBoolean.add(false);
+    				 MyLog("hanziNum = "+hanziNum);
+//    				 sb.append(character);
+//    				 sbNumber.append(LetterToNumber(character));
     			 }
     		 }
     		
     	 }
+
     	 contactInfo.pinYin = sb.toString();
     	 contactInfo.normalName = sbNumber.toString();
     	 contactInfo.firstNumber = sbFirst.toString();
+    	 contactInfo.isHanzis = isBoolean;
     	
     }
     /**shutao 2012-10-19*/
@@ -255,6 +287,7 @@ class T9Search {
         int nameMatchId;
         int numberMatchId;
         CharSequence groupType;
+        ArrayList<Boolean> isHanzis;
         long id;
         boolean isSuperPrimary;
     }
@@ -278,6 +311,7 @@ class T9Search {
             }
             /**shutao 2012-10-19*/
             pos = item.firstNumber.indexOf(number);
+//            myLastIndexOf(item.normalName, number);
             if(pos != -1){
                 int last_space = item.normalName.lastIndexOf("0", pos);
               if (last_space == -1) {
@@ -314,6 +348,26 @@ class T9Search {
             return new T9SearchResult(new ArrayList<ContactItem>(mAllResults), mContext);
         }
         return null;
+    }
+    
+    
+    private void myLastIndexOf(String number , String inputNumber){
+    	char[] numbers = number.toCharArray();
+    	char[] inputs = inputNumber.toCharArray();
+    	boolean isMatch = false;
+    	ArrayList<Boolean> indexBoolean  = new ArrayList<Boolean>();
+    	int inputIndex = 0;
+    	for(int numberIndex = 0 ; numberIndex<numbers.length || inputIndex<inputNumber.length(); numberIndex++){
+    		if(inputs[inputIndex] == numbers[numberIndex]){
+    			indexBoolean.add(true);
+    			inputIndex++;
+    		}else{
+    			indexBoolean.add(false);
+    		}
+    	}
+    	if(inputIndex == inputNumber.length()){
+    		isMatch = true;
+    	}
     }
 
     public static class NameComparator implements Comparator<ContactItem> {
@@ -400,15 +454,37 @@ class T9Search {
                 holder.icon.setImageResource(R.drawable.ic_menu_add_field_holo_light);
                 holder.icon.assignContactFromPhone(o.number, true);
             } else {
+                /**shutao 2012-10-19*/
+                holder.pinYin.setText(o.pinYin+o.firstNumber);
+                
                 holder.name.setText(o.name, TextView.BufferType.SPANNABLE);
                 holder.number.setText(o.normalNumber /*+ " (" + o.groupType + ")"*/, TextView.BufferType.SPANNABLE);
                 holder.number.setVisibility(View.VISIBLE);
                 if (o.nameMatchId != -1) {
+                	int nameNum = o.name.length();
                     Spannable s = (Spannable) holder.name.getText();
                     int nameStart = o.firstNumber.indexOf(mPrevInput);
-                    if (nameStart <= o.name.length() && nameStart + mPrevInput.length() <= o.name.length()) {
+                    int nameEnd = 0;
+                    int hanzis = 0;
+                   for(int i = nameStart ; i<o.isHanzis.size();i++){
+                	   if(o.isHanzis.get(i)){
+                		   hanzis++;
+                	   }else{
+                		   if(hanzis == 0){
+                			   nameStart++;
+                		   }else{
+                			   nameEnd++;
+                		   }
+                	   }
+                	   if(hanzis == mPrevInput.length()){
+                		   break;
+                	   }
+                   }
+                    MyLog("lastindexof = "+"====="+ (nameEnd+hanzis)+o.name+nameStart);
+                    nameEnd = nameEnd+hanzis;
+                    if (nameStart <= o.name.length() && nameStart + nameEnd <= o.name.length()) {
                         s.setSpan(new ForegroundColorSpan(mContext.getResources().getColor(android.R.color.holo_blue_dark)),
-                                nameStart, nameStart + mPrevInput.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+                     nameStart, nameStart + nameEnd, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
                     }
                     holder.name.setText(s);
                 }
@@ -425,9 +501,7 @@ class T9Search {
                     holder.icon.setImageResource(ContactPhotoManager.getDefaultAvatarResId(false, true));
                 holder.icon.assignContactFromPhone(o.number, true);
             }
-            /**shutao 2012-10-19*/
-            holder.pinYin.setText(o.pinYin);
-            
+        
          	String city = PhoneLocation.getCityFromPhone(o.number);
     		if(city != null){
     			holder.attribution.setText(city);

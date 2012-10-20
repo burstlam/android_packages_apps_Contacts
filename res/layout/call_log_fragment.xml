@@ -45,7 +45,7 @@
         />
         <TextView android:id="@android:id/empty"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:text="@string/recentCalls_empty"
             android:gravity="center"
             android:layout_marginTop="@dimen/empty_message_top_margin"
