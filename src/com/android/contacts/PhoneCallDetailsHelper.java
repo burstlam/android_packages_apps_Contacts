@@ -19,6 +19,7 @@ package com.android.contacts;
 import com.android.contacts.calllog.CallTypeHelper;
 import com.android.contacts.calllog.PhoneNumberHelper;
 import com.android.contacts.test.NeededForTesting;
+import com.android.phone.location.PhoneLocation;
 
 import android.content.res.Resources;
 import android.graphics.Typeface;
@@ -38,7 +39,9 @@ import android.widget.TextView;
  */
 public class PhoneCallDetailsHelper {
     /** The maximum number of icons will be shown to represent the call types in a group. */
-    private static final int MAX_CALL_TYPE_ICONS = 3;
+	 /** shutao 2012-10-16  */
+//	private static final int MAX_CALL_TYPE_ICONS = 3;
+	private static final int MAX_CALL_TYPE_ICONS = 1;
 
     private final Resources mResources;
     /** The injected current time in milliseconds since the epoch. Used only by tests. */
@@ -62,6 +65,7 @@ public class PhoneCallDetailsHelper {
     }
 
     /** Fills the call details views with content. */
+    /** shutao 2012-10-16 */
     public void setPhoneCallDetails(PhoneCallDetailsViews views, PhoneCallDetails details,
             boolean isHighlighted) {
         // Display up to a given number of icons.
@@ -100,22 +104,45 @@ public class PhoneCallDetailsHelper {
             numberFormattedLabel = Phone.getTypeLabel(mResources, details.numberType,
                     details.numberLabel);
         }
+        
+        /**
+         * shutao 2012-10-18 Phone Number Attribution 
+         */
+        if(views.attributionView != null){
+        	String number = details.number.toString().replaceAll(" ", "");
+        	String city = PhoneLocation.getCityFromPhone(number);
+        	if(city!=null){
+        	 views.attributionView.setText(city);
+        	}else{
+        		views.attributionView.setText("");
+        	}
+        }
 
         final CharSequence nameText;
         final CharSequence numberText;
         final CharSequence labelText;
-        final CharSequence displayNumber =
-            mPhoneNumberHelper.getDisplayNumber(details.number, details.formattedNumber);
+        final CharSequence displayNumber =details.number;
+//            mPhoneNumberHelper.getDisplayNumber(details.number, details.formattedNumber);
         if (TextUtils.isEmpty(details.name)) {
             nameText = displayNumber;
-            if (TextUtils.isEmpty(details.geocode)
-                    || mPhoneNumberHelper.isVoicemailNumber(details.number)) {
-                numberText = mResources.getString(R.string.call_log_empty_gecode);
-            } else {
-                numberText = details.geocode;
+            views.callTypeIcons.setVisibility(View.GONE);
+            views.callTypeAndDate.setVisibility(View.GONE);
+            if(views.callTypeIcon != null && views.callTypeIcons.getIconsViewDrawable()!=null){
+                views.callTypeIcon.setVisibility(View.VISIBLE);
+                views.callTypeIcon.setImageDrawable(views.callTypeIcons.getIconsViewDrawable());
             }
+            numberText = views.callTypeAndDate.getText().toString();
+//            if (TextUtils.isEmpty(details.geocode)
+//                    || mPhoneNumberHelper.isVoicemailNumber(details.number)) {
+//                numberText = mResources.getString(R.string.call_log_empty_gecode);
+//            } else {
+//                numberText = details.geocode;
+//            }
             labelText = null;
         } else {
+            views.callTypeIcons.setVisibility(View.VISIBLE);
+            views.callTypeAndDate.setVisibility(View.VISIBLE);
+            views.callTypeIcon.setVisibility(View.GONE);
             nameText = details.name;
             numberText = displayNumber;
             labelText = numberFormattedLabel;
@@ -123,16 +150,17 @@ public class PhoneCallDetailsHelper {
 
         views.nameView.setText(nameText);
         views.numberView.setText(numberText);
-        views.labelView.setText(labelText);
-        views.labelView.setVisibility(TextUtils.isEmpty(labelText) ? View.GONE : View.VISIBLE);
+//        views.labelView.setText(labelText);
+//        views.labelView.setVisibility(TextUtils.isEmpty(labelText) ? View.GONE : View.VISIBLE);
     }
 
     /** Sets the text of the header view for the details page of a phone call. */
     public void setCallDetailsHeader(TextView nameView, PhoneCallDetails details) {
         final CharSequence nameText;
-        final CharSequence displayNumber =
-                mPhoneNumberHelper.getDisplayNumber(details.number,
-                        mResources.getString(R.string.recentCalls_addToContact));
+        /**shutao 2012-10-20*/
+        final CharSequence displayNumber =details.number;
+//                mPhoneNumberHelper.getDisplayNumber(details.number,
+//                        mResources.getString(R.string.recentCalls_addToContact));
         if (TextUtils.isEmpty(details.name)) {
             nameText = displayNumber;
         } else {

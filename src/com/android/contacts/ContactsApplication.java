@@ -29,11 +29,13 @@ import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.AsyncTask;
 import android.os.StrictMode;
 import android.preference.PreferenceManager;
 import android.provider.ContactsContract.Contacts;
 import android.util.Log;
+import android.widget.Toast;
 
 public final class ContactsApplication extends Application {
     private static final boolean ENABLE_LOADER_LOG = false; // Don't submit with true
@@ -43,6 +45,16 @@ public final class ContactsApplication extends Application {
     private AccountTypeManager mAccountTypeManager;
     private ContactPhotoManager mContactPhotoManager;
     private ContactListFilterController mContactListFilterController;
+    
+    //================================
+    //Shendu member param by Wang
+    //================================
+    /** the key of run times for sharedperference value*/
+    private static final String RUN_TIMES_KEY = "runtime";
+    /**the name of run times for sharedperference*/
+    private static final String RUN_TIMES_PERFERNECE_NAME = "runtime";
+    /**the flag of first run */
+    private boolean isFirstTimeRun;
 
     /**
      * Overrides the system services with mocks for testing.
@@ -138,6 +150,9 @@ public final class ContactsApplication extends Application {
         if (Log.isLoggable(Constants.PERFORMANCE_TAG, Log.DEBUG)) {
             Log.d(Constants.PERFORMANCE_TAG, "ContactsApplication.onCreate finish");
         }
+        
+        /*Wang: get run times*/
+        isFirstTimeRun = getSharedPreferences(RUN_TIMES_PERFERNECE_NAME, MODE_PRIVATE).getBoolean(RUN_TIMES_KEY, true);
     }
 
     private class DelayedInitializer extends AsyncTask<Void, Void, Void> {
@@ -157,4 +172,26 @@ public final class ContactsApplication extends Application {
                     (Void[]) null);
         }
     }
+    /**
+     * Given if the application is first time running
+     * @author Wang
+     * @param 
+     * @return True when is first time running
+     * */
+    public boolean isFirstTimeRun(){
+        return isFirstTimeRun;
+    }
+    
+    /**
+     * Update run times.Flaged not first time to run
+     * @author Wang
+     * @param 
+     * @return 
+     * */
+    public void updateRunTime(){
+        Editor edit = getSharedPreferences(RUN_TIMES_PERFERNECE_NAME, MODE_PRIVATE).edit();
+        edit.putBoolean(RUN_TIMES_KEY, false);
+        isFirstTimeRun = !edit.commit();
+    }
+    
 }

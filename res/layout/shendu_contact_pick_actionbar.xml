@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <LinearLayout
+        android:id="@+id/save_menu_item"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:clickable="true"
+        android:dividerPadding="12dip"
+        android:divider="?android:attr/dividerVertical"
+        android:orientation="horizontal"
+        android:showDividers="end" >
+
+        <LinearLayout
+            style="?android:attr/actionButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:duplicateParentState="true"
+            android:orientation="horizontal" >
+
+            <ImageView
+                android:id="@+id/icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginRight="8dip"
+                android:description="@string/menu_done"
+                android:src="@drawable/ic_menu_done_holo_dark" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/cancel_menu_item"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignParentRight="true"
+        android:dividerPadding="12dip"
+        android:divider="?android:attr/dividerVertical"
+        android:orientation="horizontal"
+        android:showDividers="beginning" >
+
+        <LinearLayout
+            style="?android:attr/actionButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:duplicateParentState="true"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:id="@+id/cancel_text"
+                style="@android:style/Widget.Holo.ActionBar.TabText"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:text="@string/menu_discard"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/action_bar_button_text_color" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="8dip"
+        android:layout_toLeftOf="@+id/cancel_menu_item"
+        android:layout_toRightOf="@+id/save_menu_item">
+
+        <LinearLayout
+            android:id="@+id/options_spinner"
+            style="?android:attr/actionDropDownStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:orientation="vertical" >
+
+            <TextView
+                android:textColor="@color/action_bar_button_text_color"
+                android:id="@+id/spinner_line_1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="-4dip"
+                android:ellipsize="end"
+                android:includeFontPadding="false"
+                android:singleLine="true"
+                android:textSize="18sp"
+                android:paddingRight="12dip" />
+        </LinearLayout>
+    </FrameLayout>
+
+</RelativeLayout>

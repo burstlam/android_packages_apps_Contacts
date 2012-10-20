@@ -30,17 +30,21 @@
         android:clickable="true">
 
         <include
-            layout="@layout/edit_field_list_with_anchor_view" />
+            android:id="@+id/spinner"
+            layout="@layout/edit_spinner"
+            android:visibility="gone" />
+
+        <include layout="@layout/edit_field_list_with_anchor_view" />
 
         <include
             android:id="@+id/expansion_view_container"
             layout="@layout/edit_expansion_view"
             android:visibility="gone" />
 
-        <include
+        <!--<include
             android:id="@+id/spinner"
             layout="@layout/edit_spinner"
-            android:visibility="gone" />
+            android:visibility="gone" /> -->
 
         <include
             android:id="@+id/delete_button_container"

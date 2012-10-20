@@ -47,6 +47,7 @@ public abstract class ContactListAdapter extends ContactEntryListAdapter {
             Contacts.PHOTO_THUMBNAIL_URI,           // 5
             Contacts.LOOKUP_KEY,                    // 6
             Contacts.IS_USER_PROFILE,               // 7
+            Contacts.HAS_PHONE_NUMBER   //8 Wang
         };
 
         private static final String[] CONTACT_PROJECTION_ALTERNATIVE = new String[] {
@@ -58,6 +59,7 @@ public abstract class ContactListAdapter extends ContactEntryListAdapter {
             Contacts.PHOTO_THUMBNAIL_URI,           // 5
             Contacts.LOOKUP_KEY,                    // 6
             Contacts.IS_USER_PROFILE,               // 7
+            Contacts.HAS_PHONE_NUMBER   //8 Wang
         };
 
         private static final String[] FILTER_PROJECTION_PRIMARY = new String[] {
@@ -69,7 +71,8 @@ public abstract class ContactListAdapter extends ContactEntryListAdapter {
             Contacts.PHOTO_THUMBNAIL_URI,           // 5
             Contacts.LOOKUP_KEY,                    // 6
             Contacts.IS_USER_PROFILE,               // 7
-            SearchSnippetColumns.SNIPPET,           // 8
+            Contacts.HAS_PHONE_NUMBER,   //8 Wang
+            SearchSnippetColumns.SNIPPET,           // 9 Wang
         };
 
         private static final String[] FILTER_PROJECTION_ALTERNATIVE = new String[] {
@@ -81,7 +84,8 @@ public abstract class ContactListAdapter extends ContactEntryListAdapter {
             Contacts.PHOTO_THUMBNAIL_URI,           // 5
             Contacts.LOOKUP_KEY,                    // 6
             Contacts.IS_USER_PROFILE,               // 7
-            SearchSnippetColumns.SNIPPET,           // 8
+            Contacts.HAS_PHONE_NUMBER ,  //8 Wang
+            SearchSnippetColumns.SNIPPET,           // 9 Wang
         };
 
         public static final int CONTACT_ID               = 0;
@@ -92,7 +96,8 @@ public abstract class ContactListAdapter extends ContactEntryListAdapter {
         public static final int CONTACT_PHOTO_URI        = 5;
         public static final int CONTACT_LOOKUP_KEY       = 6;
         public static final int CONTACT_IS_USER_PROFILE  = 7;
-        public static final int CONTACT_SNIPPET          = 8;
+        public static final int CONTACT_HAS_PHONE_NUMBER  = 8; //Wang
+        public static final int CONTACT_SNIPPET          = 9; //Wang
     }
 
     private CharSequence mUnknownNameText;

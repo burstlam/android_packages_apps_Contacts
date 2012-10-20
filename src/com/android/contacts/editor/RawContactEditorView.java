@@ -38,6 +38,7 @@ import android.provider.ContactsContract.Data;
 import android.provider.ContactsContract.RawContacts;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -332,11 +333,20 @@ public class RawContactEditorView extends BaseRawContactEditorView {
      * contacts that's "My Contacts").
      */
     private void addToDefaultGroupIfNeeded() {
-        if (!mAutoAddToDefaultGroup || mGroupMetaData == null || mGroupMetaData.isClosed()
+        log(">>addToDefaultGroupIfNeeded<<");
+        log(" mAutoAddToDefaultGroup="+mAutoAddToDefaultGroup+" mGroupMetaData="+mGroupMetaData+" mState="+mState);
+//        if (!mAutoAddToDefaultGroup || mGroupMetaData == null || mGroupMetaData.isClosed()
+//                || mState == null) {
+//            log(" return ");
+//            return;
+//        }
+//Wang:
+        if (mGroupMetaData == null || mGroupMetaData.isClosed()
                 || mState == null) {
+            log(" return ");
             return;
         }
-
+        
         boolean hasGroupMembership = false;
         ArrayList<ValuesDelta> entries = mState.getMimeEntries(GroupMembership.CONTENT_ITEM_TYPE);
         if (entries != null) {
@@ -369,7 +379,11 @@ public class RawContactEditorView extends BaseRawContactEditorView {
         mGroupMetaData.moveToPosition(-1);
         while (mGroupMetaData.moveToNext()) {
             String name = mGroupMetaData.getString(GroupMetaDataLoader.ACCOUNT_NAME);
+            //Wang:
+            if(name == null) name = "";
             String type = mGroupMetaData.getString(GroupMetaDataLoader.ACCOUNT_TYPE);
+            //Wang:
+            if(type == null) type = "";
             String dataSet = mGroupMetaData.getString(GroupMetaDataLoader.DATA_SET);
             if (name.equals(accountName) && type.equals(accountType)
                     && Objects.equal(dataSet, accountDataSet)) {
@@ -474,5 +488,11 @@ public class RawContactEditorView extends BaseRawContactEditorView {
         });
 
         popupMenu.show();
+    }
+    
+    private static final boolean debug = true;
+    private static void log(String msg){
+        msg = "RawContactEditorView -> " + msg;
+        if(debug) Log.i("shenduNewContacts", msg);
     }
 }

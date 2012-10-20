@@ -61,7 +61,7 @@ import java.util.List;
  * Displays a list of call log entries.
  */
 public class CallLogFragment extends ListFragment
-        implements CallLogQueryHandler.Listener, CallLogAdapter.CallFetcher {
+        implements CallLogQueryHandler.Listener, ShenduCallLogAdapter.CallFetcher {
     private static final String TAG = "CallLogFragment";
 
     /**
@@ -69,7 +69,8 @@ public class CallLogFragment extends ListFragment
      */
     private static final int EMPTY_LOADER_ID = 0;
 
-    private CallLogAdapter mAdapter;
+//    private CallLogAdapter mAdapter;
+    private ShenduCallLogAdapter mAdapter;
     private CallLogQueryHandler mCallLogQueryHandler;
     private boolean mScrollToTop;
 
@@ -209,8 +210,10 @@ public class CallLogFragment extends ListFragment
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         String currentCountryIso = ContactsUtils.getCurrentCountryIso(getActivity());
-        mAdapter = new CallLogAdapter(getActivity(), this,
-                new ContactInfoHelper(getActivity(), currentCountryIso));
+//        mAdapter = new CallLogAdapter(getActivity(), this,
+//                new ContactInfoHelper(getActivity(), currentCountryIso));
+        mAdapter = new ShenduCallLogAdapter(getActivity(), this,
+        		new ContactInfoHelper(getActivity(), currentCountryIso));
         setListAdapter(mAdapter);
         getListView().setItemsCanFocus(true);
     }
@@ -242,7 +245,7 @@ public class CallLogFragment extends ListFragment
     @Override
     public void onResume() {
         super.onResume();
-        refreshData();
+//        refreshData();
     }
 
     private void updateVoicemailStatusMessage(Cursor statusCursor) {
@@ -404,7 +407,7 @@ public class CallLogFragment extends ListFragment
     }
 
     @VisibleForTesting
-    CallLogAdapter getAdapter() {
+    ShenduCallLogAdapter getAdapter() {
         return mAdapter;
     }
 
@@ -420,9 +423,11 @@ public class CallLogFragment extends ListFragment
             }
         }
     }
+    
+    
 
     /** Requests updates to the data to be shown. */
-    private void refreshData() {
+    public void refreshData() {
         // Prevent unnecessary refresh.
         if (mRefreshDataRequired) {
             // Mark all entries in the contact info cache as out of date, so they will be looked up

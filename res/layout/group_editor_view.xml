@@ -14,40 +14,89 @@
      limitations under the License.
 -->
 
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
-   <include
+    <include
         android:id="@+id/account_header"
-        layout="@layout/editor_account_header"/>
+        layout="@layout/editor_account_header" />
 
-    <LinearLayout android:layout_width="match_parent"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingLeft="8dip"
-        android:paddingRight="8dip"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:paddingLeft="12dip"
+        android:paddingRight="12dip" >
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/list_section_divider_holo_custom"
+            android:gravity="center_vertical"
+            android:paddingLeft="8dip"
+            android:text="@string/shendu_group_editor_name_title"
+            android:textColor="@color/shendu_group_title"
+            android:textSize="16sp" />
 
         <EditText
             android:id="@+id/group_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:inputType="textCapWords"
-            android:imeOptions="flagNoExtractUi|flagNoFullscreen"
             android:hint="@string/group_name_hint"
+            android:imeOptions="flagNoExtractUi|flagNoFullscreen"
+            android:inputType="textCapWords"
             android:minHeight="48dip"
-            android:paddingLeft="8dip"/>
+            android:paddingLeft="8dip"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/list_section_divider_holo_custom"
+            android:gravity="center_vertical"
+            android:paddingLeft="8dip"
+            android:text="@string/shendu_group_editor_members_title"
+            android:textColor="@color/shendu_group_title"
+            android:textSize="16sp" />
+        <include
+            android:visibility="gone"
+            android:id="@+id/add_member_field"
+            layout="@layout/group_editor_autocomplete_view" />
+
+        <RelativeLayout
+            android:background="@drawable/action_background"
+            android:visibility="visible"
+            android:id="@+id/add_member_view"
+            android:layout_width="match_parent"
+            android:layout_height="48dip"
+            android:minHeight="48dip"
+            android:clickable="true"
+            android:orientation="vertical" >
+
+            <!-- <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@null"
+                android:src="@drawable/ic_menu_add_field_holo_light" /> -->
+
+            <TextView
+                android:layout_centerVertical="true"
+                android:gravity="center_vertical"
+                android:drawableLeft="@drawable/ic_menu_add_field_holo_light"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/shendu_group_editor_add_members" />
+            <View 
+                android:layout_alignParentBottom="true"
+                android:layout_width="match_parent"
+                android:layout_height="1dip"
+                android:background="@drawable/group_browser_divider"/>
+        </RelativeLayout>
 
         <include
-            layout="@layout/group_editor_autocomplete_view"
-            android:id="@+id/add_member_field"/>
-
-        <include
-            layout="@layout/group_editor_existing_member_list"
-            android:id="@android:id/list"/>
+            android:id="@android:id/list"
+            layout="@layout/group_editor_existing_member_list" />
     </LinearLayout>
 
 </LinearLayout>

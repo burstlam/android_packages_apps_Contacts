@@ -34,6 +34,7 @@ import com.android.contacts.voicemail.VoicemailStatusHelperImpl;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.ActionBar.LayoutParams;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
@@ -56,11 +57,13 @@ import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.ActionMode;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -75,8 +78,11 @@ import java.util.List;
  * This activity can be either started with the URI of a single call log entry, or with the
  * {@link #EXTRA_CALL_LOG_IDS} extra to specify a group of call log entries.
  */
-public class CallDetailActivity extends Activity implements ProximitySensorAware {
+public class CallDetailActivity extends Activity implements ProximitySensorAware 
+                               , AdapterView.OnItemClickListener{
     private static final String TAG = "CallDetail";
+    
+    private static final boolean DEBUG = true;
 
     /** The time to wait before enabling the blank the screen due to the proximity sensor. */
     private static final long PROXIMITY_BLANK_DELAY_MILLIS = 100;
@@ -137,6 +143,10 @@ public class CallDetailActivity extends Activity implements ProximitySensorAware
     private ProximitySensorManager mProximitySensorManager;
     private final ProximitySensorListener mProximitySensorListener = new ProximitySensorListener();
 
+    
+    /** shutao 2012-10-17  Stored call record data*/
+    private PhoneCallDetails[] shendu_Details;
+    
     /**
      * The action mode used when the phone number is selected.  This will be non-null only when the
      * phone number is selected.
@@ -447,7 +457,9 @@ public class CallDetailActivity extends Activity implements ProximitySensorAware
                     // treat it as a separate People task.
                     mainActionIntent.setFlags(
                             Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    mainActionIcon = R.drawable.ic_contacts_holo_dark;
+                    /** shutao 2012-10-17 UI Using black Icon */
+//                    mainActionIcon = R.drawable.ic_contacts_holo_dark;
+                    mainActionIcon = 0;
                     mainActionDescription =
                             getString(R.string.description_view_contact, nameOrNumber);
                 } else if (isVoicemailNumber) {
@@ -471,7 +483,8 @@ public class CallDetailActivity extends Activity implements ProximitySensorAware
                     mainActionIntent = new Intent(Intent.ACTION_INSERT_OR_EDIT);
                     mainActionIntent.setType(Contacts.CONTENT_ITEM_TYPE);
                     mainActionIntent.putExtra(Insert.PHONE, mNumber);
-                    mainActionIcon = R.drawable.ic_add_contact_holo_dark;
+                    /** shutao 2012-10-17 UI Using black Icon */
+                    mainActionIcon = R.drawable.ic_add_contact_holo_light;
                     mainActionDescription = getString(R.string.description_add_contact);
                 } else {
                     // If we cannot call the number, when we probably cannot add it as a contact either.
@@ -531,7 +544,7 @@ public class CallDetailActivity extends Activity implements ProximitySensorAware
                                 getString(R.string.description_send_text_message, nameOrNumber));
                     }
 
-                    configureCallButton(entry);
+//                    configureCallButton(entry);
                     mPhoneNumberToCopy = displayNumber;
                     mPhoneNumberLabelToCopy = entry.label;
                 } else {
@@ -547,36 +560,40 @@ public class CallDetailActivity extends Activity implements ProximitySensorAware
                 invalidateOptionsMenu();
 
                 ListView historyList = (ListView) findViewById(R.id.history);
+                /** shutao 2012-10-17 */
+                shendu_Details = details;
+                historyList.setOnItemClickListener(CallDetailActivity.this);
                 historyList.setAdapter(
                         new CallDetailHistoryAdapter(CallDetailActivity.this, mInflater,
                                 mCallTypeHelper, details, hasVoicemail(), canPlaceCallsTo,
                                 findViewById(R.id.controls)));
-                BackScrollManager.bind(
-                        new ScrollableHeader() {
-                            private View mControls = findViewById(R.id.controls);
-                            private View mPhoto = findViewById(R.id.contact_background_sizer);
-                            private View mHeader = findViewById(R.id.photo_text_bar);
-                            private View mSeparator = findViewById(R.id.blue_separator);
-
-                            @Override
-                            public void setOffset(int offset) {
-                                mControls.setY(-offset);
-                            }
-
-                            @Override
-                            public int getMaximumScrollableHeaderOffset() {
-                                // We can scroll the photo out, but we should keep the header if
-                                // present.
-                                if (mHeader.getVisibility() == View.VISIBLE) {
-                                    return mPhoto.getHeight() - mHeader.getHeight();
-                                } else {
-                                    // If the header is not present, we should also scroll out the
-                                    // separator line.
-                                    return mPhoto.getHeight() + mSeparator.getHeight();
-                                }
-                            }
-                        },
-                        historyList);
+                /**shutao 2012-10-17*/
+//                BackScrollManager.bind(
+//                        new ScrollableHeader() {
+//                            private View mControls = findViewById(R.id.controls);
+//                            private View mPhoto = findViewById(R.id.contact_background_sizer);
+//                            private View mHeader = findViewById(R.id.photo_text_bar);
+//                            private View mSeparator = findViewById(R.id.blue_separator);
+//
+//                            @Override
+//                            public void setOffset(int offset) {
+//                                mControls.setY(-offset);
+//                            }
+//
+//                            @Override
+//                            public int getMaximumScrollableHeaderOffset() {
+//                                // We can scroll the photo out, but we should keep the header if
+//                                // present.
+//                                if (mHeader.getVisibility() == View.VISIBLE) {
+//                                    return mPhoto.getHeight() - mHeader.getHeight();
+//                                } else {
+//                                    // If the header is not present, we should also scroll out the
+//                                    // separator line.
+//                                    return mPhoto.getHeight() + mSeparator.getHeight();
+//                                }
+//                            }
+//                        },
+//                        historyList);
                 loadContactPhotos(photoUri);
                 findViewById(R.id.call_detail).setVisibility(View.VISIBLE);
             }
@@ -679,45 +696,45 @@ public class CallDetailActivity extends Activity implements ProximitySensorAware
 
     /** Disables the call button area, e.g., for private numbers. */
     private void disableCallButton() {
-        findViewById(R.id.call_and_sms).setVisibility(View.GONE);
+//        findViewById(R.id.call_and_sms).setVisibility(View.GONE);
     }
 
     /** Configures the call button area using the given entry. */
-    private void configureCallButton(ViewEntry entry) {
-        View convertView = findViewById(R.id.call_and_sms);
-        convertView.setVisibility(View.VISIBLE);
-
-        ImageView icon = (ImageView) convertView.findViewById(R.id.call_and_sms_icon);
-        View divider = convertView.findViewById(R.id.call_and_sms_divider);
-        TextView text = (TextView) convertView.findViewById(R.id.call_and_sms_text);
-
-        View mainAction = convertView.findViewById(R.id.call_and_sms_main_action);
-        mainAction.setOnClickListener(mPrimaryActionListener);
-        mainAction.setTag(entry);
-        mainAction.setContentDescription(entry.primaryDescription);
-        mainAction.setOnLongClickListener(mPrimaryLongClickListener);
-
-        if (entry.secondaryIntent != null) {
-            icon.setOnClickListener(mSecondaryActionListener);
-            icon.setImageResource(entry.secondaryIcon);
-            icon.setVisibility(View.VISIBLE);
-            icon.setTag(entry);
-            icon.setContentDescription(entry.secondaryDescription);
-            divider.setVisibility(View.VISIBLE);
-        } else {
-            icon.setVisibility(View.GONE);
-            divider.setVisibility(View.GONE);
-        }
-        text.setText(entry.text);
-
-        TextView label = (TextView) convertView.findViewById(R.id.call_and_sms_label);
-        if (TextUtils.isEmpty(entry.label)) {
-            label.setVisibility(View.GONE);
-        } else {
-            label.setText(entry.label);
-            label.setVisibility(View.VISIBLE);
-        }
-    }
+//    private void configureCallButton(ViewEntry entry) {
+//        View convertView = findViewById(R.id.call_and_sms);
+//        convertView.setVisibility(View.VISIBLE);
+//
+//        ImageView icon = (ImageView) convertView.findViewById(R.id.call_and_sms_icon);
+//        View divider = convertView.findViewById(R.id.call_and_sms_divider);
+//        TextView text = (TextView) convertView.findViewById(R.id.call_and_sms_text);
+//
+//        View mainAction = convertView.findViewById(R.id.call_and_sms_main_action);
+//        mainAction.setOnClickListener(mPrimaryActionListener);
+//        mainAction.setTag(entry);
+//        mainAction.setContentDescription(entry.primaryDescription);
+//        mainAction.setOnLongClickListener(mPrimaryLongClickListener);
+//
+//        if (entry.secondaryIntent != null) {
+//            icon.setOnClickListener(mSecondaryActionListener);
+//            icon.setImageResource(entry.secondaryIcon);
+//            icon.setVisibility(View.VISIBLE);
+//            icon.setTag(entry);
+//            icon.setContentDescription(entry.secondaryDescription);
+//            divider.setVisibility(View.VISIBLE);
+//        } else {
+//            icon.setVisibility(View.GONE);
+//            divider.setVisibility(View.GONE);
+//        }
+//        text.setText(entry.text);
+//
+//        TextView label = (TextView) convertView.findViewById(R.id.call_and_sms_label);
+//        if (TextUtils.isEmpty(entry.label)) {
+//            label.setVisibility(View.GONE);
+//        } else {
+//            label.setText(entry.label);
+//            label.setVisibility(View.VISIBLE);
+//        }
+//    }
 
     protected void updateVoicemailStatusMessage(Cursor statusCursor) {
         if (statusCursor == null) {
@@ -836,12 +853,35 @@ public class CallDetailActivity extends Activity implements ProximitySensorAware
                 });
     }
 
+    /**
+     * shutao 2012-10-15 The far right in the ActionBar add title TextView
+     */
     private void configureActionBar() {
-        ActionBar actionBar = getActionBar();
-        if (actionBar != null) {
-            actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_HOME);
-        }
-    }
+		ActionBar actionBar = getActionBar();
+		if (actionBar != null) {
+			TextView shendu_title = new TextView(this);
+			shendu_title.setTextColor(getResources().getColor(R.color.action_bar_button_text_color));
+			shendu_title.setTextSize(17);
+			shendu_title.setText(this.getResources().getString(
+					R.string.callDetailTitle));
+
+			actionBar.setCustomView(shendu_title, new ActionBar.LayoutParams(
+					LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+
+			ActionBar.LayoutParams shendu_tilte_lp = (ActionBar.LayoutParams) shendu_title
+					.getLayoutParams();
+			shendu_tilte_lp.rightMargin = 20;
+			shendu_tilte_lp.gravity = shendu_tilte_lp.gravity
+					& ~Gravity.HORIZONTAL_GRAVITY_MASK | Gravity.RIGHT;
+			actionBar.setCustomView(shendu_title, shendu_tilte_lp);
+			int change = ActionBar.DISPLAY_HOME_AS_UP
+					| ActionBar.DISPLAY_SHOW_HOME;
+			actionBar.setDisplayOptions(change);
+			actionBar.setDisplayOptions(change | ActionBar.DISPLAY_SHOW_CUSTOM,
+					ActionBar.DISPLAY_SHOW_CUSTOM);
+			actionBar.setBackgroundDrawable(getResources().getDrawable(R.drawable.shendu_ab_solid_custom_blue_inverse_holo));
+		}
+	}
 
     /** Invoked when the user presses the home button in the action bar. */
     private void onHomeSelected() {
@@ -933,4 +973,29 @@ public class CallDetailActivity extends Activity implements ProximitySensorAware
             mTargetView.setBackground(mOriginalViewBackground);
         }
     }
+
+    /** shutao 2012-10-17  Dial */
+	@Override
+	public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+		// TODO Auto-generated method stub
+		log("onItemClick");
+		 PhoneCallDetails firstDetails = shendu_Details[arg2];
+		 if(firstDetails.number != null){
+			 Intent intent = newDialNumberIntent(firstDetails.number.toString());
+			 startActivity(intent);
+			 finish();
+		 }
+	}
+	
+	 private Intent newDialNumberIntent(String number) {
+	        final Intent intent = new Intent(Intent.ACTION_CALL_PRIVILEGED,
+	                                         Uri.fromParts("tel", number, null));
+	        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+	        return intent;
+	 }
+	 
+	    private void log(String msg){
+	    	if(DEBUG)
+	    	Log.d(TAG, msg);
+	    }
 }

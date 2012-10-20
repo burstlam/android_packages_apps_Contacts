@@ -37,6 +37,7 @@ import android.os.Parcelable;
 import android.provider.ContactsContract;
 import android.provider.Settings;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -211,15 +212,31 @@ public class GroupBrowseListFragment extends Fragment
         public void onLoaderReset(Loader<Cursor> loader) {
         }
     };
-
+    
+    /**
+     * Judgment of whether there is a local group or not. there may some problem with the function. 
+     * @author Wang
+     * @param
+     * @return true when local account has group member.
+     * @date 2012-8-22
+     * */
+    private boolean isLocalGroupExist(){
+        return !ContactsUtils.areGroupWritableAccountsAvailable(mContext) && mAdapter != null && mAdapter.getCount() > 0; 
+    }
+    
     private void bindGroupList() {
+        log(">>>bindGroupList<<<");
+        log("mGroupListCursor =>"+mGroupListCursor);
+        if(mGroupListCursor != null) log("mGroupListCursor.count=>"+mGroupListCursor.getCount());
         mEmptyView.setText(R.string.noGroups);
-        setAddAccountsVisibility(!ContactsUtils.areGroupWritableAccountsAvailable(mContext));
+//        setAddAccountsVisibility(!ContactsUtils.areGroupWritableAccountsAvailable(mContext));
         if (mGroupListCursor == null) {
             return;
         }
         mAdapter.setCursor(mGroupListCursor);
-
+        //Wang:
+        setAddAccountsVisibility(!ContactsUtils.areGroupWritableAccountsAvailable(mContext));
+        
         if (mSelectionToScreenRequested) {
             mSelectionToScreenRequested = false;
             requestSelectionToScreen();
@@ -307,8 +324,18 @@ public class GroupBrowseListFragment extends Fragment
     }
 
     public void setAddAccountsVisibility(boolean visible) {
+        /*Wang: always GONE*/
+        visible = false;
         if (mAddAccountsView != null) {
             mAddAccountsView.setVisibility(visible ? View.VISIBLE : View.GONE);
+        }
+    }
+    
+    private static final boolean debug  = true;
+    private static void log(String msg){
+        if(debug){
+            msg = "Browser -> " + msg;
+            Log.i("shenduGroup", msg);
         }
     }
 }

@@ -104,5 +104,13 @@
     <color name="photo_container">#4cffffff</color>
     <color name="social_widget_bg">#00000000</color>
     <color name="contact_detail_fragment">#ffffff</color>
+    
+    <!-- shendu 2012-10-15  The default background color -->
+    <color name="shendu_background_color">#EFEFEF</color>
+    <color name="shendu_high_light">#F48F0C</color>
+    <!--shutao 2012-10-15 callDetail -->
+    <color name="shendu_calldetail_list_text_color">#595959</color>
+    <color name="shendu_calldetail_blue_text_color">#35B5E5</color>
+    <color name="shendu_group_title">#35B5E5</color>
 
 </resources>

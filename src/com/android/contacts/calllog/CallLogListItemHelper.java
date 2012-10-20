@@ -82,7 +82,9 @@ import android.view.View;
     private void configureCallSecondaryAction(CallLogListItemViews views,
             PhoneCallDetails details) {
         views.secondaryActionView.setVisibility(View.VISIBLE);
-        views.secondaryActionView.setImageResource(R.drawable.ic_ab_dialer_holo_dark);
+//        views.secondaryActionView.setImageResource(R.drawable.ic_ab_dialer_holo_dark);
+        /** shutao 2012-10-16*/
+        views.secondaryActionView.setImageResource(R.drawable.shendu_arrow);
         views.secondaryActionView.setContentDescription(getCallActionDescription(details));
     }
 

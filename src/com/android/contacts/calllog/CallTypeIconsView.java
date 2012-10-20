@@ -48,6 +48,13 @@ public class CallTypeIconsView extends View {
         super(context, attrs);
         mResources = new Resources(context);
     }
+    
+    /** shutao 2012-10-16  Current picture */
+    private Drawable mDrawable;
+    
+    public Drawable getIconsViewDrawable(){
+    	return mDrawable;
+    }
 
     public void clear() {
         mCallTypes.clear();
@@ -58,8 +65,9 @@ public class CallTypeIconsView extends View {
 
     public void add(int callType) {
         mCallTypes.add(callType);
-
+    
         final Drawable drawable = getCallTypeDrawable(callType);
+        mDrawable = drawable;
         mWidth += drawable.getIntrinsicWidth() + mResources.iconMargin;
         mHeight = Math.max(mHeight, drawable.getIntrinsicHeight());
         invalidate();

@@ -19,7 +19,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:paddingBottom="?android:attr/actionBarSize"
+    android:paddingBottom="@dimen/shendu_dialpad_bottom_height"
     android:divider="?android:attr/dividerHorizontal"
     android:showDividers="end">
 
@@ -41,7 +41,7 @@
             android:layout_height="match_parent"
             android:fadingEdge="none"
             android:scrollbarStyle="outsideOverlay"
-            android:divider="@null"
+            android:divider="@drawable/shendu_selected_bottom_divider"
         />
         <TextView android:id="@android:id/empty"
             android:layout_width="match_parent"

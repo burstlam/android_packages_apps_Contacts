@@ -28,6 +28,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.ContactsContract.Groups;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -114,6 +115,7 @@ public class GroupBrowseListAdapter extends BaseAdapter {
 
     @Override
     public GroupListItem getItem(int position) {
+        log(">>>getItem => position ="+position);
         if (mCursor == null || mCursor.isClosed() || !mCursor.moveToPosition(position)) {
             return null;
         }
@@ -123,7 +125,15 @@ public class GroupBrowseListAdapter extends BaseAdapter {
         long groupId = mCursor.getLong(GroupListLoader.GROUP_ID);
         String title = mCursor.getString(GroupListLoader.TITLE);
         int memberCount = mCursor.getInt(GroupListLoader.MEMBER_COUNT);
-
+        //Wang:local account maybe null 2012-10-17
+        if(accountName == null){
+            accountName = "";
+        }
+        if(accountType == null){
+            accountType = "";
+        }
+        log(" accountName="+accountName+" | accountType="+accountType+" | dataSet="+dataSet+" | groupId ="+groupId);
+        
         // Figure out if this is the first group for this account name / account type pair by
         // checking the previous entry. This is to determine whether or not we need to display an
         // account header in this item.
@@ -133,14 +143,25 @@ public class GroupBrowseListAdapter extends BaseAdapter {
             String previousGroupAccountName = mCursor.getString(GroupListLoader.ACCOUNT_NAME);
             String previousGroupAccountType = mCursor.getString(GroupListLoader.ACCOUNT_TYPE);
             String previousGroupDataSet = mCursor.getString(GroupListLoader.DATA_SET);
-
+          //Wang:local account maybe null 2012-10-17
+            if(previousGroupAccountName == null){
+                previousGroupAccountName = "";
+            }
+            if(previousGroupAccountType == null){
+                previousGroupAccountType = "";
+            }
+            log("  ====> check isFirstGroupInAccount ");
+            log("  previousIndex = "+previousIndex);
+            log("  previousGroupAccountName = "+previousGroupAccountName+" | previousGroupAccountType="+previousGroupAccountType+" | previousGroupDataSet="+previousGroupDataSet);
+            log("  (compare with accountName etc.)");
+            log("  <====");
             if (accountName.equals(previousGroupAccountName) &&
                     accountType.equals(previousGroupAccountType) &&
                     Objects.equal(dataSet, previousGroupDataSet)) {
                 isFirstGroupInAccount = false;
             }
         }
-
+        log("  ********isFirstGroupInAccount ="+isFirstGroupInAccount);
         return new GroupListItem(accountName, accountType, dataSet, groupId, title,
                 isFirstGroupInAccount, memberCount);
     }
@@ -198,6 +219,7 @@ public class GroupBrowseListAdapter extends BaseAdapter {
     private void bindHeaderView(GroupListItem entry, GroupListItemViewCache viewCache) {
         AccountType accountType = mAccountTypeManager.getAccountType(
                 entry.getAccountType(), entry.getDataSet());
+        log("bindHeader / accountType : "+entry.getAccountType()+", accountName : "+entry.getAccountName()+", dataSet : "+entry.getDataSet());
         viewCache.accountType.setText(accountType.getDisplayLabel(mContext).toString());
         viewCache.accountName.setText(entry.getAccountName());
     }
@@ -237,5 +259,11 @@ public class GroupBrowseListAdapter extends BaseAdapter {
         public Uri getUri() {
             return mUri;
         }
+    }
+    
+    private static final boolean debug = true;
+    private static void log(String msg){
+        msg = "Adapter -> "+msg;
+        if(debug) Log.i("shenduGroup", msg);
     }
 }

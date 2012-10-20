@@ -49,6 +49,9 @@ public class FallbackAccountType extends BaseAccountType {
             addDataKindNote(context);
             addDataKindWebsite(context);
             addDataKindSipAddress(context);
+            
+            //Wang:
+            addDataKindGroupMembership(context);
 
             mIsInitialized = true;
         } catch (DefinitionException e) {
@@ -72,6 +75,11 @@ public class FallbackAccountType extends BaseAccountType {
 
     @Override
     public boolean areContactsWritable() {
+        return true;
+    }
+    /*Wang:*/
+    @Override
+    public boolean isGroupMembershipEditable() {
         return true;
     }
 }

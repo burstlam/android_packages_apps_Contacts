@@ -34,8 +34,11 @@
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:orientation="horizontal"
-            android:paddingTop="8dip">
-
+            android:paddingTop="8dip"
+            android:paddingLeft="8dip">
+            <include
+                android:id="@+id/edit_photo"
+                layout="@layout/item_photo_editor" />
             <LinearLayout
                 android:layout_height="wrap_content"
                 android:layout_width="0dip"
@@ -52,10 +55,7 @@
 
             </LinearLayout>
 
-            <include
-                android:id="@+id/edit_photo"
-                android:layout_marginRight="8dip"
-                layout="@layout/item_photo_editor" />
+            
 
         </LinearLayout>
 

@@ -19,6 +19,7 @@ package com.android.contacts.activities;
 import com.android.contacts.ContactLoader;
 import com.android.contacts.ContactSaveService;
 import com.android.contacts.ContactsActivity;
+import com.android.contacts.ContactsApplication;
 import com.android.contacts.ContactsUtils;
 import com.android.contacts.R;
 import com.android.contacts.activities.ActionBarAdapter.TabState;
@@ -62,6 +63,7 @@ import com.android.contacts.util.PhoneCapabilityTester;
 import com.android.contacts.util.UriUtils;
 import com.android.contacts.widget.TransitionAnimationView;
 
+import android.app.ActionBar;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
@@ -192,6 +194,12 @@ public class PeopleActivity extends ContactsActivity
     /** Sequential ID assigned to each instance; used for logging */
     private final int mInstanceId;
     private static final AtomicInteger sNextInstanceId = new AtomicInteger();
+    
+    /*===========================
+     * Wang : Shendu Member variables
+     ==========================*/
+    /** Default id of title text*/
+    private static final int DEFAULT_TITLE_RES_ID = -1;
 
     public PeopleActivity() {
         mInstanceId = sNextInstanceId.getAndIncrement();
@@ -436,7 +444,8 @@ public class PeopleActivity extends ContactsActivity
         // Configure action bar
         mActionBarAdapter = new ActionBarAdapter(this, this, getActionBar(), isUsingTwoPanes);
         mActionBarAdapter.initialize(savedState, mRequest);
-
+        /*Wang: */
+        displayTitleBarWithoutTabs(DEFAULT_TITLE_RES_ID);
         invalidateOptionsMenuIfNeeded();
     }
 
@@ -1005,8 +1014,12 @@ public class PeopleActivity extends ContactsActivity
         View mainView = findViewById(R.id.main_view);
 
         if (mProviderStatus.status == ProviderStatus.STATUS_NORMAL) {
+            /*Wang:*/
+            displayTabs();
             // Ensure that the mTabPager is visible; we may have made it invisible below.
             contactsUnavailableView.setVisibility(View.GONE);
+            /*Wang:*/
+            createLocalGroupsIfNecessary();
             if (mTabPager != null) {
                 mTabPager.setVisibility(View.VISIBLE);
             }
@@ -1024,6 +1037,8 @@ public class PeopleActivity extends ContactsActivity
             if (!areContactWritableAccountsAvailable() &&
                     AccountPromptUtils.shouldShowAccountPrompt(this)) {
                 AccountPromptUtils.launchAccountPrompt(this);
+                /*Wang:*/
+                displayTabs();
                 return;
             }
 
@@ -1040,6 +1055,8 @@ public class PeopleActivity extends ContactsActivity
                         .replace(R.id.contacts_unavailable_container, mContactsUnavailableFragment)
                         .commitAllowingStateLoss();
             }
+            /*Wang:*/
+            displayTitleBarWithoutTabs(DEFAULT_TITLE_RES_ID);
             mContactsUnavailableFragment.updateStatus(mProviderStatus);
 
             // Show the contactsUnavailableView, and hide the mTabPager so that we don't
@@ -1401,6 +1418,8 @@ public class PeopleActivity extends ContactsActivity
         // Get references to individual menu items in the menu
         final MenuItem addContactMenu = menu.findItem(R.id.menu_add_contact);
         final MenuItem contactsFilterMenu = menu.findItem(R.id.menu_contacts_filter);
+        //Wang:
+        final MenuItem toDialerMenu = menu.findItem(R.id.menu_to_dialer);
 
         MenuItem addGroupMenu = menu.findItem(R.id.menu_add_group);
 
@@ -1414,12 +1433,17 @@ public class PeopleActivity extends ContactsActivity
             contactsFilterMenu.setVisible(false);
             clearFrequentsMenu.setVisible(false);
             helpMenu.setVisible(false);
+            //Wang:
+            toDialerMenu.setVisible(false);
         } else {
             switch (mActionBarAdapter.getCurrentTab()) {
                 case TabState.FAVORITES:
                     addContactMenu.setVisible(false);
                     addGroupMenu.setVisible(false);
                     contactsFilterMenu.setVisible(false);
+                    //Wang:
+                    toDialerMenu.setVisible(true);
+                   
                     clearFrequentsMenu.setVisible(hasFrequents());
                     break;
                 case TabState.ALL:
@@ -1427,17 +1451,23 @@ public class PeopleActivity extends ContactsActivity
                     addGroupMenu.setVisible(false);
                     contactsFilterMenu.setVisible(true);
                     clearFrequentsMenu.setVisible(false);
+                    //Wang:
+                    toDialerMenu.setVisible(true);
                     break;
                 case TabState.GROUPS:
                     // Do not display the "new group" button if no accounts are available
-                    if (areGroupWritableAccountsAvailable()) {
-                        addGroupMenu.setVisible(true);
-                    } else {
-                        addGroupMenu.setVisible(false);
-                    }
+//                    if (areGroupWritableAccountsAvailable()) {
+//                        addGroupMenu.setVisible(true);
+//                    } else {
+//                        addGroupMenu.setVisible(false);
+//                    }
+                    /*Wang: we display the "new group" button always*/
+                    addGroupMenu.setVisible(true);
                     addContactMenu.setVisible(false);
                     contactsFilterMenu.setVisible(false);
                     clearFrequentsMenu.setVisible(false);
+                    //Wang:
+                    toDialerMenu.setVisible(true);
                     break;
             }
             HelpUtils.prepareHelpMenuItem(this, helpMenu, R.string.help_url_people_main);
@@ -1543,6 +1573,13 @@ public class PeopleActivity extends ContactsActivity
                 });
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
                 startActivity(intent);
+                return true;
+            }
+            /*Wang:*/
+            case R.id.menu_to_dialer:{
+                Intent intent = new Intent(this, DialtactsActivity.class);
+                startActivity(intent);
+                this.finish();
                 return true;
             }
         }
@@ -1714,5 +1751,77 @@ public class PeopleActivity extends ContactsActivity
     // Visible for testing
     public ContactDetailFragment getDetailFragment() {
         return mContactDetailFragment;
+    }
+    
+    /**
+     * Display top tabs and remove title bar
+     * @author Wang
+     * @param 
+     * @return
+     * */
+    private void displayTabs(){
+        if(mActionBarAdapter != null){
+            mActionBarAdapter.initialize(null, mRequest);
+        }
+    }
+    
+    /**
+     * Display top tilte actionbar without tabs
+     * @author Wang
+     * @param titleResId resource id of title text.  -1 will display default title (contacts)
+     * @return
+     * */
+    private void displayTitleBarWithoutTabs(final int titleResId){
+        int textId = titleResId;
+        ActionBar bar = getActionBar();
+        if (ActionBar.NAVIGATION_MODE_STANDARD != bar.getNavigationMode()) {
+            bar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+            bar.setDisplayShowHomeEnabled(true);
+            bar.setDisplayShowTitleEnabled(true);
+        }
+        if(textId == -1){
+            textId = R.string.people;
+        }
+        bar.setTitle(textId);
+    }
+    
+    /**
+     * Create some local groups if first time to run
+     * @author Wang
+     * @param titleResId resource id of title text.  -1 will display default title (contacts)
+     * @return
+     * */
+    private void createLocalGroupsIfNecessary(){
+        try{
+            ContactsApplication app = (ContactsApplication) getApplication() ;
+            if(app.isFirstTimeRun()){
+                createLocalGroup(getString(R.string.default_group_family));
+                createLocalGroup(getString(R.string.default_group_friend));
+                createLocalGroup(getString(R.string.default_group_colleague));
+                app.updateRunTime();
+            }
+        }catch(ClassCastException e){
+            Log.e("shenduGroup", "Create local groups failed");
+            return;
+        }
+    }
+    
+    /**
+     * Create a local group
+     * @author Wang
+     * @param groupName Name of new group 
+     * @return
+     * */
+    private void createLocalGroup(String groupName) {
+        AccountWithDataSet dataSet = new AccountWithDataSet("local", "local", null);
+        Intent saveIntent = ContactSaveService.createNewGroupIntent(this, dataSet,
+                groupName , new long[0] , this.getClass(),
+                GroupEditorActivity.ACTION_SAVE_COMPLETED);
+        startService(saveIntent);
+    }
+    
+    private static boolean debug = false;
+    private static void log(String msg){
+        if(debug) Log.i("shenduPeople", msg);
     }
 }

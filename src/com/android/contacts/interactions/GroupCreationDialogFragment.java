@@ -23,6 +23,7 @@ import android.app.Activity;
 import android.app.FragmentManager;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.widget.EditText;
 
 /**
@@ -80,7 +81,11 @@ public class GroupCreationDialogFragment extends GroupNameDialogFragment {
     protected void onCompleted(String groupLabel) {
         Bundle arguments = getArguments();
         String accountType = arguments.getString(ARG_ACCOUNT_TYPE);
+        //Wang:
+        if(TextUtils.isEmpty(accountType)) accountType = "local";
         String accountName = arguments.getString(ARG_ACCOUNT_NAME);
+        //Wang:
+        if(TextUtils.isEmpty(accountName)) accountName = "local";
         String dataSet = arguments.getString(ARG_DATA_SET);
 
         // Indicate to the listener that a new group will be created.

@@ -140,7 +140,10 @@ public class GroupEditorActivity extends ContactsActivity
 
         @Override
         public void onAccountsNotFound() {
-            finish();
+            /*Wang : AccountsNotFound don't finish activity*/
+//            log("close : AccountsNotFound");
+//            finish();
+            log("Accounts Not Found");
         }
 
         @Override
@@ -165,5 +168,11 @@ public class GroupEditorActivity extends ContactsActivity
     @Override
     public DialogManager getDialogManager() {
         return mDialogManager;
+    }
+    
+    private static final boolean debug = true;
+    private static void log(String msg){
+        msg ="Editor -> " + msg;
+        if(debug)  Log.i("shenduGroup", msg);
     }
 }

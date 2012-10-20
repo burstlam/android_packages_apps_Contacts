@@ -16,10 +16,12 @@
 
 package com.android.contacts.dialpad;
 
+import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedHashSet;
+import java.util.Locale;
 import java.util.Set;
 
 import android.content.Context;
@@ -31,6 +33,7 @@ import android.provider.ContactsContract.Contacts;
 import android.telephony.PhoneNumberUtils;
 import android.text.Spannable;
 import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,8 +43,9 @@ import android.widget.TextView;
 
 import com.android.contacts.ContactPhotoManager;
 import com.android.contacts.R;
-import com.android.contacts.dialpad.util.NameToNumber;
-import com.android.contacts.dialpad.util.NameToNumberFactory;
+//import com.android.contacts.dialpad.util.NameToNumber;
+//import com.android.contacts.dialpad.util.NameToNumberFactory;
+import com.android.phone.location.PhoneLocation;
 
 /**
  * @author shade, Danesh, pawitp
@@ -57,7 +61,7 @@ class T9Search {
     private static final String PHONE_ID_SELECTION = Contacts.Data.MIMETYPE + " = ? ";
     private static final String[] PHONE_ID_SELECTION_ARGS = new String[] {Phone.CONTENT_ITEM_TYPE};
     private static final String PHONE_SORT = Phone.CONTACT_ID + " ASC";
-    private static final String[] CONTACT_PROJECTION = new String[] {Contacts._ID, Contacts.DISPLAY_NAME, Contacts.TIMES_CONTACTED, Contacts.PHOTO_THUMBNAIL_URI};
+    private static final String[] CONTACT_PROJECTION = new String[] {Contacts._ID, Contacts.DISPLAY_NAME, Contacts.TIMES_CONTACTED, Contacts.PHOTO_THUMBNAIL_URI ,Contacts.SORT_KEY_PRIMARY};
     private static final String CONTACT_QUERY = Contacts.HAS_PHONE_NUMBER + " > 0";
     private static final String CONTACT_SORT = Contacts._ID + " ASC";
 
@@ -69,8 +73,14 @@ class T9Search {
     private Set<ContactItem> mAllResults = new LinkedHashSet<ContactItem>();
     private ArrayList<ContactItem> mContacts = new ArrayList<ContactItem>();
     private String mPrevInput;
-    private static String sT9Chars;
-    private static String sT9Digits;
+    private static char[][] sT9Map;
+    
+    /** shutao 2012-10-12*/
+    private static final String TAG = "T9Search";
+
+    // Turn on this flag when we want to check internal data structure.
+    private static final boolean DEBUG = true;
+    
 
     public T9Search(Context context) {
         mContext = context;
@@ -78,9 +88,11 @@ class T9Search {
     }
 
     private void getAll() {
-        initT9Map();
+    	long itime= System.currentTimeMillis();
+    	if (sT9Map == null)
+            initT9Map();
 
-        NameToNumber normalizer = NameToNumberFactory.create(mContext, sT9Chars, sT9Digits);
+//        NameToNumber normalizer = NameToNumberFactory.create(mContext, sT9Chars, sT9Digits);
 
         Cursor contact = mContext.getContentResolver().query(Contacts.CONTENT_URI, CONTACT_PROJECTION, CONTACT_QUERY, null, CONTACT_SORT);
         Cursor phone = mContext.getContentResolver().query(Phone.CONTENT_URI, PHONE_PROJECTION, PHONE_ID_SELECTION, PHONE_ID_SELECTION_ARGS, PHONE_SORT);
@@ -90,15 +102,18 @@ class T9Search {
             long contactId = contact.getLong(0);
             if (phone.isAfterLast()) {
                 break;
+                
             }
             while (phone.getLong(1) == contactId) {
                 String num = phone.getString(0);
                 ContactItem contactInfo = new ContactItem();
                 contactInfo.id = contactId;
                 contactInfo.name = contact.getString(1);
-                contactInfo.number = PhoneNumberUtils.formatNumber(num);
+                contactInfo.number = /*PhoneNumberUtils.formatNumber(*/num/*)*/;
                 contactInfo.normalNumber = removeNonDigits(num);
-                contactInfo.normalName = normalizer.convert(contact.getString(1));
+                nameToPinYinAndNumber(contact.getString(4),contactInfo);
+//                contactInfo.normalName = normalizer.convert(contact.getString(1));
+//                MyLog(contactInfo.normalName);
                 contactInfo.timesContacted = contact.getInt(2);
                 contactInfo.isSuperPrimary = phone.getInt(2) > 0;
                 contactInfo.groupType = Phone.getTypeLabel(mContext.getResources(), phone.getInt(3), phone.getString(4));
@@ -113,8 +128,96 @@ class T9Search {
         }
         contact.close();
         phone.close();
+        MyLog("system -- time=== " +(System.currentTimeMillis() - itime));
     }
 
+	private static final Collator COLLATOR = Collator.getInstance(Locale.CHINA);
+    private static final String FIRST_PINYIN_UNIHAN = "\u963F";
+    private static final String LAST_PINYIN_UNIHAN = "\u84D9";
+    private static final char FIRST_UNIHAN = '\u3400';
+    /** shutao 2012-10-19*/
+    public void nameToPinYinAndNumber(String name , ContactItem contactInfo){
+    	int nameLength = name.length();
+    	 final StringBuilder sb = new StringBuilder();
+    	 final StringBuilder sbNumber = new StringBuilder();
+    	 final StringBuilder sbFirst = new StringBuilder();
+    	 boolean isFirst = true;
+    	 int cmp;
+    	 for (int i = 0; i < nameLength; i++) {
+    		 final char character = name.charAt(i);
+    		 final String letter = Character.toString(character);
+    		 cmp = COLLATOR.compare(letter, FIRST_PINYIN_UNIHAN);
+    		
+    		 if(character == ' '){
+//    			 MyLog("name char "+"= "+character);
+    			 isFirst = true;
+    		 }else if (character < 256) {
+    			 
+//    			 MyLog("name char 256= "+character);
+    			 if(character>=65 && character <=90){
+//    				 MyLog("name char 256= "+(char)(character+32));
+    				 char num = LetterToNumber(character);
+    				 sbNumber.append(num);
+    				 if(!isFirst){
+        				 sb.append((char)(character+32));
+    				 }else{
+    					 sb.append(character);
+    					 sbFirst.append(num);
+    					 isFirst = false;
+    				 }
+    				 
+    			 }else{
+    				 isFirst = false;
+        			 sb.append(character);
+        			 sbNumber.append(LetterToNumber(character));
+    			 }
+
+    		 }else if(character<FIRST_UNIHAN){
+//    			 MyLog("name char u3400= "+character);
+    			 sb.append(character);
+    			 sbNumber.append(LetterToNumber(character));
+    		 }else if(cmp < 0){
+//    			 MyLog("name cmp "+"= "+character);
+    			 sb.append(character);
+    			 sbNumber.append(LetterToNumber(character));
+    		 }else{
+    			 cmp = COLLATOR.compare(letter, LAST_PINYIN_UNIHAN);
+    			 if(cmp >0){
+//    				 MyLog("name cmp "+"= "+character);
+    				 
+    				 sb.append(character);
+    				 sbNumber.append(LetterToNumber(character));
+    			 }
+    		 }
+    		
+    	 }
+    	 contactInfo.pinYin = sb.toString();
+    	 contactInfo.normalName = sbNumber.toString();
+    	 contactInfo.firstNumber = sbFirst.toString();
+    	
+    }
+    /**shutao 2012-10-19*/
+    private static char LetterToNumber(char letter) {
+    	letter=Character.toLowerCase(letter);
+        char num = letter;
+            boolean matched = false;
+            for (char[] row : sT9Map) {
+                for (char a : row) {
+                    if (letter == a) {
+                        matched = true;
+                        num=row[0];
+                        break;
+                    }
+                }
+                if (matched) {
+                    break;
+                }
+            }
+        return num;
+    }
+
+
+    
     public static class T9SearchResult {
 
         private final ArrayList<ContactItem> mResults;
@@ -123,11 +226,12 @@ class T9Search {
         public T9SearchResult (final ArrayList<ContactItem> results, final Context mContext) {
             mTopContact = results.get(0);
             mResults = results;
-            mResults.remove(0);
+//            mResults.remove(0);
         }
 
         public int getNumResults() {
-            return mResults.size() + 1;
+        	/**shutao  2012-10-15*/
+            return mResults.size() /*+ 1*/;
         }
 
         public ContactItem getTopContact() {
@@ -145,6 +249,8 @@ class T9Search {
         String number;
         String normalNumber;
         String normalName;
+        String pinYin;
+        String firstNumber;
         int timesContacted;
         int nameMatchId;
         int numberMatchId;
@@ -154,6 +260,7 @@ class T9Search {
     }
 
     public T9SearchResult search(String number) {
+    	long itime = System.currentTimeMillis();
         mNameResults.clear();
         mNumberResults.clear();
         number = removeNonDigits(number);
@@ -169,20 +276,31 @@ class T9Search {
                 item.numberMatchId = pos;
                 mNumberResults.add(item);
             }
-            pos = item.normalName.indexOf(number);
-            if (pos != -1) {
+            /**shutao 2012-10-19*/
+            pos = item.firstNumber.indexOf(number);
+            if(pos != -1){
                 int last_space = item.normalName.lastIndexOf("0", pos);
-                if (last_space == -1) {
-                    last_space = 0;
-                }
-                item.nameMatchId = pos - last_space;
-                mNameResults.add(item);
+              if (last_space == -1) {
+                  last_space = 0;
+              }
+              item.nameMatchId = pos - last_space;
+              mNameResults.add(item);
             }
+//            pos = item.normalName.indexOf(number);
+//            if (pos != -1) {
+//                int last_space = item.normalName.lastIndexOf("0", pos);
+//                if (last_space == -1) {
+//                    last_space = 0;
+//                }
+//                item.nameMatchId = pos - last_space;
+//                mNameResults.add(item);
+//            }
         }
         mAllResults.clear();
         mPrevInput = number;
         Collections.sort(mNumberResults, new NumberComparator());
         Collections.sort(mNameResults, new NameComparator());
+        MyLog("search -- time=== " +(System.currentTimeMillis() - itime));
         if (mNameResults.size() > 0 || mNumberResults.size() > 0) {
             switch (mSortMode) {
             case NAME_FIRST:
@@ -218,23 +336,22 @@ class T9Search {
         }
     }
 
-    private synchronized void initT9Map() {
-        if (sT9Chars != null)
-            return;
-
-        StringBuilder bT9Chars = new StringBuilder();
-        StringBuilder bT9Digits = new StringBuilder();
-
-        for (String item : mContext.getResources().getStringArray(R.array.t9_map)) {
-            bT9Chars.append(item);
-            for (int i = 0; i < item.length(); i++) {
-                bT9Digits.append(item.charAt(0));
-            }
-        }
-
-        sT9Chars = bT9Chars.toString();
-        sT9Digits = bT9Digits.toString();
-    }
+    /**shutao 2012-10-19*/
+	private synchronized void initT9Map() {
+		String[] t9Array = mContext.getResources().getStringArray(
+				R.array.t9_map);
+		sT9Map = new char[t9Array.length][];
+		int rc = 0;
+		for (String item : t9Array) {
+			int cc = 0;
+			sT9Map[rc] = new char[item.length()];
+			for (char ch : item.toCharArray()) {
+				sT9Map[rc][cc] = ch;
+				cc++;
+			}
+			rc++;
+		}
+	}
 
     public static String removeNonDigits(String number) {
         int len = number.length();
@@ -265,11 +382,13 @@ class T9Search {
         public View getView(int position, View convertView, ViewGroup parent) {
             ViewHolder holder;
             if (convertView == null) {
-                convertView = mMenuInflate.inflate(R.layout.row, null);
+                convertView = mMenuInflate.inflate(R.layout.shendu_row, null);
                 holder = new ViewHolder();
                 holder.name = (TextView) convertView.findViewById(R.id.rowName);
                 holder.number = (TextView) convertView.findViewById(R.id.rowNumber);
                 holder.icon = (QuickContactBadge) convertView.findViewById(R.id.rowBadge);
+                holder.attribution = (TextView) convertView.findViewById(R.id.shendu_row_attribution);
+                holder.pinYin = (TextView) convertView.findViewById(R.id.rowPinyin);
                 convertView.setTag(holder);
             } else {
                 holder = (ViewHolder) convertView.getTag();
@@ -282,11 +401,11 @@ class T9Search {
                 holder.icon.assignContactFromPhone(o.number, true);
             } else {
                 holder.name.setText(o.name, TextView.BufferType.SPANNABLE);
-                holder.number.setText(o.normalNumber + " (" + o.groupType + ")", TextView.BufferType.SPANNABLE);
+                holder.number.setText(o.normalNumber /*+ " (" + o.groupType + ")"*/, TextView.BufferType.SPANNABLE);
                 holder.number.setVisibility(View.VISIBLE);
                 if (o.nameMatchId != -1) {
                     Spannable s = (Spannable) holder.name.getText();
-                    int nameStart = o.normalName.indexOf(mPrevInput);
+                    int nameStart = o.firstNumber.indexOf(mPrevInput);
                     if (nameStart <= o.name.length() && nameStart + mPrevInput.length() <= o.name.length()) {
                         s.setSpan(new ForegroundColorSpan(mContext.getResources().getColor(android.R.color.holo_blue_dark)),
                                 nameStart, nameStart + mPrevInput.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
@@ -306,6 +425,15 @@ class T9Search {
                     holder.icon.setImageResource(ContactPhotoManager.getDefaultAvatarResId(false, true));
                 holder.icon.assignContactFromPhone(o.number, true);
             }
+            /**shutao 2012-10-19*/
+            holder.pinYin.setText(o.pinYin);
+            
+         	String city = PhoneLocation.getCityFromPhone(o.number);
+    		if(city != null){
+    			holder.attribution.setText(city);
+    		}else{
+    			holder.attribution.setText("");
+    		}
             return convertView;
         }
 
@@ -313,8 +441,18 @@ class T9Search {
             TextView name;
             TextView number;
             QuickContactBadge icon;
+            TextView attribution;
+            TextView pinYin;
         }
 
+    }
+    
+    
+    /**shutao 2012-10-11*/
+    public void MyLog(String msg){
+    	if(DEBUG){
+    		Log.d(TAG, msg);
+    	}
     }
 
 }

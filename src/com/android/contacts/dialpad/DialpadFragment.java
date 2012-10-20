@@ -44,6 +44,7 @@ import android.os.ServiceManager;
 import android.os.SystemProperties;
 import android.preference.PreferenceManager;
 import android.provider.Contacts.Intents.Insert;
+import android.provider.ContactsContract.Contacts;
 import android.provider.Contacts.People;
 import android.provider.Contacts.Phones;
 import android.provider.Contacts.PhonesColumns;
@@ -71,11 +72,16 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.TranslateAnimation;
+import android.view.animation.Animation.AnimationListener;
+import android.widget.AbsListView;
+import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ViewFlipper;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.ListView;
 import android.widget.PopupMenu;
@@ -88,11 +94,14 @@ import com.android.contacts.ContactsUtils;
 import com.android.contacts.R;
 import com.android.contacts.SpecialCharSequenceMgr;
 import com.android.contacts.activities.DialtactsActivity;
+import com.android.contacts.activities.PeopleActivity;
+import com.android.contacts.calllog.CallLogFragment;
 import com.android.contacts.dialpad.T9Search.ContactItem;
 import com.android.contacts.dialpad.T9Search.T9Adapter;
 import com.android.contacts.dialpad.T9Search.T9SearchResult;
 import com.android.contacts.util.Constants;
 import com.android.contacts.util.PhoneNumberFormatter;
+import com.android.contacts.util.ShenduVibrate;
 import com.android.contacts.util.StopWatch;
 import com.android.internal.telephony.ITelephony;
 import com.android.phone.CallLogAsync;
@@ -106,7 +115,8 @@ public class DialpadFragment extends Fragment
         View.OnLongClickListener, View.OnKeyListener,
         AdapterView.OnItemClickListener, TextWatcher,
         PopupMenu.OnMenuItemClickListener,
-        DialpadImageButton.OnPressedListener {
+        DialpadImageButton.OnPressedListener ,
+        OnScrollListener{
     private static final String TAG = DialpadFragment.class.getSimpleName();
 
     private static final boolean DEBUG = DialtactsActivity.DEBUG;
@@ -122,6 +132,13 @@ public class DialpadFragment extends Fragment
 
     /** Stream type used to play the DTMF tones off call, and mapped to the volume control keys */
     private static final int DIAL_TONE_STREAM_TYPE = AudioManager.STREAM_DTMF;
+    
+    /**shutao 2012-10-17*/
+    private static final int DIAL_PHONE_OWNERSHI = 0;
+    private static final int DIAL_NEW_CONTACT    = 1;
+    private static final int DIAL_RECENTCALLS_ADDTOCONTACT = 2;
+    private static final int DIAL_SEND_MMS       = 3;
+    
 
     /**
      * View (usually FrameLayout) containing mDigits field. This can be null, in which mDigits
@@ -160,6 +177,17 @@ public class DialpadFragment extends Fragment
     private ViewSwitcher mT9Flipper;
     private LinearLayout mT9Top;
     private boolean mContactsUpdated;
+    
+    /**shutao  2012-10-17*/
+    private CallLogFragment mShenduDialpadCallLogFragment;
+    private View mShenduDialpadCallLogFragmentView;
+    
+    /**
+     * shutao 2012-10-17 New T9 contacts list
+     */
+    private ListView mShenduNewContactsT9List;
+    private ShenDuNewContactT9Adapter mShenduNewContactT9Adapter; 
+    
 
     /**
      * Regular expression prohibiting manual phone call. Can be empty, which means "no rule".
@@ -178,6 +206,8 @@ public class DialpadFragment extends Fragment
 
     // Vibration (haptic feedback) for dialer key presses.
     private final HapticFeedback mHaptic = new HapticFeedback();
+    /**shutao 2012-10-18*/
+    private ShenduVibrate mVibrate;
 
     /** Identifier for the "Add Call" intent extra. */
     private static final String ADD_CALL_MODE_KEY = "add_call_mode";
@@ -228,6 +258,13 @@ public class DialpadFragment extends Fragment
      * tel: URI passed by some other app.  It will be set to false when all digits are cleared.
      */
     private boolean mDigitsFilledByIntent;
+    
+    /**shutao 2012-10-15*/
+    private ViewFlipper mShenduCallBntFlipper;
+    
+    private Button mShenduCallShowButton;
+    
+    private View mShenduToContact;
 
     private static final String PREF_DIGITS_FILLED_BY_INTENT = "pref_digits_filled_by_intent";
 
@@ -248,7 +285,7 @@ public class DialpadFragment extends Fragment
     public void onDestroy() {
         // TODO Auto-generated method stub
         super.onDestroy();
-
+        mVibrate.Stop();
         getActivity().unregisterReceiver(mLocaleChangedReceiver);
     }
 
@@ -297,6 +334,8 @@ public class DialpadFragment extends Fragment
         mCurrentCountryIso = ContactsUtils.getCurrentCountryIso(getActivity());
 
         try {
+        	mVibrate = new ShenduVibrate(getActivity());
+      	    mVibrate.setOpen(getResources().getBoolean(R.bool.config_enable_dialer_key_vibration));
             mHaptic.init(getActivity(),
                          getResources().getBoolean(R.bool.config_enable_dialer_key_vibration));
         } catch (Resources.NotFoundException nfe) {
@@ -328,6 +367,18 @@ public class DialpadFragment extends Fragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedState) {
         View fragmentView = inflater.inflate(R.layout.dialpad_fragment, container, false);
 
+        
+        /** shutao 2012-10-16 */
+       	mShenduCallBntFlipper = (ViewFlipper)fragmentView.findViewById(R.id.shendu_call_view_flipper);
+       	mShenduCallShowButton = (Button)fragmentView.findViewById(R.id.shendu_call_show_button);
+       	mShenduCallShowButton.setOnClickListener(this);
+        /**
+         * shutao 2012-10-17 Get call log fragment set the slide to hide the dial pad
+         */
+        mShenduDialpadCallLogFragment = (CallLogFragment)getFragmentManager().findFragmentById(R.id.dialpad_CallLogFragment);
+        mShenduDialpadCallLogFragment.getListView().setOnScrollListener(this);
+        mShenduDialpadCallLogFragmentView = fragmentView.findViewById(R.id.dialpad_CallLogFragment);
+        mShenduDialpadCallLogFragmentView.setVisibility(View.VISIBLE);
         // Load up the resources for the text field.
         Resources r = getResources();
 
@@ -340,9 +391,23 @@ public class DialpadFragment extends Fragment
         mDigits.addTextChangedListener(this);
 
         mT9List = (ListView) fragmentView.findViewById(R.id.t9list);
+        mT9List.setVisibility(View.GONE);
         if (mT9List!= null) {
             mT9List.setOnItemClickListener(this);
+            mT9List.setOnScrollListener(this);
         }
+        
+        /**
+         * shutao 2012-8-21
+         */
+        mShenduNewContactT9Adapter =new ShenDuNewContactT9Adapter(getActivity());
+        mShenduNewContactsT9List = (ListView) fragmentView.findViewById(R.id.newContactList);
+        if (mShenduNewContactsT9List!= null) {
+        	mShenduNewContactsT9List.setOnItemClickListener(this);
+        	mShenduNewContactsT9List.setOnScrollListener(this);
+        	mShenduNewContactsT9List.setAdapter(mShenduNewContactT9Adapter);
+        }
+        
         mT9ListTop = (ListView) fragmentView.findViewById(R.id.t9listtop);
         if (mT9ListTop != null) {
             mT9ListTop.setOnItemClickListener(this);
@@ -366,10 +431,16 @@ public class DialpadFragment extends Fragment
         int cellCount = dm.widthPixels / minCellSize;
         int fakeMenuItemWidth = dm.widthPixels / cellCount;
         mDialButtonContainer = fragmentView.findViewById(R.id.dialButtonContainer);
-        if (mDialButtonContainer != null) {
-            mDialButtonContainer.setPadding(
-                    fakeMenuItemWidth, mDialButtonContainer.getPaddingTop(),
-                    fakeMenuItemWidth, mDialButtonContainer.getPaddingBottom());
+//        if (mDialButtonContainer != null) {
+//            mDialButtonContainer.setPadding(
+//                    fakeMenuItemWidth, mDialButtonContainer.getPaddingTop(),
+//                    fakeMenuItemWidth, mDialButtonContainer.getPaddingBottom());
+//        }
+        /**shutao 2012-10-15*/
+        mShenduToContact = fragmentView.findViewById(R.id.shendu_toContactsButton);
+        if (mShenduToContact != null) {
+        	mShenduToContact.setMinimumWidth(fakeMenuItemWidth);
+        	mShenduToContact.setOnClickListener(this);
         }
         mDialButton = fragmentView.findViewById(R.id.dialButton);
         if (r.getBoolean(R.bool.config_show_onscreen_dial_button)) {
@@ -574,6 +645,7 @@ public class DialpadFragment extends Fragment
         if ((sT9Search == null && isT9On()) || mContactsUpdated) {
             Thread loadContacts = new Thread(new Runnable() {
                 public void run () {
+                    mShenduDialpadCallLogFragment.refreshData();
                     sT9Search = new T9Search(getActivity());
                 }
             });
@@ -583,7 +655,8 @@ public class DialpadFragment extends Fragment
                 onLongClick(mDelete);
                 mT9Adapter = null;
                 mT9AdapterTop = null;
-                mT9ListTop.setAdapter(mT9AdapterTop);
+                /**shutao  2012-10-15*/
+//                mT9ListTop.setAdapter(mT9AdapterTop);
                 mT9List.setAdapter(mT9Adapter);
             }
         }
@@ -608,7 +681,7 @@ public class DialpadFragment extends Fragment
 
         // Retrieve the haptic feedback setting.
         mHaptic.checkSystemSetting();
-
+        mVibrate.checkSystemSetting();
         stopWatch.lap("hptc");
 
         // if the mToneGenerator creation fails, just continue without it.  It is
@@ -675,6 +748,8 @@ public class DialpadFragment extends Fragment
         stopWatch.lap("bes");
 
         stopWatch.stopAndLog(TAG, 50);
+        /**shutao 2012-10-18*/
+        searchContacts();
     }
 
     @Override
@@ -831,7 +906,7 @@ public class DialpadFragment extends Fragment
                 toggleT9();
                 mT9Top.setVisibility(View.GONE);
             }else{
-                mT9Top.setVisibility(View.VISIBLE);
+                mT9Top.setVisibility(View.GONE);
             }
         } else {
             LinearLayout.LayoutParams digitsLayout = (LayoutParams) mDigitsContainer.getLayoutParams();
@@ -841,7 +916,7 @@ public class DialpadFragment extends Fragment
                 mT9Top.setVisibility(View.GONE);
             } else {
                 digitsLayout.weight = 0.1f;
-                mT9Top.setVisibility(View.VISIBLE);
+                mT9Top.setVisibility(View.GONE);
             }
             mDigitsContainer.setLayoutParams(digitsLayout);
         }
@@ -861,57 +936,74 @@ public class DialpadFragment extends Fragment
     /**
      * Initiates a search for the dialed digits
      * Toggles view visibility based on results
+     * shutao 2012-10-15
      */
-    private void searchContacts() {
-        if (!isT9On())
-            return;
-        final int length = mDigits.length();
-        if (length > 0) {
-            if (sT9Search != null) {
-                T9SearchResult result = sT9Search.search(mDigits.getText().toString());
-                if (mT9AdapterTop == null) {
-                    mT9AdapterTop = sT9Search.new T9Adapter(getActivity(), 0, new ArrayList<ContactItem>(), getActivity().getLayoutInflater(), mPhotoLoader);
-                    mT9AdapterTop.setNotifyOnChange(true);
-                } else {
-                    mT9AdapterTop.clear();
-                }
-                if (result != null) {
-                    if (mT9Adapter == null) {
-                        mT9Adapter = sT9Search.new T9Adapter(getActivity(), 0, result.getResults(),getActivity().getLayoutInflater(), mPhotoLoader);
-                        mT9Adapter.setNotifyOnChange(true);
-                    } else {
-                        mT9Adapter.clear();
-                        mT9Adapter.addAll(result.getResults());
-                    }
-                    if (mT9List.getAdapter() == null) {
-                        mT9List.setAdapter(mT9Adapter);
-                    }
-                    mT9AdapterTop.add(result.getTopContact());
-                    if (result.getNumResults() > 1) {
-                        mT9Toggle.setVisibility(View.VISIBLE);
-                    } else {
-                        mT9Toggle.setVisibility(View.GONE);
-                        toggleT9();
-                    }
-                    mT9Toggle.setTag(null);
-                } else {
-                    ((ContactItem) mT9ListTop.getTag()).number = mDigits.getText().toString();
-                    mT9AdapterTop.add((ContactItem) mT9ListTop.getTag());
-                    mT9Toggle.setTag(new Boolean(true));
-                    mT9Toggle.setVisibility(View.GONE);
-                    toggleT9();
-                }
-                mT9ListTop.setVisibility(View.VISIBLE);
-                if (mT9ListTop.getAdapter() == null) {
-                    mT9ListTop.setAdapter(mT9AdapterTop);
-                }
-            }
-        } else {
-            mT9ListTop.setVisibility(View.INVISIBLE);
-            mT9Toggle.setVisibility(View.INVISIBLE);
-            toggleT9();
-        }
-    }
+	private void searchContacts() {
+		if (!isT9On())
+			return;
+		final int length = mDigits.length();
+		if (length > 0) {
+			if (sT9Search != null) {
+				mShenduDialpadCallLogFragmentView.setVisibility(View.GONE);
+				mShenduDialpadCallLogFragment.setMenuVisibility(false);
+				T9SearchResult result = sT9Search.search(mDigits.getText()
+						.toString());
+				if (mT9AdapterTop == null) {
+					mT9AdapterTop = sT9Search.new T9Adapter(getActivity(), 0,
+							new ArrayList<ContactItem>(), getActivity()
+									.getLayoutInflater(), mPhotoLoader);
+					mT9AdapterTop.setNotifyOnChange(true);
+				} else {
+					mT9AdapterTop.clear();
+				}
+				if (result != null) {
+					mT9List.setVisibility(View.VISIBLE);
+					mShenduNewContactsT9List.setVisibility(View.GONE);
+					if (mT9Adapter == null) {
+						mT9Adapter = sT9Search.new T9Adapter(getActivity(), 0,
+								result.getResults(), getActivity()
+										.getLayoutInflater(), mPhotoLoader);
+						mT9Adapter.setNotifyOnChange(true);
+					} else {
+						mT9Adapter.clear();
+						mT9Adapter.addAll(result.getResults());
+					}
+					if (mT9List.getAdapter() == null) {
+						mT9List.setAdapter(mT9Adapter);
+					}
+					mT9AdapterTop.add(result.getTopContact());
+					if (result.getNumResults() > 1) {
+						// mT9Toggle.setVisibility(View.VISIBLE);
+					} else {
+						// mT9Toggle.setVisibility(View.GONE);
+						toggleT9();
+					}
+					mT9Toggle.setTag(null);
+				} else {
+					mShenduNewContactsT9List.setVisibility(View.VISIBLE);
+					mShenduNewContactT9Adapter.setNewContactNumber(mDigits.getText().toString());
+//					((ContactItem) mT9ListTop.getTag()).number = mDigits
+//							.getText().toString();
+//					mT9AdapterTop.add((ContactItem) mT9ListTop.getTag());
+//					mT9Toggle.setTag(new Boolean(true));
+//					// mT9Toggle.setVisibility(View.GONE);
+//					toggleT9();
+				}
+				// mT9ListTop.setVisibility(View.VISIBLE);
+//				if (mT9ListTop.getAdapter() == null) {
+//					mT9ListTop.setAdapter(mT9AdapterTop);
+//				}
+			}
+		} else {
+			mT9List.setVisibility(View.GONE);
+			mT9ListTop.setVisibility(View.GONE);
+			mShenduNewContactsT9List.setVisibility(View.GONE);
+			mShenduDialpadCallLogFragmentView.setVisibility(View.VISIBLE);
+			mShenduDialpadCallLogFragment.setMenuVisibility(true);
+			// mT9Toggle.setVisibility(View.INVISIBLE);
+			toggleT9();
+		}
+	}
 
     /**
      * Returns preference value for T9Dialer
@@ -935,6 +1027,9 @@ public class DialpadFragment extends Fragment
         TranslateAnimation slidedown1 = new TranslateAnimation(
                 Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_PARENT, 0.0f,
                 Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_PARENT, 1.0f);
+        TranslateAnimation shendu_slidedown1 = new TranslateAnimation(
+                Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_PARENT, 0.0f,
+                Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_PARENT, 1.0f);
         TranslateAnimation slidedown2 = new TranslateAnimation(
                 Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_PARENT, 0.0f,
                 Animation.RELATIVE_TO_PARENT, -1.0f, Animation.RELATIVE_TO_PARENT, 0.0f);
@@ -944,22 +1039,59 @@ public class DialpadFragment extends Fragment
         TranslateAnimation slideup2 = new TranslateAnimation(
                 Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_PARENT, 0.0f,
                 Animation.RELATIVE_TO_PARENT, 1.0f, Animation.RELATIVE_TO_PARENT, 0.0f);
-        slidedown2.setDuration(500);
+        TranslateAnimation shendu_slideup2 = new TranslateAnimation(
+                Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_PARENT, 0.0f,
+                Animation.RELATIVE_TO_PARENT, 1.0f, Animation.RELATIVE_TO_PARENT, 0.0f);
+        slidedown2.setDuration(100);
         slidedown2.setInterpolator(new DecelerateInterpolator());
-        slidedown1.setDuration(500);
+        slidedown1.setDuration(100);
         slidedown1.setInterpolator(new DecelerateInterpolator());
-        slideup1.setDuration(500);
+        shendu_slidedown1.setDuration(250);
+        shendu_slidedown1.setInterpolator(new DecelerateInterpolator());
+        shendu_slidedown1.setAnimationListener(new AnimationListener() {
+			@Override
+			public void onAnimationStart(Animation animatio){}
+			@Override
+			public void onAnimationRepeat(Animation animation) {}
+			@Override
+			public void onAnimationEnd(Animation animation) {
+				// TODO Auto-generated method stub
+				mT9Flipper.setVisibility(View.GONE);
+				/**shutao 2012-10-10*/
+//		       mShenduCallBntFlipper.showNext();
+				mShenduCallBntFlipper.setDisplayedChild(1);
+			}
+		});
+        slideup1.setDuration(50);
         slideup1.setInterpolator(new DecelerateInterpolator());
-        slideup2.setDuration(500);
+        slideup2.setDuration(50);
         slideup2.setInterpolator(new DecelerateInterpolator());
+        shendu_slideup2.setDuration(250);
+        shendu_slideup2.setInterpolator(new DecelerateInterpolator());
+        shendu_slideup2.setAnimationListener(new AnimationListener() {
+			@Override
+			public void onAnimationStart(Animation animatio){
+				// TODO Auto-generated method stub
+				mT9Flipper.setVisibility(View.VISIBLE);
+			}
+			@Override
+			public void onAnimationRepeat(Animation animation) {}
+			@Override
+			public void onAnimationEnd(Animation animation) {
+				/**shutao 2012-10-10*/
+//				mShenduCallBntFlipper.showNext();
+				mShenduCallBntFlipper.setDisplayedChild(0);
+			}
+		});
         if (mT9Toggle.isChecked()) {
-            mT9Flipper.setOutAnimation(slidedown1);
-            mT9Flipper.setInAnimation(slidedown2);
+            mShenduCallBntFlipper.setOutAnimation(slidedown1);
+            mShenduCallBntFlipper.setInAnimation(slidedown2);
+            mT9Flipper.startAnimation(shendu_slidedown1);
         } else {
-            mT9Flipper.setOutAnimation(slideup1);
-            mT9Flipper.setInAnimation(slideup2);
+            mShenduCallBntFlipper.setOutAnimation(slideup1);
+            mShenduCallBntFlipper.setInAnimation(slideup2);
+      	     mT9Flipper.startAnimation(shendu_slideup2);
         }
-        mT9Flipper.showNext();
     }
 
     private void keyPressed(int keyCode) {
@@ -1004,7 +1136,8 @@ public class DialpadFragment extends Fragment
                 break;
         }
 
-        mHaptic.vibrate();
+//        mHaptic.vibrate();
+        mVibrate.playVibrate(-1);
         KeyEvent event = new KeyEvent(KeyEvent.ACTION_DOWN, keyCode);
         mDigits.onKeyDown(keyCode, event);
 
@@ -1121,7 +1254,8 @@ public class DialpadFragment extends Fragment
                 return;
             }
             case R.id.dialButton: {
-                mHaptic.vibrate();  // Vibrate here too, just like we do for the regular keys
+//                mHaptic.vibrate();  // Vibrate here too, just like we do for the regular keys
+                mVibrate.playVibrate(-1);
                 dialButtonPressed();
                 return;
             }
@@ -1130,6 +1264,17 @@ public class DialpadFragment extends Fragment
                     mDigits.setCursorVisible(true);
                 }
                 return;
+            }
+            case R.id.shendu_call_show_button:{
+            	mT9Toggle.setChecked(false);
+            	animateT9();
+            	return;
+            }
+            /** shutao 2012-10-15 to contact*/
+            case R.id.shendu_toContactsButton:{
+            	Intent intent = new Intent(getActivity(),PeopleActivity.class);
+            	startActivity(intent); 
+            	return;
             }
             case R.id.t9toggle: {
                 animateT9();
@@ -1346,8 +1491,10 @@ public class DialpadFragment extends Fragment
                         (getActivity() instanceof DialtactsActivity ?
                                 ((DialtactsActivity)getActivity()).getCallOrigin() : null));
                 startActivity(intent);
+                /**shutao 2012-10-18*/
                 mClearDigitsOnStop = true;
-                getActivity().finish();
+                mDigits.getText().clear();
+//                getActivity().finish();
             }
         }
     }
@@ -1474,29 +1621,36 @@ public class DialpadFragment extends Fragment
         }
 
         if (enabled) {
+        	/** shutao 2012-10-15   */
             // Log.i(TAG, "Showing dialpad chooser!");
-            if (mDigitsContainer != null) {
-                mDigitsContainer.setVisibility(View.GONE);
-            } else {
-                // mDigits is not enclosed by the container. Make the digits field itself gone.
-                mDigits.setVisibility(View.GONE);
-            }
-            if (mDialpad != null) mDialpad.setVisibility(View.GONE);
-            if (mDialButtonContainer != null) mDialButtonContainer.setVisibility(View.GONE);
-
-            mDialpadChooser.setVisibility(View.VISIBLE);
-
-            // Instantiate the DialpadChooserAdapter and hook it up to the
-            // ListView.  We do this only once.
-            if (mDialpadChooserAdapter == null) {
-                mDialpadChooserAdapter = new DialpadChooserAdapter(getActivity());
-            }
-            mDialpadChooser.setAdapter(mDialpadChooserAdapter);
+//            if (mDigitsContainer != null) {
+//                mDigitsContainer.setVisibility(View.GONE);
+//            } else {
+//                // mDigits is not enclosed by the container. Make the digits field itself gone.
+//                mDigits.setVisibility(View.GONE);
+//            }
+//            if (mDialpad != null) mDialpad.setVisibility(View.GONE);
+//            if (mDialButtonContainer != null) mDialButtonContainer.setVisibility(View.GONE);
+//
+//            mDialpadChooser.setVisibility(View.VISIBLE);
+//
+//            // Instantiate the DialpadChooserAdapter and hook it up to the
+//            // ListView.  We do this only once.
+//            if (mDialpadChooserAdapter == null) {
+//                mDialpadChooserAdapter = new DialpadChooserAdapter(getActivity());
+//            }
+//            mDialpadChooser.setAdapter(mDialpadChooserAdapter);
         } else {
             if (isT9On()) {
                 if (mT9Flipper.getCurrentView() != mT9List) {
+                	/**shutao  2012-10-15*/ 
+                	if(mT9Toggle.isChecked()){
+                         mShenduCallBntFlipper.showPrevious();
+                     }
                     mT9Toggle.setChecked(false);
-                    searchContacts();
+                    mDialButton.setVisibility(View.VISIBLE);
+                    mT9Flipper.setVisibility(View.VISIBLE);
+//                    searchContacts();
                 } else {
                     return;
                 }
@@ -1627,9 +1781,11 @@ public class DialpadFragment extends Fragment
         if (parent == mT9List || parent == mT9ListTop) {
             if (parent == mT9List) {
                 setFormattedDigits(mT9Adapter.getItem(position).number,null);
+                dialButtonPressed();
             } else {
                 if (mT9Toggle.getTag() == null) {
-                    setFormattedDigits(mT9AdapterTop.getItem(position).number,null);
+                	/**shutao 2012-10-18*/
+//                    setFormattedDigits(mT9AdapterTop.getItem(position).number,null);
                 } else {
                     startActivity(getAddToContactIntent(mDigits.getText()));
                     return;
@@ -1640,6 +1796,30 @@ public class DialpadFragment extends Fragment
             }
             return;
         }
+        
+        /**
+         * shutao 2012-10-18 The unfamiliar Number menu option
+         */
+        if(parent == mShenduNewContactsT9List){
+        	switch(position){
+        	case DIAL_PHONE_OWNERSHI:
+        		break;
+        	case DIAL_NEW_CONTACT:
+              Intent intent = new Intent(Intent.ACTION_INSERT, Contacts.CONTENT_URI);
+              intent.putExtra(Insert.PHONE, mDigits.getText().toString().replaceAll(" ", ""));
+        		startActivity(intent);
+        		break;
+        	case DIAL_RECENTCALLS_ADDTOCONTACT:
+        		startActivity(getAddToContactIntent(mDigits.getText().toString().replaceAll(" ", "")));
+        		break;
+        	case DIAL_SEND_MMS:
+        		Intent mIntent = new Intent(Intent.ACTION_SENDTO,Uri.fromParts("sms", mDigits.getText().toString(), null));
+        		startActivity( mIntent );
+        		break;
+        	}
+        	return;
+        }
+        
         DialpadChooserAdapter.ChoiceItem item =
                 (DialpadChooserAdapter.ChoiceItem) parent.getItemAtPosition(position);
         int itemId = item.id;
@@ -1898,4 +2078,21 @@ public class DialpadFragment extends Fragment
         intent.putExtra(EXTRA_SEND_EMPTY_FLASH, true);
         return intent;
     }
+
+    
+    /**
+     * shutao 2012-10-15 Listening contacts sliding and hide the keyboard
+     */
+	@Override
+	public void onScroll(AbsListView arg0, int arg1, int arg2, int arg3) {
+		// TODO Auto-generated method stub
+	}
+	@Override
+	public void onScrollStateChanged(AbsListView view, int scrollState) {
+		// TODO Auto-generated method stub
+		 if (!mT9Toggle.isChecked()) {
+			 mT9Toggle.setChecked(true);
+			 animateT9();
+		 }
+	}
 }

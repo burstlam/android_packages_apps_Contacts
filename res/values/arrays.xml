@@ -40,4 +40,27 @@
     <item>#</item>
     <item>+</item>
   </string-array>
+      <!-- shutao 2012-10-15 Unfamiliar No. menu -->
+    <string-array name="new_contact_t9_menu_values" translatable="false">
+        <item>Unknown City</item>
+        <item>New Contact</item>
+        <item>Add To Contact</item>
+        <item>Send a message</item>
+    </string-array>
+    
+    <!-- Shendu -->
+    <!-- just for test -->
+<!--
+      <string-array name="action_list">
+        <item>Mercury</item>
+        <item>Venus</item>
+        <item>Earth</item>
+    </string-array>
+-->
+    
+    <!-- shutao 2012-10-15 -->
+    <string-array name="shendu_onlongmenu_list">
+        <item>Add Blacklist</item>
+        <item>Send SMS</item>
+    </string-array>
 </resources>

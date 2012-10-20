@@ -105,6 +105,17 @@ public class ContactEditorActivity extends ContactsActivity
                     mFragment.doSaveAction();
                 }
             });
+            
+            /*Wang:*/
+            View cancelMenuItem = customActionBarView.findViewById(R.id.cancel_menu_item);
+            cancelMenuItem.setVisibility(View.VISIBLE);
+            cancelMenuItem.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mFragment.revert();
+                }
+            });
+            
             // Show the custom action bar but hide the home icon and title
             actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM,
                     ActionBar.DISPLAY_SHOW_CUSTOM | ActionBar.DISPLAY_SHOW_HOME |

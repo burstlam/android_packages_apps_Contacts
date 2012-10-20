@@ -562,10 +562,12 @@ public class ContactSaveService extends IntentService {
     public static Intent createNewGroupIntent(Context context, AccountWithDataSet account,
             String label, long[] rawContactsToAdd, Class<? extends Activity> callbackActivity,
             String callbackAction) {
+        log("createNewGroup : accountType = "+account.type+" , accountName = "+account.name+" , dataSet = "+account.dataSet);
         Intent serviceIntent = new Intent(context, ContactSaveService.class);
         serviceIntent.setAction(ContactSaveService.ACTION_CREATE_GROUP);
-        serviceIntent.putExtra(ContactSaveService.EXTRA_ACCOUNT_TYPE, account.type);
-        serviceIntent.putExtra(ContactSaveService.EXTRA_ACCOUNT_NAME, account.name);
+        /*Wang: Judge whether account is localed and return different extra value*/ 
+        serviceIntent.putExtra(ContactSaveService.EXTRA_ACCOUNT_TYPE, account.type.equals("local")?  "" : account.type);
+        serviceIntent.putExtra(ContactSaveService.EXTRA_ACCOUNT_NAME, account.name.equals("local") ?  "" : account.name);
         serviceIntent.putExtra(ContactSaveService.EXTRA_DATA_SET, account.dataSet);
         serviceIntent.putExtra(ContactSaveService.EXTRA_GROUP_LABEL, label);
         serviceIntent.putExtra(ContactSaveService.EXTRA_RAW_CONTACTS_TO_ADD, rawContactsToAdd);
@@ -1139,5 +1141,10 @@ public class ContactSaveService extends IntentService {
                 return;
             }
         }
+    }
+    
+    private static final boolean debug = true;
+    private static final void log(String msg){
+        if(debug) Log.i("shenduGroup", msg);
     }
 }

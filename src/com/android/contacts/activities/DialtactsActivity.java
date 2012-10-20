@@ -109,7 +109,7 @@ public class DialtactsActivity extends TransactionSafeActivity
     private static final int TAB_INDEX_CALL_LOG = 1;
     private static final int TAB_INDEX_FAVORITES = 2;
 
-    private static final int TAB_INDEX_COUNT = 3;
+    private static final int TAB_INDEX_COUNT = 1;
 
     private SharedPreferences mPrefs;
 
@@ -130,10 +130,10 @@ public class DialtactsActivity extends TransactionSafeActivity
             switch (position) {
                 case TAB_INDEX_DIALER:
                     return new DialpadFragment();
-                case TAB_INDEX_CALL_LOG:
-                    return new CallLogFragment();
-                case TAB_INDEX_FAVORITES:
-                    return new PhoneFavoriteFragment();
+//                case TAB_INDEX_CALL_LOG:
+//                    return new CallLogFragment();
+//                case TAB_INDEX_FAVORITES:
+//                    return new PhoneFavoriteFragment();
             }
             throw new IllegalStateException("No fragment at position " + position);
         }
@@ -495,7 +495,7 @@ public class DialtactsActivity extends TransactionSafeActivity
 
         mViewPager = (ViewPager) findViewById(R.id.pager);
         mViewPager.setAdapter(new ViewPagerAdapter(getFragmentManager()));
-        mViewPager.setOnPageChangeListener(mPageChangeListener);
+//        mViewPager.setOnPageChangeListener(mPageChangeListener);
         mViewPager.setOffscreenPageLimit(2);
 
         // Do same width calculation as ActionBar does
@@ -507,15 +507,15 @@ public class DialtactsActivity extends TransactionSafeActivity
 
         // Soft menu button should appear only when there's no hardware menu button.
         mMenuButton = findViewById(R.id.overflow_menu);
-        if (mMenuButton != null) {
-            mMenuButton.setMinimumWidth(fakeMenuItemWidth);
-            if (ViewConfiguration.get(this).hasPermanentMenuKey()) {
-                // This is required for dialpad button's layout, so must not use GONE here.
-                mMenuButton.setVisibility(View.INVISIBLE);
-            } else {
-                mMenuButton.setOnClickListener(this);
-            }
-        }
+//        if (mMenuButton != null) {
+//            mMenuButton.setMinimumWidth(fakeMenuItemWidth);
+//            if (ViewConfiguration.get(this).hasPermanentMenuKey()) {
+//                // This is required for dialpad button's layout, so must not use GONE here.
+//                mMenuButton.setVisibility(View.INVISIBLE);
+//            } else {
+//                mMenuButton.setOnClickListener(this);
+//            }
+//        }
         mSearchButton = findViewById(R.id.searchButton);
         if (mSearchButton != null) {
             mSearchButton.setMinimumWidth(fakeMenuItemWidth);
@@ -523,12 +523,13 @@ public class DialtactsActivity extends TransactionSafeActivity
         }
 
         // Setup the ActionBar tabs (the order matches the tab-index contants TAB_INDEX_*)
-        setupDialer();
-        setupCallLog();
-        setupFavorites();
-        getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-        getActionBar().setDisplayShowTitleEnabled(false);
-        getActionBar().setDisplayShowHomeEnabled(false);
+//        setupDialer();
+//        setupCallLog();
+//        setupFavorites();
+//        getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+//        getActionBar().setDisplayShowTitleEnabled(false);
+//        getActionBar().setDisplayShowHomeEnabled(false);
+        getActionBar().hide();
 
         // Load the last manually loaded tab
         mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
@@ -712,12 +713,12 @@ public class DialtactsActivity extends TransactionSafeActivity
     @Override
     protected void onResume() {
         super.onResume();
-        if(mPrefs.getBoolean("misc_sensor_rotation", true)) {
-            this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
-        }
-        else {
-            this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
-        }
+//        if(mPrefs.getBoolean("misc_sensor_rotation", true)) {
+//            this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
+//        }
+//        else {
+//            this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
+//        }
     }
 
     @Override
@@ -1146,6 +1147,7 @@ public class DialtactsActivity extends TransactionSafeActivity
         // layout instead of asking the search menu item to take care of SearchView.
         mSearchView.onActionViewExpanded();
         mInSearchUi = true;
+        actionBar.show();
     }
 
     private void showInputMethod(View view) {
@@ -1184,7 +1186,7 @@ public class DialtactsActivity extends TransactionSafeActivity
         actionBar.setDisplayShowCustomEnabled(false);
         actionBar.setDisplayShowHomeEnabled(false);
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-
+        actionBar.hide();
         for (int i = 0; i < TAB_INDEX_COUNT; i++) {
             sendFragmentVisibilityChange(i, i == mViewPager.getCurrentItem());
         }
@@ -1245,20 +1247,20 @@ public class DialtactsActivity extends TransactionSafeActivity
             Log.d(TAG, "updateFakeMenuButtonVisibility(" + visible + ")");
         }
 
-        if (mSearchButton != null) {
-            if (visible) {
-                mSearchButton.setVisibility(View.VISIBLE);
-            } else {
-                mSearchButton.setVisibility(View.INVISIBLE);
-            }
-        }
-        if (mMenuButton != null) {
-            if (visible && !ViewConfiguration.get(this).hasPermanentMenuKey()) {
-                mMenuButton.setVisibility(View.VISIBLE);
-            } else {
-                mMenuButton.setVisibility(View.INVISIBLE);
-            }
-        }
+//        if (mSearchButton != null) {
+//            if (visible) {
+//                mSearchButton.setVisibility(View.VISIBLE);
+//            } else {
+//                mSearchButton.setVisibility(View.INVISIBLE);
+//            }
+//        }
+//        if (mMenuButton != null) {
+//            if (visible && !ViewConfiguration.get(this).hasPermanentMenuKey()) {
+//                mMenuButton.setVisibility(View.VISIBLE);
+//            } else {
+//                mMenuButton.setVisibility(View.INVISIBLE);
+//            }
+//        }
     }
 
     /** Returns an Intent to launch Call Settings screen */

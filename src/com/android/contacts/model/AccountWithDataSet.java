@@ -59,10 +59,26 @@ public class AccountWithDataSet extends Account {
         this.dataSet = dataSet;
         mAccountTypeWithDataSet = AccountTypeWithDataSet.get(type, dataSet);
     }
-
+    
     public AccountWithDataSet(Parcel in) {
         super(in);
         this.dataSet = in.readString();
+        mAccountTypeWithDataSet = AccountTypeWithDataSet.get(type, dataSet);
+    }
+    
+    /**
+     * AccountWithDataSet constructor for local account
+     * @author Wang
+     * @param name Account name
+     * @param type Account type
+     * @param dataSet Account dataSet
+     * @param isLocal Not work. either true or false will make a local account
+     * @return
+     * */
+    public AccountWithDataSet(String name, String type, String dataSet, boolean isLocal) {
+        /*Wang: setup some value for accout constructor ,and then will change them*/
+        super("local", "local");
+        this.dataSet = dataSet;
         mAccountTypeWithDataSet = AccountTypeWithDataSet.get(type, dataSet);
     }
 

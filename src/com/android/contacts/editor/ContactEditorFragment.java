@@ -830,6 +830,7 @@ public class ContactEditorFragment extends Fragment implements
     }
 
     private void bindGroupMetaData() {
+        log("bindGroupMetaData===>mGroupMetaData :"+mGroupMetaData);
         if (mGroupMetaData == null) {
             return;
         }
@@ -1014,6 +1015,12 @@ public class ContactEditorFragment extends Fragment implements
      */
     public boolean save(int saveMode) {
         if (!hasValidState() || mStatus != Status.EDITING) {
+            log(" hasValidState() =>"+hasValidState()+" | (mStatus != Status.EDITING)=> "+(mStatus != Status.EDITING)+" | mStatus="+mStatus);
+            log(" return false");
+            
+            /*Wang: fix can't exit bug*/
+            doRevertAction();
+            
             return false;
         }
 
@@ -1080,7 +1087,8 @@ public class ContactEditorFragment extends Fragment implements
         }
     }
 
-    private boolean revert() {
+    /*Wang: change to public*/
+    public boolean revert() {
         if (mState == null || !hasPendingChanges()) {
             doRevertAction();
         } else {
@@ -1860,5 +1868,11 @@ public class ContactEditorFragment extends Fragment implements
                 // Nothing to do.
             }
         }
+    }
+    
+    private static final boolean debug = true;
+    private static void log(String msg){
+        msg = "ContactEditorFragment -> " + msg;
+        if(debug) Log.i("shenduNewContacts", msg);
     }
 }

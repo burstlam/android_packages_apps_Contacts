@@ -39,15 +39,18 @@ import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.TextUtils.TruncateAt;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView.SelectionBoundsAdjuster;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
 import android.widget.QuickContactBadge;
 import android.widget.TextView;
+import android.widget.Toast;
 
 /**
  * A custom view for an item in the contact list.
@@ -75,6 +78,7 @@ public class ContactListItemView extends ViewGroup
     private final int mVerticalDividerMargin;
     private final int mGapBetweenImageAndText;
     private final int mGapBetweenLabelAndData;
+    private final int mCallButtonPadding;
     private final int mPresenceIconMargin;
     private final int mPresenceIconSize;
     private final int mHeaderTextColor;
@@ -112,7 +116,9 @@ public class ContactListItemView extends ViewGroup
         LEFT,
         RIGHT
     }
-    public static final PhotoPosition DEFAULT_PHOTO_POSITION = PhotoPosition.RIGHT;
+
+    /* Wang: Default photo at left */
+    public static final PhotoPosition DEFAULT_PHOTO_POSITION = PhotoPosition.LEFT;
     private PhotoPosition mPhotoPosition = DEFAULT_PHOTO_POSITION;
 
     // Vertical divider between the call icon and the text.
@@ -183,6 +189,7 @@ public class ContactListItemView extends ViewGroup
     // same row.
     private int mLabelAndDataViewMaxHeight;
 
+    private OnClickListener mCallButtonClickListener;
     // TODO: some TextView fields are using CharArrayBuffer while some are not. Determine which is
     // more efficient for each case or in general, and simplify the whole implementation.
     // Note: if we're sure MARQUEE will be used every time, there's no reason to use
@@ -199,6 +206,9 @@ public class ContactListItemView extends ViewGroup
     /** A helper used to highlight a prefix in a text field. */
     private PrefixHighlighter mPrefixHighlighter;
     private CharSequence mUnknownNameText;
+
+    /** Wang: CheckBox */
+    private CheckBox mCheckBox;
 
     /**
      * Special class to allow the parent to be pressed without being pressed itself.
@@ -240,6 +250,8 @@ public class ContactListItemView extends ViewGroup
                 R.styleable.ContactListItemView_list_item_gap_between_image_and_text, 0);
         mGapBetweenLabelAndData = a.getDimensionPixelOffset(
                 R.styleable.ContactListItemView_list_item_gap_between_label_and_data, 0);
+        mCallButtonPadding = a.getDimensionPixelOffset(
+                R.styleable.ContactListItemView_list_item_call_button_padding, 0);
         mPresenceIconMargin = a.getDimensionPixelOffset(
                 R.styleable.ContactListItemView_list_item_presence_icon_margin, 4);
         mPresenceIconSize = a.getDimensionPixelOffset(
@@ -295,6 +307,13 @@ public class ContactListItemView extends ViewGroup
         }
     }
 
+    /**
+     * Installs a call button listener.
+     */
+    public void setOnCallButtonClickListener(OnClickListener callButtonClickListener) {
+        mCallButtonClickListener = callButtonClickListener;
+    }
+
     public void setUnknownNameText(CharSequence unknownNameText) {
         mUnknownNameText = unknownNameText;
     }
@@ -323,14 +342,19 @@ public class ContactListItemView extends ViewGroup
         mSnippetTextViewHeight = 0;
         mStatusTextViewHeight = 0;
 
+        ensureCheckBoxSize();
         ensurePhotoViewSize();
 
         // Width each TextView is able to use.
         final int effectiveWidth;
-        // All the other Views will honor the photo, so available width for them may be shrunk.
-        if (mPhotoViewWidth > 0 || mKeepHorizontalPaddingForPhotoView) {
+        // All the other Views will honor the photo, so available width for them
+        // may be shrunk.
+        /*Wang:*/
+        if (mPhotoViewWidth > 0 || mKeepHorizontalPaddingForPhotoView ||mCheckBoxWidth > 0) {
+//            effectiveWidth = specWidth - getPaddingLeft() - getPaddingRight()
+//                    - (mPhotoViewWidth + mGapBetweenImageAndText);
             effectiveWidth = specWidth - getPaddingLeft() - getPaddingRight()
-                    - (mPhotoViewWidth + mGapBetweenImageAndText);
+                    - (mPhotoViewWidth + mGapBetweenImageAndText+mCheckBoxWidth);
         } else {
             effectiveWidth = specWidth - getPaddingLeft() - getPaddingRight();
         }
@@ -506,6 +530,17 @@ public class ContactListItemView extends ViewGroup
 
         if (mActivatedStateSupported && isActivated()) {
             mActivatedBackgroundDrawable.setBounds(mBoundsWithoutHeader);
+        }
+        
+        /*Wang:*/
+        if(isVisible(mCheckBox)){
+//            mCheckBox = new CheckBox(mContext);
+//            mCheckBoxHeight =mCheckBoxWidth = 50;
+            mCheckBoxHeight = mCheckBox.getMeasuredHeight();
+            mCheckBoxWidth = mCheckBox.getMeasuredWidth();
+            final int boxTop = topBound + (bottomBound - topBound - mCheckBoxHeight) / 2;
+            mCheckBox.layout(leftBound, boxTop, leftBound+mCheckBoxWidth, boxTop + mCheckBoxHeight);
+            leftBound += mCheckBoxWidth;
         }
 
         final View photoView = mQuickContact != null ? mQuickContact : mPhotoView;
@@ -711,6 +746,21 @@ public class ContactListItemView extends ViewGroup
         }
     }
 
+    /**
+     * Get checkbox height and width
+     * 
+     * @author Wang
+     * @date 2012-9-6
+     */
+    private int mCheckBoxWidth;
+    private int mCheckBoxHeight;
+    private void ensureCheckBoxSize() {
+        if (isVisible(mCheckBox)) {
+            mCheckBox.measure(MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED),
+                    MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED));
+        }
+    }
+
     protected void setDefaultPhotoViewSize(int pixels) {
         mDefaultPhotoViewSize = pixels;
     }
@@ -834,6 +884,18 @@ public class ContactListItemView extends ViewGroup
         }
         return mPhotoView;
     }
+    
+    /**
+     * Wang
+     * */
+    public CheckBox getCheckBox() {
+        if (mCheckBox == null) {
+            mCheckBox = new CheckBox(mContext);
+            mCheckBox.setVisibility(View.VISIBLE);
+            addView(mCheckBox);  
+        }
+        return mCheckBox;
+    }
 
     /**
      * Removes the photo view.
@@ -890,6 +952,31 @@ public class ContactListItemView extends ViewGroup
             addView(mNameTextView);
         }
         return mNameTextView;
+    }
+
+    /**
+     * Adds a call button using the supplied arguments as an id and tag.
+     */
+    public void showCallButton(int id, int tag) {
+        if (mCallButton == null) {
+            mCallButton = new DontPressWithParentImageView(mContext, null);
+            mCallButton.setId(id);
+            mCallButton.setOnClickListener(mCallButtonClickListener);
+            mCallButton.setBackgroundResource(R.drawable.call_background);
+            mCallButton.setImageResource(R.drawable.sym_action_call);
+            mCallButton.setPadding(mCallButtonPadding, 0, mCallButtonPadding, 0);
+            mCallButton.setScaleType(ScaleType.CENTER);
+            addView(mCallButton);
+        }
+
+        mCallButton.setTag(tag);
+        mCallButton.setVisibility(View.VISIBLE);
+    }
+
+    public void hideCallButton() {
+        if (mCallButton != null) {
+            mCallButton.setVisibility(View.GONE);
+        }
     }
 
     /**
@@ -1290,5 +1377,11 @@ public class ContactListItemView extends ViewGroup
     public void setSelectionBoundsHorizontalMargin(int left, int right) {
         mSelectionBoundsMarginLeft = left;
         mSelectionBoundsMarginRight = right;
+    }
+    
+    private static final boolean debug  = false;
+    private static void log(String msg){
+        msg = "ListItemView =>" + msg;
+        if(debug) Log.i("shenduGroup", msg);
     }
 }

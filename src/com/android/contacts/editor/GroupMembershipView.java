@@ -34,6 +34,7 @@ import android.provider.ContactsContract.CommonDataKinds.GroupMembership;
 import android.provider.ContactsContract.RawContacts;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -165,6 +166,7 @@ public class GroupMembershipView extends LinearLayout
 
     @Override
     public void setEnabled(boolean enabled) {
+        log("setEnabled =>"+enabled);
         super.setEnabled(enabled);
         if (mGroupList != null) {
             mGroupList.setEnabled(enabled);
@@ -172,6 +174,7 @@ public class GroupMembershipView extends LinearLayout
     }
 
     public void setKind(DataKind kind) {
+        log("setKind =>"+kind);
         mKind = kind;
         TextView kindTitle = (TextView) findViewById(R.id.kind_title);
         kindTitle.setText(getResources().getString(kind.titleRes).toUpperCase());
@@ -198,19 +201,36 @@ public class GroupMembershipView extends LinearLayout
     }
 
     public void setState(EntityDelta state) {
+        log(">>setState<<");
         mState = state;
         ValuesDelta values = state.getValues();
+        log("=======================> value data1 ="+values.getAsString("data1"));
         mAccountType = values.getAsString(RawContacts.ACCOUNT_TYPE);
+        //Wang
+        if(mAccountType == null) mAccountType = "";
         mAccountName = values.getAsString(RawContacts.ACCOUNT_NAME);
+        //Wang
+        if(mAccountName == null) mAccountName = "";
+        
         mDataSet = values.getAsString(RawContacts.DATA_SET);
         mDefaultGroupVisibilityKnown = false;
         mCreatedNewGroup = false;
+        log("##mAccountName =>"+mAccountName+" mAccountType=>"+mAccountType);
         updateView();
     }
 
     private void updateView() {
-        if (mGroupMetaData == null || mGroupMetaData.isClosed() || mAccountType == null
-                || mAccountName == null) {
+        //Wang:
+//        if (mGroupMetaData == null || mGroupMetaData.isClosed() || mAccountType == null
+//                || mAccountName == null) {
+//            setVisibility(GONE);
+//            return;
+//        }
+        log(">>updateView<<");
+        log("mGroupMetaData ="+mGroupMetaData);
+        if(mGroupMetaData != null)log(" metaCount = "+mGroupMetaData.getCount());
+        if (mGroupMetaData == null || mGroupMetaData.isClosed()) {
+            log("   setVisibility GONE");
             setVisibility(GONE);
             return;
         }
@@ -223,8 +243,17 @@ public class GroupMembershipView extends LinearLayout
         mGroupMetaData.moveToPosition(-1);
         while (mGroupMetaData.moveToNext()) {
             String accountName = mGroupMetaData.getString(GroupMetaDataLoader.ACCOUNT_NAME);
+            //Wang:
+            if(accountName == null) accountName = "";
             String accountType = mGroupMetaData.getString(GroupMetaDataLoader.ACCOUNT_TYPE);
+            //Wang:
+            if(accountType == null) accountType = "";
             String dataSet = mGroupMetaData.getString(GroupMetaDataLoader.DATA_SET);
+            log("=======>Compare Account :");
+            log("  mAccountName = "+mAccountName+" mAccountType = "+mAccountType+" mDataSet = "+mDataSet);
+            log("  accountName = "+accountName+" accountType = "+accountType+" dataSet = "+dataSet);
+            log("  (tips:  accountName && accountType are from cursor ! )");
+            log("<=======");
             if (accountName.equals(mAccountName) && accountType.equals(mAccountType)
                     && Objects.equal(dataSet, mDataSet)) {
                 long groupId = mGroupMetaData.getLong(GroupMetaDataLoader.GROUP_ID);
@@ -254,7 +283,8 @@ public class GroupMembershipView extends LinearLayout
         }
 
         if (!accountHasGroups) {
-            setVisibility(GONE);
+            //Wang:
+//            setVisibility(GONE);
             return;
         }
 
@@ -276,6 +306,8 @@ public class GroupMembershipView extends LinearLayout
         if (!mDefaultGroupVisibilityKnown) {
             // Only show the default group (My Contacts) if the contact is NOT in it
             mDefaultGroupVisible = mDefaultGroupId != 0 && !hasMembership(mDefaultGroupId);
+            //Wang:
+//            mDefaultGroupVisible = true;
             mDefaultGroupVisibilityKnown = true;
         }
     }
@@ -293,8 +325,13 @@ public class GroupMembershipView extends LinearLayout
         mGroupMetaData.moveToPosition(-1);
         while (mGroupMetaData.moveToNext()) {
             String accountName = mGroupMetaData.getString(GroupMetaDataLoader.ACCOUNT_NAME);
+            //Wang:
+            if(accountName == null) accountName = "";
             String accountType = mGroupMetaData.getString(GroupMetaDataLoader.ACCOUNT_TYPE);
+            //Wang:
+            if(accountType == null) accountType = "";
             String dataSet = mGroupMetaData.getString(GroupMetaDataLoader.DATA_SET);
+            log("onClick => accountName ="+accountName+" | accountType ="+accountType);
             if (accountName.equals(mAccountName) && accountType.equals(mAccountType)
                     && Objects.equal(dataSet, mDataSet)) {
                 long groupId = mGroupMetaData.getLong(GroupMetaDataLoader.GROUP_ID);
@@ -428,5 +465,29 @@ public class GroupMembershipView extends LinearLayout
                     }
                 });
     }
-
+    
+    /**Wang:for log*/
+    @Override
+    public void setVisibility(int visibility) {
+        super.setVisibility(visibility);
+        String v = null;
+        switch (visibility) {
+            case View.GONE:
+                v = "GONE";
+                break;
+            case View.VISIBLE:
+                v = "VISIBLE";
+                break;
+            case View.INVISIBLE:
+                v = "INVISIBLE";
+                break;
+        }
+        log(" ======>  Visibility = "+ v);
+    }
+    
+    private static final boolean debug = true;
+    private static void log(String msg){
+        msg = "GroupMembershipView -> " + msg;
+        if(debug) Log.i("shenduNewContacts", msg);
+    }
 }

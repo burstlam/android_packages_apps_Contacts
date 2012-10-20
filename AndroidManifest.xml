@@ -679,5 +679,19 @@
                 <data android:mimeType="vnd.android.cursor.item/contact" />
             </intent-filter>
         </service>
+
+        <!-- Shendu -->
+        <activity
+            android:name=".activities.ShenDuContactSelectionActivity"
+            android:clearTaskOnLaunch="true"
+            android:label="@string/contactsList"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait"
+            android:theme="@style/PeopleTheme"
+            android:uiOptions="splitActionBarWhenNarrow" >
+            <intent-filter>
+                <action android:name="shendu.intent.action.PICK_ACTION" />
+            </intent-filter>
+        </activity>
     </application>
 </manifest>

@@ -572,4 +572,29 @@
     <string name="dialog_voicemail_not_ready_message" msgid="4384716252789515378">"要设置语音信箱，请转到“菜单”&gt;“设置”。"</string>
     <string name="dialog_voicemail_airplane_mode_message" msgid="530922773669546093">"要呼叫语音信箱，请先关闭飞行模式。"</string>
     <string name="action_menu_overflow_description" msgid="2303272250613084574">"更多选项"</string>
+    
+      <!-- shendu 2012-10-15 text -->
+    <string name="shendu_call_dialer_show_text">拨号键盘</string>
+    <string name="shendu_group_editor_name_title">群组名称</string>
+    <string name="shendu_group_editor_members_title">群组成员</string>
+    <string name="shendu_group_editor_add_members">添加成员</string>
+    <string name="menu_to_dialer">"拨号"</string>
+    
+    <string name="shendu_context_menu_edit">"编辑联系人"</string>
+    <string name="shendu_context_menu_delete">"删除联系人"</string>
+    <string name="shendu_context_menu_share">"分享联系人"</string>
+    
+    <string name="shendu_add_blacklist">加入黑名单</string>
+    <string name="shendu_send_sms">发送短信</string>
+    
+    <string name="number_of_items_selected">选中%1$d 项</string>
+    <string name="select_all">全选</string>
+    <string name="deselect_all">取消全选</string>
+    <string name="group_insert_members_message">已添加%1$d/%2$d</string>
+    <string name="message_prepare">操作中，请等待</string>
+    <string name="message_using_number">呼叫号码</string>
+    
+    <string name="default_group_friend">朋友</string>
+    <string name="default_group_family">家人</string>
+    <string name="default_group_colleague">同事</string>
 </resources>

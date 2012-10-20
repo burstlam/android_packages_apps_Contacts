@@ -22,15 +22,20 @@ import com.android.contacts.util.AccountFilterUtil;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
 import android.provider.ContactsContract.Contacts;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLayoutChangeListener;
 import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityEvent;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ListView;
@@ -115,6 +120,8 @@ public class DefaultContactBrowseListFragment extends ContactBrowseListFragment 
         mSearchHeaderView = inflater.inflate(R.layout.search_header, null, false);
         headerContainer.addView(mSearchHeaderView);
         getListView().addHeaderView(headerContainer, null, false);
+        /*Wang:*/
+        getListView().setOnCreateContextMenuListener(this);
         checkHeaderViewVisibility();
 
         mSearchProgress = getView().findViewById(R.id.search_progress);
@@ -292,4 +299,75 @@ public class DefaultContactBrowseListFragment extends ContactBrowseListFragment 
             }
         });
     }
+
+    private static final int MENU_ITEM_EDIT_CONTACT = 0;
+    private static final int MENU_ITEM_DELETE_CONTACT = 1;
+    private static final int MENU_ITEM_SHARE_CONTACT = 2;
+    /*
+     * Add Context Menu
+     * @author Wang
+     */
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        AdapterView.AdapterContextMenuInfo info;
+        try {
+             info = (AdapterView.AdapterContextMenuInfo) menuInfo;
+        } catch (ClassCastException e) {
+            Log.e(TAG, "bad menuInfo", e);
+            return;
+        }
+        log(">>onCreateContextMenu<<");
+        log("menuInfo.position =>"+info.position);
+        String name = getAdapter().getContactDisplayName(info.position - 3);
+        menu.setHeaderTitle(name);
+        menu.add(0, MENU_ITEM_EDIT_CONTACT, 0, getString(R.string.shendu_context_menu_edit));
+        menu.add(0, MENU_ITEM_DELETE_CONTACT, 0, getString(R.string.shendu_context_menu_delete));
+        menu.add(0, MENU_ITEM_SHARE_CONTACT, 0,  getString(R.string.shendu_context_menu_share));
+        
+        
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        log(">>onContextItemSelected<<");
+        AdapterView.AdapterContextMenuInfo menuInfo;
+        try {
+            menuInfo = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        } catch (ClassCastException e) {
+            Log.e(TAG, "bad menuInfo", e);
+            return false;
+        }
+        final Uri lookupUri  = getAdapter().getContactUri(menuInfo.position - 3);
+        log("menuInfo.position =>"+menuInfo.position);
+        switch (item.getItemId()) {
+            case MENU_ITEM_EDIT_CONTACT:
+                editContact(lookupUri);
+                return true;
+            case MENU_ITEM_DELETE_CONTACT:
+                deleteContact(lookupUri);
+                return true;
+            case MENU_ITEM_SHARE_CONTACT:
+                Uri shareUri = Uri.withAppendedPath(Contacts.CONTENT_VCARD_URI, getAdapter().getSelectedContactLookupKey());
+                final Intent intent = new Intent(Intent.ACTION_SEND);
+                intent.setType(Contacts.CONTENT_VCARD_TYPE);
+                intent.putExtra(Intent.EXTRA_STREAM, shareUri);
+
+                // Launch chooser to share contact via
+                final CharSequence chooseTitle = getContext().getText(R.string.share_via);
+                final Intent chooseIntent = Intent.createChooser(intent, chooseTitle);
+                getActivity().startActivity(chooseIntent);
+                return true;
+            default:
+                throw new IllegalArgumentException("Unknown menu option " + item.getItemId());
+        }
+    }
+    
+    private static final boolean debug = true;
+    private static void log(String msg){
+        msg = "DefaultContactBrowseListFragment =>"+msg;
+        if(debug) Log.i("shenduContactList", msg);
+    }
+    
+    
 }

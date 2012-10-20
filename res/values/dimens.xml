@@ -249,4 +249,18 @@
 
     <!-- Min with of fake menu buttons, which should be same as ActionBar's one -->
     <dimen name="fake_menu_button_min_width">56dip</dimen>
+
+    <!--  Shendu :  -->
+     <!-- Wang: Vertical and horizontal padding in between contact tiles -->
+     <dimen name="shendu_contacts_tiles_padding">8dip</dimen>
+      <!-- Wang:  contact tiles size-->
+     <dimen name="shendu_contacts_tiles_size">90dip</dimen>
+     <dimen name="shendu_custom_bar_spinner_width">150dip</dimen>
+    
+     <!-- shutao 2012-10-15 shendu The dialpad required length and width data -->
+    <dimen name="shendu_dialpad_bottom_height">54dip</dimen>
+    <dimen name="shendu_dialpad_bottom_t9toggle_width">64dip</dimen>
+    <dimen name="shendu_dialpad_bootom_dialButton_width">192dip</dimen>
+    <dimen name="shendu_call_log_list_contact_photo_size">48dip</dimen>
+    <dimen name="shendu_call_divider_padding">8dip</dimen>
 </resources>
