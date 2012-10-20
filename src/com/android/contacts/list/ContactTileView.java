@@ -105,10 +105,12 @@ public abstract class ContactTileView extends FrameLayout {
                 if (entry.status == null) {
                     mStatus.setVisibility(View.GONE);
                 } else {
-                    mStatus.setText(entry.status);
-                    mStatus.setCompoundDrawablesWithIntrinsicBounds(entry.presenceIcon,
-                            null, null, null);
-                    mStatus.setVisibility(View.VISIBLE);
+                    /*Wang:*/
+//                    mStatus.setText(entry.status);
+//                    mStatus.setCompoundDrawablesWithIntrinsicBounds(entry.presenceIcon,
+//                            null, null, null);
+//                    mStatus.setVisibility(View.VISIBLE);
+                    mStatus.setVisibility(View.GONE);
                 }
             }
 

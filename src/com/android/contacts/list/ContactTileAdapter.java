@@ -32,6 +32,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.provider.ContactsContract.CommonDataKinds.Phone;
 import android.provider.ContactsContract.Contacts;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -123,8 +124,9 @@ public class ContactTileAdapter extends BaseAdapter {
         mNumFrequents = 0;
 
         // Converting padding in dips to padding in pixels
+        /* Wang: */
         mPaddingInPixels = mContext.getResources()
-                .getDimensionPixelSize(R.dimen.contact_tile_divider_padding);
+                .getDimensionPixelSize(R.dimen.shendu_contacts_tiles_padding);
 
         bindColumnIndices();
     }
@@ -439,6 +441,7 @@ public class ContactTileAdapter extends BaseAdapter {
     }
 
     private int getLayoutResourceId(int viewType) {
+        log("TileRow : viewType =" + viewType);
         switch (viewType) {
             case ViewTypes.STARRED:
                 return mIsQuickContactEnabled ?
@@ -542,11 +545,14 @@ public class ContactTileAdapter extends BaseAdapter {
                 FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
                         ViewGroup.LayoutParams.WRAP_CONTENT,
                         ViewGroup.LayoutParams.WRAP_CONTENT);
-                params.setMargins(
-                        resources.getDimensionPixelSize(R.dimen.detail_item_side_margin),
-                        0,
-                        resources.getDimensionPixelSize(R.dimen.detail_item_side_margin),
-                        0);
+
+                /* Wang: */
+                 params.setMargins(
+                 resources.getDimensionPixelSize(R.dimen.shendu_contacts_tiles_padding),
+                 0,
+                 resources.getDimensionPixelSize(R.dimen.shendu_contacts_tiles_padding),
+                 0);
+
                 contactTile.setLayoutParams(params);
                 contactTile.setPhotoManager(mPhotoManager);
                 contactTile.setListener(mListener);
@@ -560,9 +566,15 @@ public class ContactTileAdapter extends BaseAdapter {
                 case ViewTypes.STARRED_PHONE:
                 case ViewTypes.STARRED:
                     // Setting divider visibilities
-                    contactTile.setPadding(0, 0,
-                            childIndex >= mColumnCount - 1 ? 0 : mPaddingInPixels,
-                            isLastRow ? 0 : mPaddingInPixels);
+                    // Wang:
+                    // contactTile.setPadding(0, 0,
+                    // childIndex >= mColumnCount - 1 ? 0 : mPaddingInPixels,
+                    // isLastRow ? 0 : mPaddingInPixels);
+                    // contactTile.setPadding(childIndex == 0 ? mPaddingInPixels
+                    // : 0,
+                    // mPaddingInPixels, mPaddingInPixels, 0);
+                    contactTile.setPadding(childIndex == 0 ? mPaddingInPixels  : 0,
+                            mPaddingInPixels, mPaddingInPixels, 0);
                     break;
                 case ViewTypes.FREQUENT:
                     contactTile.setHorizontalDividerVisibility(
@@ -623,6 +635,26 @@ public class ContactTileAdapter extends BaseAdapter {
                 setMeasuredDimension(width, 0);
                 return;
             }
+            
+            /*Wang: Re-Layout 2012-10-20 */
+            if (mItemViewType == ViewTypes.STARRED  || mItemViewType ==ViewTypes.STARRED_PHONE) {
+                final int totalPaddingsInPixels = (mColumnCount + 1) * mPaddingInPixels;
+                final int imageSize = (width - totalPaddingsInPixels) / mColumnCount;
+                final int remainder = width - (imageSize * mColumnCount) - totalPaddingsInPixels;
+                for (int i = 0; i < childCount; i++) {
+                    final View child = getChildAt(i);
+                    final int childWidth = imageSize + child.getPaddingRight() + child.getPaddingLeft()/*Wang*/
+                            + (i < remainder ? 1 : 0);
+                    final int childHeight = imageSize + child.getPaddingTop()/*Wang*/;
+                    child.measure(
+                            MeasureSpec.makeMeasureSpec(childWidth, MeasureSpec.EXACTLY),
+                            MeasureSpec.makeMeasureSpec(childHeight, MeasureSpec.EXACTLY)
+                            );
+                }
+                setMeasuredDimension(width, imageSize + getChildAt(0).getPaddingTop()/*Wang*/);
+                return;
+            }
+            
 
             // 1. Calculate image size.
             //      = ([total width] - [total padding]) / [child count]
@@ -683,5 +715,12 @@ public class ContactTileAdapter extends BaseAdapter {
         public static final int DIVIDER = 1;
         public static final int FREQUENT = 2;
         public static final int STARRED_PHONE = 3;
+    }
+    private static final boolean debug = false;
+
+    private static void log(String msg) {
+        msg = "TileFragment -> " + msg;
+        if (debug)
+            Log.i("ShenduTile", msg);
     }
 }

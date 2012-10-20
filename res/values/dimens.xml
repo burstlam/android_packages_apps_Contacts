@@ -193,7 +193,8 @@
       Use sp instead of dip so that the shadowbox heights can all scale uniformly
       when the font size is scaled for accessibility purposes
     -->
-    <dimen name="contact_tile_shadowbox_height">48sp</dimen>
+    <!-- Wang: -->
+    <dimen name="contact_tile_shadowbox_height">24dip</dimen>
 
     <!-- Top padding of the ListView in the contact tile list -->
     <dimen name="contact_tile_list_padding_top">0dip</dimen>

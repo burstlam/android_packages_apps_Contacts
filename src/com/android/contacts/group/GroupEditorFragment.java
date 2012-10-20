@@ -232,8 +232,9 @@ public class GroupEditorFragment extends Fragment implements SelectAccountDialog
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
+        log(">>onActivityCreated >>");
         if (savedInstanceState != null) {
+            log(">>1");
             // Just restore from the saved state.  No loading.
             onRestoreInstanceState(savedInstanceState);
             if (mStatus == Status.SELECTING_ACCOUNT) {
@@ -244,12 +245,15 @@ public class GroupEditorFragment extends Fragment implements SelectAccountDialog
                 setupEditorForAccount();
             }
         } else if (Intent.ACTION_EDIT.equals(mAction)) {
+            log(">>2");
             startGroupMetaDataLoader();
         } else if (Intent.ACTION_INSERT.equals(mAction)) {
+            log(">>3");
             final Account account = mIntentExtras == null ? null :
                     (Account) mIntentExtras.getParcelable(Intents.Insert.ACCOUNT);
             final String dataSet = mIntentExtras == null ? null :
                     mIntentExtras.getString(Intents.Insert.DATA_SET);
+            
 
             if (account != null) {
                 // Account specified in Intent - no data set can be specified in this manner.
@@ -401,6 +405,7 @@ public class GroupEditorFragment extends Fragment implements SelectAccountDialog
         View editorView;
         int newGroupEditorId =
                 editable ? R.layout.group_editor_view : R.layout.external_group_editor_view;
+        log("setupEditorForAccount =>"+"editable:"+editable+"/newGroupEditorId:"+newGroupEditorId);
         if (newGroupEditorId != mLastGroupEditorId) {
             View oldEditorView = mRootView.findViewWithTag(CURRENT_EDITOR_TAG);
             if (oldEditorView != null) {
@@ -607,6 +612,7 @@ public class GroupEditorFragment extends Fragment implements SelectAccountDialog
      */
     private void configureAddNewMembersView(View editorView) {
         View addNewMembers = editorView.findViewById(R.id.add_member_view);
+        log("addNewMembers =>"+addNewMembers);
         addNewMembers.setOnClickListener(new OnClickListener() {
 
             @Override
@@ -655,8 +661,12 @@ public class GroupEditorFragment extends Fragment implements SelectAccountDialog
         mAccountType = cursor.getString(GroupMetaDataLoader.ACCOUNT_TYPE);
         mDataSet = cursor.getString(GroupMetaDataLoader.DATA_SET);
         mGroupNameIsReadOnly = (cursor.getInt(GroupMetaDataLoader.IS_READ_ONLY) == 1);
-        setupEditorForAccount();
-
+        //Wang:
+        if(isLocalAccount()){
+            setupEditorForLocalAccount();
+        }else{
+            setupEditorForAccount();
+        }
         // Setup the group metadata display
         mGroupNameView.setText(mOriginalGroupName);
     }
@@ -1409,7 +1419,7 @@ public class GroupEditorFragment extends Fragment implements SelectAccountDialog
         }
     }
 
-    private static final boolean debug = false;
+    private static final boolean debug = true;
 
     private static void log(String msg) {
         msg = "Editor -> fragment -> " + msg;
