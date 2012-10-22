@@ -490,7 +490,7 @@ public class RawContactEditorView extends BaseRawContactEditorView {
         popupMenu.show();
     }
     
-    private static final boolean debug = true;
+    private static final boolean debug = false;
     private static void log(String msg){
         msg = "RawContactEditorView -> " + msg;
         if(debug) Log.i("shenduNewContacts", msg);

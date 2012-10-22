@@ -675,9 +675,10 @@ public class ContactListItemView extends ViewGroup
         if (isVisible(mCallButton)) {
             int buttonWidth = mCallButton.getMeasuredWidth();
             rightBound -= buttonWidth;
+            //Wang:
             mCallButton.layout(
                     rightBound,
-                    topBound,
+                    topBound + getPaddingTop(),
                     rightBound + buttonWidth,
                     height - mHorizontalDividerHeight);
             mVerticalDividerVisible = true;

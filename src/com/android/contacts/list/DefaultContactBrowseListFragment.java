@@ -363,7 +363,7 @@ public class DefaultContactBrowseListFragment extends ContactBrowseListFragment 
         }
     }
     
-    private static final boolean debug = true;
+    private static final boolean debug = false;
     private static void log(String msg){
         msg = "DefaultContactBrowseListFragment =>"+msg;
         if(debug) Log.i("shenduContactList", msg);

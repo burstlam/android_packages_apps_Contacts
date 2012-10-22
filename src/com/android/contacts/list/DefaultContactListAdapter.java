@@ -467,7 +467,7 @@ public class DefaultContactListAdapter extends ContactListAdapter {
                 ContactsPreferences.PREF_DISPLAY_ONLY_PHONES_DEFAULT);
     }
 
-    private static final boolean debug = true;
+    private static final boolean debug = false;
 
     private static void log(String msg) {
         if (debug)

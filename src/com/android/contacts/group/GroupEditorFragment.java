@@ -1419,7 +1419,7 @@ public class GroupEditorFragment extends Fragment implements SelectAccountDialog
         }
     }
 
-    private static final boolean debug = true;
+    private static final boolean debug = false;
 
     private static void log(String msg) {
         msg = "Editor -> fragment -> " + msg;

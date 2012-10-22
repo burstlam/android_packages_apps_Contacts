@@ -170,7 +170,7 @@ public class GroupEditorActivity extends ContactsActivity
         return mDialogManager;
     }
     
-    private static final boolean debug = true;
+    private static final boolean debug = false;
     private static void log(String msg){
         msg ="Editor -> " + msg;
         if(debug)  Log.i("shenduGroup", msg);
