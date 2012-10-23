@@ -70,6 +70,8 @@ class T9Search {
     private int mSortMode;
     private ArrayList<ContactItem> mNameResults = new ArrayList<ContactItem>();
     private ArrayList<ContactItem> mNumberResults = new ArrayList<ContactItem>();
+    private ArrayList<ContactItem> mPinyinResults = new ArrayList<ContactItem>();
+    
     private Set<ContactItem> mAllResults = new LinkedHashSet<ContactItem>();
     private ArrayList<ContactItem> mContacts = new ArrayList<ContactItem>();
     private String mPrevInput;
@@ -137,13 +139,13 @@ class T9Search {
     private static final char FIRST_UNIHAN = '\u3400';
     /** shutao 2012-10-19*/
     public void nameToPinYinAndNumber(String name , ContactItem contactInfo){
-    	 ArrayList<Boolean> isBoolean = new ArrayList<Boolean>();
+    	 ArrayList<Integer> firstNumberIndexs = new ArrayList<Integer>();
      	 int nameLength = name.length();
     	 final StringBuilder sb = new StringBuilder();
     	 final StringBuilder sbNumber = new StringBuilder();
     	 final StringBuilder sbFirst = new StringBuilder();
     	 boolean [] isindex = new boolean[contactInfo.name.length()];
-    	 MyLog("contactInfo . name size = "+contactInfo.name.length());
+//    	 MyLog("contactInfo . name size = "+contactInfo.name.length());
     	 boolean isFirst = true;
     	 int cmp;
     	 int hanziNum = 0;
@@ -155,26 +157,25 @@ class T9Search {
     		 cmp = COLLATOR.compare(letter, FIRST_PINYIN_UNIHAN);
     		
     		 if(character == ' '){
-//    			 MyLog("name char "+"= "+character);
-    			
+
     			 isFirst = true;
     		 }else if (character < 256) {
     			 
-    			 MyLog("name char 256= "+character);
-    			 if(character>=65 && character <=90){
-//    				 MyLog("name char 256= "+(char)(character+32));
+    			 if(character>=65 && character <=90 || character >= 97 && character <= 122){
+//    				 log("char == "+character);
     				 char num = LetterToNumber(character);
     				 sbNumber.append(num);
     				 if(!isFirst){
-        				 sb.append((char)(character+32));
-    				 }else{
-    					 
     					 hanziNum++;
-    					 isBoolean.add(true);
-    					 MyLog("hanziNum = "+hanziNum);
+        				 sb.append((char)(character<97?(character+32):character));
+    				 }else{
+    					 hanziNum++;
+//    					 isBoolean.add(true);
+    					 firstNumberIndexs.add(hanziNum);
     					 sb.append(character);
     					 sbFirst.append(num);
     					 isFirst = false;
+    				
     				 }
     				 
     			 }else if (character>=48 && character <=57){
@@ -182,41 +183,18 @@ class T9Search {
     				 sb.append(character);
     				 sbNumber.append(character);
     				 hanziNum ++ ;
-    				 isBoolean.add(true);
-    				 MyLog("hanziNum = "+hanziNum);
     			 }
     			 else{
     				 isFirst = false;
-    				 hanziNum ++ ;
-    				 isBoolean.add(false);
-    				 MyLog("hanziNum = "+hanziNum);
-//        			 sb.append(character);
-//        			 sbNumber.append(LetterToNumber(character));
     			 }
-
     		 }else if(character<FIRST_UNIHAN){
-    			 MyLog("name char u3400= "+character);
     			 hanziNum ++ ;
-    			 isBoolean.add(false);
-    			 MyLog("hanziNum = "+hanziNum);
-//    			 sb.append(character);
-//    			 sbNumber.append(LetterToNumber(character));
     		 }else if(cmp < 0){
-    			 MyLog("name cmp =<0 "+character);
     			 hanziNum ++ ;
-    			 isBoolean.add(false);
-    			 MyLog("hanziNum = "+hanziNum);
-//    			 sb.append(character);
-//    			 sbNumber.append(LetterToNumber(character));
     		 }else{
     			 cmp = COLLATOR.compare(letter, LAST_PINYIN_UNIHAN);
-    			 if(cmp >0){
-    				 MyLog("name cmp = >0 "+character);
+    			 if(cmp >0){;
     				 hanziNum ++ ;
-    				 isBoolean.add(false);
-    				 MyLog("hanziNum = "+hanziNum);
-//    				 sb.append(character);
-//    				 sbNumber.append(LetterToNumber(character));
     			 }
     		 }
     		
@@ -224,8 +202,9 @@ class T9Search {
 
     	 contactInfo.pinYin = sb.toString();
     	 contactInfo.normalName = sbNumber.toString();
+    	 MyLog("sbNumber == " +sbNumber.toString());
     	 contactInfo.firstNumber = sbFirst.toString();
-    	 contactInfo.isHanzis = isBoolean;
+    	 contactInfo.firstNumberIndexs = firstNumberIndexs;
     	
     }
     /**shutao 2012-10-19*/
@@ -285,9 +264,10 @@ class T9Search {
         String firstNumber;
         int timesContacted;
         int nameMatchId;
+        int pinyinMatchId;
         int numberMatchId;
         CharSequence groupType;
-        ArrayList<Boolean> isHanzis;
+        ArrayList<Integer> firstNumberIndexs;
         long id;
         boolean isSuperPrimary;
     }
@@ -296,6 +276,7 @@ class T9Search {
     	long itime = System.currentTimeMillis();
         mNameResults.clear();
         mNumberResults.clear();
+        mPinyinResults.clear();
         number = removeNonDigits(number);
         int pos = 0;
         mSortMode = Integer.parseInt(PreferenceManager.getDefaultSharedPreferences(mContext).getString("t9_sort", "1"));
@@ -304,47 +285,51 @@ class T9Search {
         for (ContactItem item : (newQuery ? mContacts : mAllResults)) {
             item.numberMatchId = -1;
             item.nameMatchId = -1;
+            item.pinyinMatchId = -1;
             pos = item.normalNumber.indexOf(number);
             if (pos != -1) {
                 item.numberMatchId = pos;
                 mNumberResults.add(item);
+            }else{
+                /**shutao 2012-10-19*/
+                pos = item.firstNumber.indexOf(number);
+//                myLastIndexOf(item.normalName, number);
+                if(pos != -1){
+                    int last_space = item.firstNumber.lastIndexOf("0", pos);
+                  if (last_space == -1) {
+                      last_space = 0;
+                  }
+                  item.nameMatchId = pos - last_space;
+                  mNameResults.add(item);
+                }else{
+                	   pos = item.normalName.indexOf(number);
+                       if (pos != -1) {
+                       	 item.pinyinMatchId = pos ;
+                            mPinyinResults.add(item);
+                           }
+                }
             }
-            /**shutao 2012-10-19*/
-            pos = item.firstNumber.indexOf(number);
-//            myLastIndexOf(item.normalName, number);
-            if(pos != -1){
-                int last_space = item.normalName.lastIndexOf("0", pos);
-              if (last_space == -1) {
-                  last_space = 0;
-              }
-              item.nameMatchId = pos - last_space;
-              mNameResults.add(item);
-            }
-//            pos = item.normalName.indexOf(number);
-//            if (pos != -1) {
-//                int last_space = item.normalName.lastIndexOf("0", pos);
-//                if (last_space == -1) {
-//                    last_space = 0;
-//                }
-//                item.nameMatchId = pos - last_space;
-//                mNameResults.add(item);
-//            }
+
         }
         mAllResults.clear();
         mPrevInput = number;
         Collections.sort(mNumberResults, new NumberComparator());
         Collections.sort(mNameResults, new NameComparator());
+        Collections.sort(mPinyinResults, new PinyinComparator());
         MyLog("search -- time=== " +(System.currentTimeMillis() - itime));
-        if (mNameResults.size() > 0 || mNumberResults.size() > 0) {
+        if (mNameResults.size() > 0 || mNumberResults.size() > 0 || mPinyinResults.size() > 0) {
             switch (mSortMode) {
             case NAME_FIRST:
                 mAllResults.addAll(mNameResults);
+                mAllResults.addAll(mPinyinResults);
                 mAllResults.addAll(mNumberResults);
                 break;
             case NUMBER_FIRST:
                 mAllResults.addAll(mNumberResults);
                 mAllResults.addAll(mNameResults);
+                mAllResults.addAll(mPinyinResults);
             }
+            MyLog("search -- time=== " +mNameResults.size());
             return new T9SearchResult(new ArrayList<ContactItem>(mAllResults), mContext);
         }
         return null;
@@ -374,6 +359,16 @@ class T9Search {
         @Override
         public int compare(ContactItem lhs, ContactItem rhs) {
             int ret = Integer.compare(lhs.nameMatchId, rhs.nameMatchId);
+            if (ret == 0) ret = Integer.compare(rhs.timesContacted, lhs.timesContacted);
+            if (ret == 0) ret = Boolean.compare(rhs.isSuperPrimary, lhs.isSuperPrimary);
+            return ret;
+        }
+    }
+    
+    public static class PinyinComparator implements Comparator<ContactItem> {
+        @Override
+        public int compare(ContactItem lhs, ContactItem rhs) {
+            int ret = Integer.compare(lhs.pinyinMatchId, rhs.pinyinMatchId);
             if (ret == 0) ret = Integer.compare(rhs.timesContacted, lhs.timesContacted);
             if (ret == 0) ret = Boolean.compare(rhs.isSuperPrimary, lhs.isSuperPrimary);
             return ret;
@@ -455,45 +450,39 @@ class T9Search {
                 holder.icon.assignContactFromPhone(o.number, true);
             } else {
                 /**shutao 2012-10-19*/
-                holder.pinYin.setText(o.pinYin+o.firstNumber);
+                holder.pinYin.setText(o.pinYin ,TextView.BufferType.SPANNABLE);
                 
                 holder.name.setText(o.name, TextView.BufferType.SPANNABLE);
                 holder.number.setText(o.normalNumber /*+ " (" + o.groupType + ")"*/, TextView.BufferType.SPANNABLE);
                 holder.number.setVisibility(View.VISIBLE);
                 if (o.nameMatchId != -1) {
-                	int nameNum = o.name.length();
-                    Spannable s = (Spannable) holder.name.getText();
-                    int nameStart = o.firstNumber.indexOf(mPrevInput);
-                    int nameEnd = 0;
-                    int hanzis = 0;
-                   for(int i = nameStart ; i<o.isHanzis.size();i++){
-                	   if(o.isHanzis.get(i)){
-                		   hanzis++;
-                	   }else{
-                		   if(hanzis == 0){
-                			   nameStart++;
-                		   }else{
-                			   nameEnd++;
-                		   }
-                	   }
-                	   if(hanzis == mPrevInput.length()){
-                		   break;
-                	   }
-                   }
-                    MyLog("lastindexof = "+"====="+ (nameEnd+hanzis)+o.name+nameStart);
-                    nameEnd = nameEnd+hanzis;
-                    if (nameStart <= o.name.length() && nameStart + nameEnd <= o.name.length()) {
-                        s.setSpan(new ForegroundColorSpan(mContext.getResources().getColor(android.R.color.holo_blue_dark)),
-                     nameStart, nameStart + nameEnd, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+                 	Spannable sPinyin = (Spannable) holder.pinYin.getText();
+                  int nameStart = o.nameMatchId;
+                  int sLeng = sPinyin.length();
+             	    int send = (mPrevInput.length()+nameStart) >= sLeng ?sLeng:(mPrevInput.length()+nameStart);
+                    for(int index = nameStart ; index< o.firstNumberIndexs.size();index++){
+                    	if(index-nameStart == send){
+                    		break;
+                    	}
+                 	   int num =o.firstNumberIndexs.get(index);
+                 	  sPinyin.setSpan(new ForegroundColorSpan(mContext.getResources().getColor(R.color.shendu_high_light)),
+             				   num-1, num , Spannable.SPAN_INCLUSIVE_INCLUSIVE);
                     }
-                    holder.name.setText(s);
-                }
+                    holder.pinYin.setText(sPinyin);
+                }else
                 if (o.numberMatchId != -1) {
                     Spannable s = (Spannable) holder.number.getText();
                     int numberStart = o.numberMatchId;
-                    s.setSpan(new ForegroundColorSpan(mContext.getResources().getColor(android.R.color.holo_blue_dark)),
+                    s.setSpan(new ForegroundColorSpan(mContext.getResources().getColor(R.color.shendu_high_light)),
                             numberStart, numberStart + mPrevInput.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
                     holder.number.setText(s);
+                }else 
+                	if(o.pinyinMatchId != -1){
+                	Spannable sPinyin = (Spannable) holder.pinYin.getText();
+                	int numberStart = o.pinyinMatchId;
+                	sPinyin.setSpan(new ForegroundColorSpan(mContext.getResources().getColor(R.color.shendu_high_light)),
+                            numberStart, numberStart + mPrevInput.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+                	holder.pinYin.setText(sPinyin);
                 }
                 if (o.photo != null)
                     mPhotoLoader.loadDirectoryPhoto(holder.icon, o.photo, true);

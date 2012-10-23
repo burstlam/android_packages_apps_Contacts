@@ -55,6 +55,7 @@ import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.text.Editable;
 import android.text.SpannableString;
+import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.method.DialerKeyListener;
@@ -96,6 +97,8 @@ import com.android.contacts.SpecialCharSequenceMgr;
 import com.android.contacts.activities.DialtactsActivity;
 import com.android.contacts.activities.PeopleActivity;
 import com.android.contacts.calllog.CallLogFragment;
+import com.android.contacts.dialpad.ShenduContactAdapter.SearchContactsListener;
+import com.android.contacts.dialpad.ShenduContactAdapter.Shendu_ContactItem;
 import com.android.contacts.dialpad.T9Search.ContactItem;
 import com.android.contacts.dialpad.T9Search.T9Adapter;
 import com.android.contacts.dialpad.T9Search.T9SearchResult;
@@ -181,6 +184,9 @@ public class DialpadFragment extends Fragment
     /**shutao  2012-10-17*/
     private CallLogFragment mShenduDialpadCallLogFragment;
     private View mShenduDialpadCallLogFragmentView;
+    
+    /** shutao 2012-10-23  */
+    private  ShenduContactAdapter mShenduContactAdapter ;
     
     /**
      * shutao 2012-10-17 New T9 contacts list
@@ -275,7 +281,7 @@ public class DialpadFragment extends Fragment
             Log.v(TAG, "mIntentReceiver  onReceive  intent.getAction(): " + intent.getAction());
             if (intent.getAction().equals(Intent.ACTION_LOCALE_CHANGED)) {
                 if (isT9On()) {
-                    sT9Search = new T9Search(getActivity());
+//                    sT9Search = new T9Search(getActivity());   
                 }
             }
         }
@@ -472,6 +478,27 @@ public class DialpadFragment extends Fragment
 
         configureScreenFromIntent(getActivity().getIntent());
 
+        mShenduContactAdapter = new ShenduContactAdapter(getActivity());
+
+		 mT9List.setAdapter(mShenduContactAdapter);
+        mShenduContactAdapter.setSearchContactsListener(new SearchContactsListener() {
+			
+			@Override
+			public void notContacts() {
+				// TODO Auto-generated method stub
+				mShenduNewContactT9Adapter.setNewContactNumber(mDigits.getText().toString());
+				mShenduNewContactsT9List.setVisibility(View.VISIBLE);
+				
+			}
+			
+			@Override
+			public void Contacts() {
+				// TODO Auto-generated method stub
+				mShenduNewContactsT9List.setVisibility(View.GONE);
+				toggleT9();
+			}
+		});
+        
         return fragmentView;
     }
 
@@ -642,13 +669,22 @@ public class DialpadFragment extends Fragment
 
         final StopWatch stopWatch = StopWatch.start("Dialpad.onResume");
 
-        if ((sT9Search == null && isT9On()) || mContactsUpdated) {
+//        if ((sT9Search == null && isT9On()) || mContactsUpdated) {
             Thread loadContacts = new Thread(new Runnable() {
                 public void run () {
                     mShenduDialpadCallLogFragment.refreshData();
-                    sT9Search = new T9Search(getActivity());
+//                    sT9Search = new T9Search(getActivity());
+                	 if (mShenduContactAdapter == null) {
+                		 MyLog("mShendu_ContactAdapter == null");
+                		 mShenduContactAdapter = new ShenduContactAdapter(getActivity());
+                		 mShenduContactAdapter.getAll();
+                	 }else{
+                		 MyLog("mShendu_ContactAdapter != null");
+                	    mShenduContactAdapter.getAll();
+                	 }
                 }
             });
+    	
             loadContacts.start();
             if (mContactsUpdated) {
                 mContactsUpdated = false;
@@ -657,9 +693,9 @@ public class DialpadFragment extends Fragment
                 mT9AdapterTop = null;
                 /**shutao  2012-10-15*/
 //                mT9ListTop.setAdapter(mT9AdapterTop);
-                mT9List.setAdapter(mT9Adapter);
+//                mT9List.setAdapter(mT9Adapter);
             }
-        }
+//        }
 
         if (isT9On()) {
             getActivity().getContentResolver().unregisterContentObserver(mContactObserver);
@@ -730,7 +766,10 @@ public class DialpadFragment extends Fragment
         if (phoneIsInUse()) {
             final SpannableString hint = new SpannableString(
                     getActivity().getString(R.string.dialerDialpadHintText));
-            hint.setSpan(new RelativeSizeSpan(0.8f), 0, hint.length(), 0);
+            /**shutao 2012-10-23*/
+            mDigits.setHintTextColor(getActivity().getResources().getColor(R.color.background_primary));
+            hint.setSpan(new RelativeSizeSpan(0.8f), 0, hint.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+          
             mDigits.setHint(hint);
         } else {
             // Common case; no hint necessary.
@@ -943,57 +982,42 @@ public class DialpadFragment extends Fragment
 			return;
 		final int length = mDigits.length();
 		if (length > 0) {
-			if (sT9Search != null) {
-				mShenduDialpadCallLogFragmentView.setVisibility(View.GONE);
-				mShenduDialpadCallLogFragment.setMenuVisibility(false);
-				T9SearchResult result = sT9Search.search(mDigits.getText()
-						.toString());
-				if (mT9AdapterTop == null) {
-					mT9AdapterTop = sT9Search.new T9Adapter(getActivity(), 0,
-							new ArrayList<ContactItem>(), getActivity()
-									.getLayoutInflater(), mPhotoLoader);
-					mT9AdapterTop.setNotifyOnChange(true);
-				} else {
-					mT9AdapterTop.clear();
-				}
-				if (result != null) {
-					mT9List.setVisibility(View.VISIBLE);
+			if(mDigits.getText().toString().equals("1")){
+				if(	mT9List.getVisibility() == View.VISIBLE){
 					mShenduNewContactsT9List.setVisibility(View.GONE);
-					if (mT9Adapter == null) {
-						mT9Adapter = sT9Search.new T9Adapter(getActivity(), 0,
-								result.getResults(), getActivity()
-										.getLayoutInflater(), mPhotoLoader);
-						mT9Adapter.setNotifyOnChange(true);
-					} else {
-						mT9Adapter.clear();
-						mT9Adapter.addAll(result.getResults());
-					}
-					if (mT9List.getAdapter() == null) {
-						mT9List.setAdapter(mT9Adapter);
-					}
-					mT9AdapterTop.add(result.getTopContact());
-					if (result.getNumResults() > 1) {
-						// mT9Toggle.setVisibility(View.VISIBLE);
-					} else {
-						// mT9Toggle.setVisibility(View.GONE);
-						toggleT9();
-					}
-					mT9Toggle.setTag(null);
-				} else {
-					mShenduNewContactsT9List.setVisibility(View.VISIBLE);
-					mShenduNewContactT9Adapter.setNewContactNumber(mDigits.getText().toString());
-//					((ContactItem) mT9ListTop.getTag()).number = mDigits
-//							.getText().toString();
-//					mT9AdapterTop.add((ContactItem) mT9ListTop.getTag());
-//					mT9Toggle.setTag(new Boolean(true));
-//					// mT9Toggle.setVisibility(View.GONE);
-//					toggleT9();
+					mT9List.setVisibility(View.GONE);
+					mShenduDialpadCallLogFragmentView.setVisibility(View.VISIBLE);
+					mShenduDialpadCallLogFragment.setMenuVisibility(true);
+					getActivity().invalidateOptionsMenu();
 				}
-				// mT9ListTop.setVisibility(View.VISIBLE);
-//				if (mT9ListTop.getAdapter() == null) {
-//					mT9ListTop.setAdapter(mT9AdapterTop);
-//				}
+				return;
 			}
+			/** shutao 2012-9-21*/
+			mShenduContactAdapter.getFilter().filter(mDigits.getText().toString());
+			mShenduDialpadCallLogFragment.setMenuVisibility(false);
+			 mShenduDialpadCallLogFragmentView.setVisibility(View.GONE);
+	    	 mT9List.setVisibility(View.VISIBLE);
+//			if (sT9Search != null) {
+//				mShenduDialpadCallLogFragmentView.setVisibility(View.GONE);
+//				mShenduDialpadCallLogFragment.setMenuVisibility(false);
+//
+//					mT9List.setVisibility(View.VISIBLE);
+//					mShenduNewContactsT9List.setVisibility(View.GONE);
+//					if (mT9Adapter == null) {
+//						mT9Adapter = sT9Search.new T9Adapter(getActivity(), 0, getActivity()
+//										.getLayoutInflater(), mPhotoLoader);
+//						mT9Adapter.setNotifyOnChange(true);
+//					}
+//					if (mT9List.getAdapter() == null) {
+//						mT9List.setAdapter(mT9Adapter);
+//					}
+//					mT9Adapter.getFilter().filter(mDigits.getText().toString());
+//					mT9Toggle.setTag(null);
+//					mShenduDialpadCallLogFragment.setMenuVisibility(false);
+//					mShenduDialpadCallLogFragmentView.setVisibility(View.GONE);
+//			    	mT9List.setVisibility(View.VISIBLE);
+//			}
+
 		} else {
 			mT9List.setVisibility(View.GONE);
 			mT9ListTop.setVisibility(View.GONE);
@@ -1780,7 +1804,8 @@ public class DialpadFragment extends Fragment
     public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
         if (parent == mT9List || parent == mT9ListTop) {
             if (parent == mT9List) {
-                setFormattedDigits(mT9Adapter.getItem(position).number,null);
+//                setFormattedDigits(mT9Adapter.getItem(position).number,null);
+            	   setFormattedDigits(((Shendu_ContactItem)mShenduContactAdapter.getItem(position)).number,null);
                 dialButtonPressed();
             } else {
                 if (mT9Toggle.getTag() == null) {
@@ -2094,5 +2119,10 @@ public class DialpadFragment extends Fragment
 			 mT9Toggle.setChecked(true);
 			 animateT9();
 		 }
+	}
+	private void MyLog(String msg){
+		if(DEBUG){
+			Log.d(TAG, msg);
+		}
 	}
 }
