@@ -19,13 +19,16 @@
     android:focusable="true"
     android:background="?android:attr/selectableItemBackground"
     android:nextFocusRight="@+id/contact_tile_quick">
-
+   <!-- Wang: -->
     <RelativeLayout
+        android:paddingLeft="8dip"
         android:layout_width="match_parent"
         android:layout_height="match_parent" >
 
         <!-- Wang: -->
         <com.android.contacts.widget.LayoutSuppressingQuickContactBadge
+            android:layout_marginTop="8dip"
+            android:layout_marginBottom="8dip"
             android:id="@+id/contact_tile_quick"
             android:layout_width="64dip"
             android:layout_height="64dip"
@@ -37,7 +40,7 @@
             android:layout_width="match_parent"
             android:layout_height="64dip"
             android:orientation="vertical"
-            android:layout_alignParentBottom="true"
+            android:layout_centerVertical="true"
             android:gravity="center_vertical"
             android:paddingRight="8dip"
             android:paddingLeft="80dip">

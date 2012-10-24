@@ -25,8 +25,9 @@
     <include
         android:id="@+id/kind_title_layout"
         layout="@layout/edit_kind_title" />
-
+    <!-- Wang: -->
     <LinearLayout
+        android:paddingLeft="6dip"
         android:id="@+id/kind_editors"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

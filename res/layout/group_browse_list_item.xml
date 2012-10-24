@@ -31,8 +31,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingLeft="?attr/list_item_padding_left"
-    android:paddingTop="?attr/list_item_padding_top"
-    android:paddingBottom="?attr/list_item_padding_bottom"
+    
+    
     android:minHeight="@dimen/detail_min_line_item_height" >
 
     <View
