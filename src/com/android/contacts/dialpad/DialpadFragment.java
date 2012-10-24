@@ -1379,36 +1379,37 @@ public class DialpadFragment extends Fragment
                 mDelete.setPressed(false);
                 return true;
             }
-            case R.id.one: {
-                // '1' may be already entered since we rely on onTouch() event for numeric buttons.
-                // Just for safety we also check if the digits field is empty or not.
-                if (isDigitsEmpty() || TextUtils.equals(mDigits.getText(), "1")) {
-                    // We'll try to initiate voicemail and thus we want to remove irrelevant string.
-                    removePreviousDigitIfPossible();
-
-                    if (isVoicemailAvailable()) {
-                        callVoicemail();
-                    } else if (getActivity() != null) {
-                        // Voicemail is unavailable maybe because Airplane mode is turned on.
-                        // Check the current status and show the most appropriate error message.
-                        final boolean isAirplaneModeOn =
-                                Settings.System.getInt(getActivity().getContentResolver(),
-                                Settings.System.AIRPLANE_MODE_ON, 0) != 0;
-                        if (isAirplaneModeOn) {
-                            DialogFragment dialogFragment = ErrorDialogFragment.newInstance(
-                                    R.string.dialog_voicemail_airplane_mode_message);
-                            dialogFragment.show(getFragmentManager(),
-                                    "voicemail_request_during_airplane_mode");
-                        } else {
-                            DialogFragment dialogFragment = ErrorDialogFragment.newInstance(
-                                    R.string.dialog_voicemail_not_ready_message);
-                            dialogFragment.show(getFragmentManager(), "voicemail_not_ready");
-                        }
-                    }
-                    return true;
-                }
-                return false;
-            }
+            /**shutao 2012-10-25*/
+//            case R.id.one: {
+//                // '1' may be already entered since we rely on onTouch() event for numeric buttons.
+//                // Just for safety we also check if the digits field is empty or not.
+//                if (isDigitsEmpty() || TextUtils.equals(mDigits.getText(), "1")) {
+//                    // We'll try to initiate voicemail and thus we want to remove irrelevant string.
+//                    removePreviousDigitIfPossible();
+//
+//                    if (isVoicemailAvailable()) {
+//                        callVoicemail();
+//                    } else if (getActivity() != null) {
+//                        // Voicemail is unavailable maybe because Airplane mode is turned on.
+//                        // Check the current status and show the most appropriate error message.
+//                        final boolean isAirplaneModeOn =
+//                                Settings.System.getInt(getActivity().getContentResolver(),
+//                                Settings.System.AIRPLANE_MODE_ON, 0) != 0;
+//                        if (isAirplaneModeOn) {
+//                            DialogFragment dialogFragment = ErrorDialogFragment.newInstance(
+//                                    R.string.dialog_voicemail_airplane_mode_message);
+//                            dialogFragment.show(getFragmentManager(),
+//                                    "voicemail_request_during_airplane_mode");
+//                        } else {
+//                            DialogFragment dialogFragment = ErrorDialogFragment.newInstance(
+//                                    R.string.dialog_voicemail_not_ready_message);
+//                            dialogFragment.show(getFragmentManager(), "voicemail_not_ready");
+//                        }
+//                    }
+//                    return true;
+//                }
+//                return false;
+//            }
             case R.id.zero: {
                 // Remove tentative input ('0') done by onTouch().
                 removePreviousDigitIfPossible();

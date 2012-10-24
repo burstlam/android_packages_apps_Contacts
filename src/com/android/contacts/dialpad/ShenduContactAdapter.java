@@ -135,13 +135,11 @@ public class ShenduContactAdapter extends BaseAdapter implements Filterable {
 			                Shendu_ContactItem contactInfo = new Shendu_ContactItem();
 			                contactInfo.id = contactId;
 			                contactInfo.name = contact.getString(1);
-			            
+			                contactInfo.number = removeNonDigits(num);
 			                mNameList.add(contactInfo.name);
-			                
 //			            	  contactInfo.pinYin = MyHanziToPinyin.getPinYin(contactInfo.name.replaceAll(",", ""));
 //			            	  log("getall"+contactInfo.name+contactInfo.pinyin);
 			                nameToPinYinAndNumber(contact.getString(4), contactInfo);
-			                contactInfo.number = num.replaceAll(" ", "");
 			                mPhoneList.add(contactInfo.number);
 			                contactInfo.timesContacted = contact.getInt(2);
 			                contactInfo.isSuperPrimary = phone.getInt(2) > 0;
@@ -284,6 +282,19 @@ public class ShenduContactAdapter extends BaseAdapter implements Filterable {
         return num;
     }
 	
+    
+    /**shutao 2012-10-25*/
+    public static String removeNonDigits(String number) {
+        int len = number.length();
+        StringBuilder sb = new StringBuilder(len);
+        for (int i = 0; i < len; i++) {
+            char ch = number.charAt(i);
+            if ((ch >= '0' && ch <= '9') || ch == '*' || ch == '#' || ch == '+') {
+                sb.append(ch);
+            }
+        }
+        return sb.toString();
+    }
 	private void getStrangeCallLogs() {
 		mStrangeCalls.clear();
 		/** shutao 2012-9-27*/
