@@ -421,7 +421,7 @@ public class ShenduContactAdapter extends BaseAdapter implements Filterable {
             if (o.numberMatchId != -1) {
                 Spannable s = (Spannable) holder.name.getText();
                 int numberStart = o.numberMatchId;
-           	  log("getview yy== "+numberStart+"num"+(numberStart + o.num)+"name"+o.number);
+//           	  log("getview yy== "+numberStart+"num"+(numberStart + o.num)+"name"+o.number);
                 s.setSpan(new ForegroundColorSpan(mContext.getResources().getColor(R.color.shendu_high_light)),
                         numberStart, numberStart + o.num, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
                 holder.name.setText(s);
@@ -444,11 +444,11 @@ public class ShenduContactAdapter extends BaseAdapter implements Filterable {
 //                s.setSpan(new ForegroundColorSpan(mContext.getResources().getColor(R.color.shendu_high_light)),
 //                        nameStart, send , Spannable.SPAN_INCLUSIVE_INCLUSIVE);
                 for(int index = nameStart ; index< o.firstNumberIndexs.size();index++){
-                	if(index-nameStart == send){
+                	if(index-nameStart == o.num){
                 		break;
                 	}
              	   int num =o.firstNumberIndexs.get(index);
-         		   log("o.firstNumberIndexs"+num+o.name);
+//         		   log("o.firstNumberIndexs"+num+o.name);
          		   sPinYin.setSpan(new ForegroundColorSpan(mContext.getResources().getColor(R.color.shendu_high_light)),
          				   num-1, num , Spannable.SPAN_INCLUSIVE_INCLUSIVE);
                 }
@@ -484,7 +484,7 @@ public class ShenduContactAdapter extends BaseAdapter implements Filterable {
             	 int sLeng = sPinYin.length();
             	 int nameStart = o.pinyinMatchId;
             	 int send = (o.num+nameStart) >= sLeng ?sLeng:(o.num+nameStart);
-            	 log("nameStart"+nameStart+"send = "+send);
+//            	 log("nameStart"+nameStart+"send = "+send);
         	     sPinYin.setSpan(new ForegroundColorSpan(mContext.getResources().getColor(R.color.shendu_high_light)),
         			 nameStart, send , Spannable.SPAN_INCLUSIVE_INCLUSIVE);
         	     holder.pinYin.setText(sPinYin);
@@ -617,8 +617,9 @@ public class ShenduContactAdapter extends BaseAdapter implements Filterable {
 						}
 					}
 				}
-				result.addAll(nameInitial);
+				
 				result.addAll(nameTopInitial);
+				result.addAll(nameInitial);
 				result.addAll(nameData);
 				result.addAll(numberData);
 //				log("performFiltering----------"+result.size());
@@ -773,7 +774,7 @@ public class ShenduContactAdapter extends BaseAdapter implements Filterable {
 	
 
 	
-	private static boolean debug = false;
+	private static boolean debug = true;
 
 	private static void log(String msg) {
 		if (debug)
