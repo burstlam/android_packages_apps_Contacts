@@ -689,11 +689,13 @@ public class DialpadFragment extends Fragment
         int[] buttonIds = new int[] { R.id.one, R.id.two, R.id.three, R.id.four, R.id.five,
                 R.id.six, R.id.seven, R.id.eight, R.id.nine, R.id.zero, R.id.star, R.id.pound};
         for (int id : buttonIds) {
-            ((DialpadImageButton) fragmentView.findViewById(id)).setOnPressedListener(this);
+        	/**shutao 2012-10-25*/
+//            ((DialpadImageButton) fragmentView.findViewById(id)).setOnPressedListener(this);
+        	((DialpadImageButton) fragmentView.findViewById(id)).setOnClickListener(this);
         }
 
         // Long-pressing one button will initiate Voicemail.
-        fragmentView.findViewById(R.id.one).setOnLongClickListener(this);
+//        fragmentView.findViewById(R.id.one).setOnLongClickListener(this);
 
         // Long-pressing zero button will enter '+' instead.
         fragmentView.findViewById(R.id.zero).setOnLongClickListener(this);
@@ -1162,40 +1164,40 @@ public class DialpadFragment extends Fragment
     private void keyPressed(int keyCode) {
         switch (keyCode) {
             case KeyEvent.KEYCODE_1:
-                playTone(ToneGenerator.TONE_DTMF_1, TONE_LENGTH_INFINITE);
+                playTone(ToneGenerator.TONE_DTMF_1, TONE_LENGTH_MS);
                 break;
             case KeyEvent.KEYCODE_2:
-                playTone(ToneGenerator.TONE_DTMF_2, TONE_LENGTH_INFINITE);
+                playTone(ToneGenerator.TONE_DTMF_2, TONE_LENGTH_MS);
                 break;
             case KeyEvent.KEYCODE_3:
-                playTone(ToneGenerator.TONE_DTMF_3, TONE_LENGTH_INFINITE);
+                playTone(ToneGenerator.TONE_DTMF_3, TONE_LENGTH_MS);
                 break;
             case KeyEvent.KEYCODE_4:
-                playTone(ToneGenerator.TONE_DTMF_4, TONE_LENGTH_INFINITE);
+                playTone(ToneGenerator.TONE_DTMF_4, TONE_LENGTH_MS);
                 break;
             case KeyEvent.KEYCODE_5:
-                playTone(ToneGenerator.TONE_DTMF_5, TONE_LENGTH_INFINITE);
+                playTone(ToneGenerator.TONE_DTMF_5, TONE_LENGTH_MS);
                 break;
             case KeyEvent.KEYCODE_6:
-                playTone(ToneGenerator.TONE_DTMF_6, TONE_LENGTH_INFINITE);
+                playTone(ToneGenerator.TONE_DTMF_6, TONE_LENGTH_MS);
                 break;
             case KeyEvent.KEYCODE_7:
-                playTone(ToneGenerator.TONE_DTMF_7, TONE_LENGTH_INFINITE);
+                playTone(ToneGenerator.TONE_DTMF_7, TONE_LENGTH_MS);
                 break;
             case KeyEvent.KEYCODE_8:
-                playTone(ToneGenerator.TONE_DTMF_8, TONE_LENGTH_INFINITE);
+                playTone(ToneGenerator.TONE_DTMF_8, TONE_LENGTH_MS);
                 break;
             case KeyEvent.KEYCODE_9:
-                playTone(ToneGenerator.TONE_DTMF_9, TONE_LENGTH_INFINITE);
+                playTone(ToneGenerator.TONE_DTMF_9, TONE_LENGTH_MS);
                 break;
             case KeyEvent.KEYCODE_0:
-                playTone(ToneGenerator.TONE_DTMF_0, TONE_LENGTH_INFINITE);
+                playTone(ToneGenerator.TONE_DTMF_0, TONE_LENGTH_MS);
                 break;
             case KeyEvent.KEYCODE_POUND:
-                playTone(ToneGenerator.TONE_DTMF_P, TONE_LENGTH_INFINITE);
+                playTone(ToneGenerator.TONE_DTMF_P, TONE_LENGTH_MS);
                 break;
             case KeyEvent.KEYCODE_STAR:
-                playTone(ToneGenerator.TONE_DTMF_S, TONE_LENGTH_INFINITE);
+                playTone(ToneGenerator.TONE_DTMF_S, TONE_LENGTH_MS);
                 break;
             default:
                 break;
@@ -1238,60 +1240,60 @@ public class DialpadFragment extends Fragment
     public void onPressed(View view, boolean pressed) {
         if (DEBUG) Log.d(TAG, "onPressed(). view: " + view + ", pressed: " + pressed);
         if (pressed) {
-            switch (view.getId()) {
-                case R.id.one: {
-                    keyPressed(KeyEvent.KEYCODE_1);
-                    break;
-                }
-                case R.id.two: {
-                    keyPressed(KeyEvent.KEYCODE_2);
-                    break;
-                }
-                case R.id.three: {
-                    keyPressed(KeyEvent.KEYCODE_3);
-                    break;
-                }
-                case R.id.four: {
-                    keyPressed(KeyEvent.KEYCODE_4);
-                    break;
-                }
-                case R.id.five: {
-                    keyPressed(KeyEvent.KEYCODE_5);
-                    break;
-                }
-                case R.id.six: {
-                    keyPressed(KeyEvent.KEYCODE_6);
-                    break;
-                }
-                case R.id.seven: {
-                    keyPressed(KeyEvent.KEYCODE_7);
-                    break;
-                }
-                case R.id.eight: {
-                    keyPressed(KeyEvent.KEYCODE_8);
-                    break;
-                }
-                case R.id.nine: {
-                    keyPressed(KeyEvent.KEYCODE_9);
-                    break;
-                }
-                case R.id.zero: {
-                    keyPressed(KeyEvent.KEYCODE_0);
-                    break;
-                }
-                case R.id.pound: {
-                    keyPressed(KeyEvent.KEYCODE_POUND);
-                    break;
-                }
-                case R.id.star: {
-                    keyPressed(KeyEvent.KEYCODE_STAR);
-                    break;
-                }
-                default: {
-                    Log.wtf(TAG, "Unexpected onTouch(ACTION_DOWN) event from: " + view);
-                    break;
-                }
-            }
+//            switch (view.getId()) {
+//                case R.id.one: {
+//                    keyPressed(KeyEvent.KEYCODE_1);
+//                    break;
+//                }
+//                case R.id.two: {
+//                    keyPressed(KeyEvent.KEYCODE_2);
+//                    break;
+//                }
+//                case R.id.three: {
+//                    keyPressed(KeyEvent.KEYCODE_3);
+//                    break;
+//                }
+//                case R.id.four: {
+//                    keyPressed(KeyEvent.KEYCODE_4);
+//                    break;
+//                }
+//                case R.id.five: {
+//                    keyPressed(KeyEvent.KEYCODE_5);
+//                    break;
+//                }
+//                case R.id.six: {
+//                    keyPressed(KeyEvent.KEYCODE_6);
+//                    break;
+//                }
+//                case R.id.seven: {
+//                    keyPressed(KeyEvent.KEYCODE_7);
+//                    break;
+//                }
+//                case R.id.eight: {
+//                    keyPressed(KeyEvent.KEYCODE_8);
+//                    break;
+//                }
+//                case R.id.nine: {
+//                    keyPressed(KeyEvent.KEYCODE_9);
+//                    break;
+//                }
+//                case R.id.zero: {
+//                    keyPressed(KeyEvent.KEYCODE_0);
+//                    break;
+//                }
+//                case R.id.pound: {
+//                    keyPressed(KeyEvent.KEYCODE_POUND);
+//                    break;
+//                }
+//                case R.id.star: {
+//                    keyPressed(KeyEvent.KEYCODE_STAR);
+//                    break;
+//                }
+//                default: {
+//                    Log.wtf(TAG, "Unexpected onTouch(ACTION_DOWN) event from: " + view);
+//                    break;
+//                }
+//            }
             mDialpadPressCount++;
         } else {
             view.jumpDrawablesToCurrentState();
@@ -1313,43 +1315,94 @@ public class DialpadFragment extends Fragment
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.deleteButton: {
-                keyPressed(KeyEvent.KEYCODE_DEL);
-                return;
-            }
-            case R.id.dialButton: {
-//                mHaptic.vibrate();  // Vibrate here too, just like we do for the regular keys
-                mVibrate.playVibrate(-1);
-                dialButtonPressed();
-                return;
-            }
-            case R.id.digits: {
-                if (!isDigitsEmpty()) {
-                    mDigits.setCursorVisible(true);
-                }
-                return;
-            }
-            case R.id.shendu_call_show_button:{
-            	mT9Toggle.setChecked(false);
-            	animateT9();
-            	return;
-            }
-            /** shutao 2012-10-15 to contact*/
-            case R.id.shendu_toContactsButton:{
-            	Intent intent = new Intent(getActivity(),PeopleActivity.class);
-            	startActivity(intent); 
-            	return;
-            }
-            case R.id.t9toggle: {
-                animateT9();
-                return;
-            }
-            default: {
-                Log.wtf(TAG, "Unexpected onClick() event from: " + view);
-                return;
-            }
-        }
+		switch (view.getId()) {
+
+		case R.id.one: {
+			keyPressed(KeyEvent.KEYCODE_1);
+			break;
+		}
+		case R.id.two: {
+			keyPressed(KeyEvent.KEYCODE_2);
+			break;
+		}
+		case R.id.three: {
+			keyPressed(KeyEvent.KEYCODE_3);
+			break;
+		}
+		case R.id.four: {
+			keyPressed(KeyEvent.KEYCODE_4);
+			break;
+		}
+		case R.id.five: {
+			keyPressed(KeyEvent.KEYCODE_5);
+			break;
+		}
+		case R.id.six: {
+			keyPressed(KeyEvent.KEYCODE_6);
+			break;
+		}
+		case R.id.seven: {
+			keyPressed(KeyEvent.KEYCODE_7);
+			break;
+		}
+		case R.id.eight: {
+			keyPressed(KeyEvent.KEYCODE_8);
+			break;
+		}
+		case R.id.nine: {
+			keyPressed(KeyEvent.KEYCODE_9);
+			break;
+		}
+		case R.id.zero: {
+			keyPressed(KeyEvent.KEYCODE_0);
+			break;
+		}
+		case R.id.pound: {
+			keyPressed(KeyEvent.KEYCODE_POUND);
+			break;
+		}
+		case R.id.star: {
+			keyPressed(KeyEvent.KEYCODE_STAR);
+			break;
+		}
+		case R.id.deleteButton: {
+			keyPressed(KeyEvent.KEYCODE_DEL);
+			return;
+		}
+		case R.id.dialButton: {
+			// mHaptic.vibrate(); // Vibrate here too, just like we do for the
+			// regular keys
+			mVibrate.playVibrate(-1);
+			dialButtonPressed();
+			return;
+		}
+		case R.id.digits: {
+			if (!isDigitsEmpty()) {
+				mDigits.setCursorVisible(true);
+			}
+			return;
+		}
+		case R.id.shendu_call_show_button: {
+			mT9Toggle.setChecked(false);
+			animateT9();
+			return;
+		}
+		/** shutao 2012-10-15 to contact */
+		case R.id.shendu_toContactsButton: {
+			Intent intent = new Intent(getActivity(), PeopleActivity.class);
+			startActivity(intent);
+			return;
+		}
+		case R.id.t9toggle: {
+			animateT9();
+			return;
+		}
+		default: {
+			Log.wtf(TAG, "Unexpected onClick() event from: " + view);
+			return;
+		}
+		
+		}
     }
 
     public PopupMenu constructPopupMenu(View anchorView) {

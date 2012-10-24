@@ -223,6 +223,7 @@ public class ShenduContactAdapter extends BaseAdapter implements Filterable {
     				 sbNumber.append(character);
     				 hanzis.append(character);
     				 hanziNum ++ ;
+    				 firstNumberIndexs.add(hanziNum);
 //    				 isBoolean.add(true);
     			 }
     			 else{
@@ -429,6 +430,7 @@ public class ShenduContactAdapter extends BaseAdapter implements Filterable {
             holder.number.setVisibility(View.GONE);
             holder.imPhoto.setImageResource(R.drawable.ic_contact_picture_holo_dark);
             holder.imPhoto.assignContactFromPhone(o.number, true);
+        	  holder.pinYin.setVisibility(View.GONE);
             if (o.numberMatchId != -1) {
                 Spannable s = (Spannable) holder.name.getText();
                 int numberStart = o.numberMatchId;
@@ -571,6 +573,7 @@ public class ShenduContactAdapter extends BaseAdapter implements Filterable {
 							mOldInfoList.get(i).nameMatchId = -1;
 							if(mOldInfoList.get(i).name != null){
 								int pos = mFirstNumberIndexs.get(i).indexOf(number);
+//								mNameTONumberList.get(i).indexOf(number);
 								if (pos != -1) {
 									
 									mOldInfoList.get(i).firstMathcId = pos;
@@ -582,7 +585,8 @@ public class ShenduContactAdapter extends BaseAdapter implements Filterable {
 									else
 									nameInitial.add(mOldInfoList.get(i));
 									
-								}else 	/**shutao 2012-10-23*/
+								}
+								else 	/**shutao 2012-10-23*/
 									if(mNameTONumberList.get(i).contains(number)){
 									mOldInfoList.get(i).pinyinMatchId = mNameTONumberList.get(i).indexOf(number);
 									mOldInfoList.get(i).num = number.length();
@@ -590,29 +594,19 @@ public class ShenduContactAdapter extends BaseAdapter implements Filterable {
 										 nameTopInitial.add(mOldInfoList.get(i));
 									}else
 									     nameData.add(mOldInfoList.get(i));
-								}else{
-//									/**shutao 2012-9-26*/
-//									if(/*matchNumberIndexOf01*/matchNumberIndexOf(i,number,mOldInfoList.get(i))){
-////										result.add(oldInfoList.get(i));
-//										/**shutao 2012-9-26*/
-//										if(mOldInfoList.get(i).nameMatchId == 0 &&
-//												mOldInfoList.get(i).numberNums == mOldInfoList.get(i).name.length()){
-//											 nameTopInitial.add(mOldInfoList.get(i));
-//										}else
-//										nameData.add(mOldInfoList.get(i));
-//									}else {
-									pos = mPhoneList.get(i).indexOf(number);
-									if (pos != -1) {
-										mOldInfoList.get(i).nameMatchId = -1;
-										mOldInfoList.get(i).numberMatchId = pos;
-//										log("phoneList " + oldInfoList.get(i).numberMatchId);
-										mOldInfoList.get(i).num = number.length();
-										numberData.add(mOldInfoList.get(i));
-//										result.add();
 									}
-//								}
-								}
-
+//								}else{
+////									/**shutao 2012-9-26*/
+////									if(/*matchNumberIndexOf01*/matchNumberIndexOf(i,number,mOldInfoList.get(i))){
+//////										result.add(oldInfoList.get(i));
+////										/**shutao 2012-9-26*/
+////										if(mOldInfoList.get(i).nameMatchId == 0 &&
+////												mOldInfoList.get(i).numberNums == mOldInfoList.get(i).name.length()){
+////											 nameTopInitial.add(mOldInfoList.get(i));
+////										}else
+////										nameData.add(mOldInfoList.get(i));
+////									}
+//
 							}else{
 								int pos = mPhoneList.get(i).indexOf(number);
 								if (pos !=-1 ) {
@@ -640,7 +634,7 @@ public class ShenduContactAdapter extends BaseAdapter implements Filterable {
 				numberData.clear();
 				nameInitial.clear();
 				nameData.clear();
-				System.out.println("sech  ---   time "+ (System.currentTimeMillis()-time1));
+				log("sech  ---   time "+ (System.currentTimeMillis()-time1));
 				return results;
 			}
 		};
