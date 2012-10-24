@@ -84,7 +84,7 @@ public class DialtactsActivity extends TransactionSafeActivity
         implements View.OnClickListener {
     private static final String TAG = "DialtactsActivity";
 
-    public static final boolean DEBUG = true;
+    public static final boolean DEBUG = false;
 
     /** Used to open Call Setting */
     private static final String PHONE_PACKAGE = "com.android.phone";

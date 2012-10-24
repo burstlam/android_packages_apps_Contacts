@@ -281,7 +281,8 @@ public class DialpadFragment extends Fragment
             Log.v(TAG, "mIntentReceiver  onReceive  intent.getAction(): " + intent.getAction());
             if (intent.getAction().equals(Intent.ACTION_LOCALE_CHANGED)) {
                 if (isT9On()) {
-//                    sT9Search = new T9Search(getActivity());   
+//                    sT9Search = new T9Search(getActivity()); 
+                	MyLog("onReceive------++++++++++++++++ACTION_LOCALE_CHANGED");
                 }
             }
         }
@@ -300,24 +301,60 @@ public class DialpadFragment extends Fragment
         mWasEmptyBeforeTextChange = TextUtils.isEmpty(s);
     }
 
+    /**shutao 2012-10-25 The last number entered in the record*/
+    public String mShenduHistoricalString = "";
+    
     @Override
     public void onTextChanged(CharSequence input, int start, int before, int changeCount) {
-        if (mWasEmptyBeforeTextChange != TextUtils.isEmpty(input)) {
-            final Activity activity = getActivity();
-            if (activity != null) {
-                activity.invalidateOptionsMenu();
+    	/**shutao 2012-10-25*/
+    	if(!mShenduHistoricalString.equals(input.toString())){
+    		
+            if (mWasEmptyBeforeTextChange != TextUtils.isEmpty(input)) {
+                final Activity activity = getActivity();
+                if (activity != null) {
+                    activity.invalidateOptionsMenu();
+                }
             }
-        }
+
+    	}
 
         // DTMF Tones do not need to be played here any longer -
         // the DTMF dialer handles that functionality now.
     }
-
+    /** shutao 2012-10-15*/
+    private boolean mShenduIsNull = true; 
     @Override
     public void afterTextChanged(Editable input) {
         // When DTMF dialpad buttons are being pressed, we delay SpecialCharSequencMgr sequence,
         // since some of SpecialCharSequenceMgr's behavior is too abrupt for the "touch-down"
         // behavior.
+    	if(!mShenduHistoricalString.equals(input.toString())){
+    		try{
+    		    if(input.toString().equals("")){
+    		    	MyLog("afterTextChanged == kong");
+    		    	mShenduHistoricalThreadString = "";
+    		    	mShenduIsNull = true;
+    		    	mShenduTimeHandler.removeCallbacks(mShenduRunnable);
+    		    	if(mT9List.getVisibility() == View.VISIBLE 
+    		    			|| mShenduNewContactsT9List.getVisibility() == View.VISIBLE){
+    		    	mShenduNewContactsT9List.setVisibility(View.GONE);
+					mT9List.setVisibility(View.GONE);
+					mShenduDialpadCallLogFragmentView.setVisibility(View.VISIBLE);
+					mShenduDialpadCallLogFragment.setMenuVisibility(true);
+					getActivity().invalidateOptionsMenu();
+    		    	}
+    	         }else{
+    	        	   	if(mShenduIsNull){
+        	            	mShenduTimeHandler.postDelayed(mShenduRunnable, SEARCH_TIME_MILLIS);
+        	            	mShenduIsNull = false;
+    	            	}
+    	          }
+    		}catch(Exception e){
+    			
+    		}
+    	
+    		mShenduHistoricalString = input.toString();
+    	}
         if (!mDigitsFilledByIntent &&
                 SpecialCharSequenceMgr.handleChars(getActivity(), input.toString(), mDigits)) {
             // A special sequence was entered, clear the digits
@@ -788,13 +825,17 @@ public class DialpadFragment extends Fragment
 
         stopWatch.stopAndLog(TAG, 50);
         /**shutao 2012-10-18*/
-        searchContacts();
+//        searchContacts();
     }
 
     @Override
     public void onPause() {
         super.onPause();
 
+        /**shutao 2012-10-25*/
+        mShenduTimeHandler.removeCallbacks(mShenduRunnable);
+        mShenduIsNull = true;
+        
         // Stop listening for phone state changes.
         TelephonyManager telephonyManager =
                 (TelephonyManager) getActivity().getSystemService(Context.TELEPHONY_SERVICE);
@@ -977,7 +1018,7 @@ public class DialpadFragment extends Fragment
      * Toggles view visibility based on results
      * shutao 2012-10-15
      */
-	private void searchContacts() {
+	private synchronized void searchContacts() {
 		if (!isT9On())
 			return;
 		final int length = mDigits.length();
@@ -1167,7 +1208,7 @@ public class DialpadFragment extends Fragment
 
         // If the cursor is at the end of the text we hide it.
         final int length = mDigits.length();
-        searchContacts();
+//        searchContacts();
         if (length == mDigits.getSelectionStart() && length == mDigits.getSelectionEnd()) {
             mDigits.setCursorVisible(false);
         }
@@ -2120,6 +2161,31 @@ public class DialpadFragment extends Fragment
 			 animateT9();
 		 }
 	}
+	
+	
+	
+	/**
+	 * shutao 2012-9-3  Loop search RUN method
+	 */
+    public final long  SEARCH_TIME_MILLIS = 200;
+    public String mShenduHistoricalThreadString = "";
+	public Handler mShenduTimeHandler = new Handler();
+	public boolean mRunnableOverlapp = false;
+	public Runnable mShenduRunnable= new Runnable() {
+		
+		@Override
+		public void run() {
+			// TODO Auto-generated method stub
+//			MyLog("timeHandler------------------------");
+			if(!mShenduHistoricalThreadString.equals(mDigits.getText().toString())){
+				mShenduHistoricalThreadString = mDigits.getText().toString();
+				     searchContacts();
+				    
+			} 
+			mShenduTimeHandler.postDelayed(this, SEARCH_TIME_MILLIS);
+		}
+	};
+	
 	private void MyLog(String msg){
 		if(DEBUG){
 			Log.d(TAG, msg);
