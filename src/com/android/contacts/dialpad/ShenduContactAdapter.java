@@ -594,6 +594,16 @@ public class ShenduContactAdapter extends BaseAdapter implements Filterable {
 										 nameTopInitial.add(mOldInfoList.get(i));
 									}else
 									     nameData.add(mOldInfoList.get(i));
+									}else {
+										int index = mPhoneList.get(i).indexOf(number);
+										if (index !=-1 ) {
+											mOldInfoList.get(i).nameMatchId = -1;
+											mOldInfoList.get(i).numberMatchId = index;
+//											log("phoneList " + mPhoneList.get(i)+"number"+number+"mOldInfoList.get(i)"+mOldInfoList.get(i).number);
+											mOldInfoList.get(i).num = number.length();
+											numberData.add(mOldInfoList.get(i));
+//											result.add();
+										}
 									}
 //								}else{
 ////									/**shutao 2012-9-26*/
