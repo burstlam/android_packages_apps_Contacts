@@ -593,7 +593,8 @@ import libcore.util.Objects;
         final boolean isHighlighted = isNew;
         mCallLogViewsHelper.setPhoneCallDetails(views, details, isHighlighted);
         setPhoto(views, photoId, lookupUri);
-
+        /**shutao  2012-10-26*/
+        views.quickContactView.assignContactFromPhone(info.number, true);
         // Listen for the first draw
         if (mViewTreeObserver == null) {
             mViewTreeObserver = view.getViewTreeObserver();

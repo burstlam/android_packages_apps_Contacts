@@ -925,6 +925,8 @@ public class DialtactsActivity extends TransactionSafeActivity
             // This is only done when running at the top of the stack;
             // otherwise, we have been launched by someone else so need to
             // allow the user to go back to the caller.
+        	/**shutao 2012-10-26*/
+        	  mDialpadFragment.clearDigits();
             moveTaskToBack(false);
         } else {
             super.onBackPressed();

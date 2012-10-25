@@ -334,7 +334,7 @@ public class DialpadFragment extends Fragment
     		    	MyLog("afterTextChanged == kong");
     		    	mShenduHistoricalThreadString = "";
     		    	mShenduIsNull = true;
-    		    	mShenduTimeHandler.removeCallbacks(mShenduRunnable);
+//    		    	mShenduTimeHandler.removeCallbacks(mShenduRunnable);
     		    	if(mT9List.getVisibility() == View.VISIBLE 
     		    			|| mShenduNewContactsT9List.getVisibility() == View.VISIBLE){
     		    	mShenduNewContactsT9List.setVisibility(View.GONE);
@@ -344,10 +344,11 @@ public class DialpadFragment extends Fragment
 					getActivity().invalidateOptionsMenu();
     		    	}
     	         }else{
-    	        	   	if(mShenduIsNull){
-        	            	mShenduTimeHandler.postDelayed(mShenduRunnable, SEARCH_TIME_MILLIS);
-        	            	mShenduIsNull = false;
-    	            	}
+    	        	 searchContacts();
+//    	        	   	if(mShenduIsNull){
+//        	            	mShenduTimeHandler.postDelayed(mShenduRunnable, SEARCH_TIME_MILLIS);
+//        	            	mShenduIsNull = false;
+//    	            	}
     	          }
     		}catch(Exception e){
     			
@@ -1020,7 +1021,7 @@ public class DialpadFragment extends Fragment
      * Toggles view visibility based on results
      * shutao 2012-10-15
      */
-	private synchronized void searchContacts() {
+	private void searchContacts() {
 		if (!isT9On())
 			return;
 		final int length = mDigits.length();
@@ -1036,9 +1037,10 @@ public class DialpadFragment extends Fragment
 				return;
 			}
 			/** shutao 2012-9-21*/
-			mShenduContactAdapter.getFilter().filter(mDigits.getText().toString());
+//			mShenduContactAdapter.getFilter().filter(mDigits.getText().toString());
+			mShenduContactAdapter.search(mDigits.getText().toString());
 			mShenduDialpadCallLogFragment.setMenuVisibility(false);
-			 mShenduDialpadCallLogFragmentView.setVisibility(View.GONE);
+			mShenduDialpadCallLogFragmentView.setVisibility(View.GONE);
 	    	 mT9List.setVisibility(View.VISIBLE);
 //			if (sT9Search != null) {
 //				mShenduDialpadCallLogFragmentView.setVisibility(View.GONE);
@@ -1224,7 +1226,7 @@ public class DialpadFragment extends Fragment
                     dialButtonPressed();
                     return true;
                 }
-                searchContacts();
+//                searchContacts();
                 break;
         }
         return false;
@@ -1418,14 +1420,21 @@ public class DialpadFragment extends Fragment
         return popupMenu;
     }
 
+    /**shutao  2012-10-26*/
+    public void clearDigits(){
+        Editable digits = mDigits.getText();
+    	 digits.clear();
+    }
+    
     @Override
     public boolean onLongClick(View view) {
-        final Editable digits = mDigits.getText();
+//        final Editable digits = mDigits.getText();
         final int id = view.getId();
         switch (id) {
             case R.id.deleteButton: {
-                digits.clear();
-                searchContacts();
+//                digits.clear();
+//                searchContacts();
+            	clearDigits();
                 // TODO: The framework forgets to clear the pressed
                 // status of disabled button. Until this is fixed,
                 // clear manually the pressed status. b/2133127
@@ -2221,7 +2230,7 @@ public class DialpadFragment extends Fragment
 	/**
 	 * shutao 2012-9-3  Loop search RUN method
 	 */
-    public final long  SEARCH_TIME_MILLIS = 200;
+    public final long  SEARCH_TIME_MILLIS = 250;
     public String mShenduHistoricalThreadString = "";
 	public Handler mShenduTimeHandler = new Handler();
 	public boolean mRunnableOverlapp = false;

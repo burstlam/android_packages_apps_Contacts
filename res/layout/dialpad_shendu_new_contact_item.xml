@@ -15,8 +15,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
-            android:layout_margin="8dp"
-            android:src="@drawable/shendu_ic_menu_add_contact_holo_light" />
+            android:layout_margin="8dp"/>
 
         <TextView
             android:id="@+id/dialpad_menu_content"

@@ -53,27 +53,47 @@ public class ShenDuNewContactT9Adapter extends BaseAdapter{
 		// TODO Auto-generated method stub
 		return position;
 	}
+	
+	class Views{
+		ImageView dialpad_menu_icon;
+		TextView dialpad_menu_content;
+	}
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		// TODO Auto-generated method stub
+		Views views;
+		if(convertView == null){
 		convertView = LayoutInflater.from(mContext).inflate(
 				R.layout.dialpad_shendu_new_contact_item, null);
-		TextView dialpad_menu_content = (TextView)convertView.findViewById(R.id.dialpad_menu_content);
-		ImageView dialpad_menu_icon = (ImageView)convertView.findViewById(R.id.dialpad_menu_icon);
-		if(position == 0 && mNumber != null){
-			dialpad_menu_icon.setImageResource(R.drawable.shendu_ic_location_place);
-			String city = PhoneLocation.getCityFromPhone(mNumber);
-			if(city!=null){
-			dialpad_menu_content.setText(city);
-			}else{
-			dialpad_menu_content.setText(mShenduMenutValues[position]);
-			}
+		views = new Views();
+		views.dialpad_menu_content = (TextView)convertView.findViewById(R.id.dialpad_menu_content);
+		views.dialpad_menu_icon = (ImageView)convertView.findViewById(R.id.dialpad_menu_icon);
+		convertView.setTag(views);
 		}else{
-			if(position == 3){
-				dialpad_menu_icon.setImageResource(R.drawable.shendu_ic_mms);
+			views=(Views)convertView.getTag();
+		}
+	    switch (position) {
+		case 0:	
+			views.dialpad_menu_icon.setImageResource(R.drawable.shendu_ic_location_place);
+			String city = PhoneLocation.getCityFromPhone(mNumber!=null?mNumber:"");
+			if(city!=null){
+				views.dialpad_menu_content.setText(city);
+			}else{
+				views.dialpad_menu_content.setText(mShenduMenutValues[position]);
 			}
-			dialpad_menu_content.setText(mShenduMenutValues[position]);
+			break;
+		case 3:	
+			if(position == 3){
+				views.dialpad_menu_icon.setImageResource(R.drawable.shendu_ic_mms);
+			}
+			views.dialpad_menu_content.setText(mShenduMenutValues[position]);
+			break;
+
+		default:
+			views.dialpad_menu_icon.setImageResource(R.drawable.shendu_ic_menu_add_contact_holo_light);
+			views.dialpad_menu_content.setText(mShenduMenutValues[position]);
+			break;
 		}
 
 		return convertView;
