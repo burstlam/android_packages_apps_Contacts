@@ -117,7 +117,6 @@ public class ShenduContactAdapter extends BaseAdapter implements Filterable {
     private static final String CONTACT_QUERY = Contacts.HAS_PHONE_NUMBER + " > 0";
     private static final String CONTACT_SORT = Contacts._ID + " ASC";
 	
-    
 	public ShenduContactAdapter(Context context) {
 		mInflater = LayoutInflater.from(context);
 		mContext = context;
@@ -139,6 +138,7 @@ public class ShenduContactAdapter extends BaseAdapter implements Filterable {
 //		@Override
 //		public void run() {
 			// TODO Auto-generated method stub
+		
 		long time1 = System.currentTimeMillis();
 		// TODO Auto-generated method stub
 		Results results = new Results();
@@ -165,9 +165,9 @@ public class ShenduContactAdapter extends BaseAdapter implements Filterable {
 //							log("nameToNumList " + oldInfoList.get(i).nameMatchId);
 							item.num = number.length();
 //							result.add(oldInfoList.get(i));
-                        if(item.firstNumber.equals(number))
-                        nameTopInitial.add(item)	;
-							else
+//                        if(item.firstNumber.equals(number))
+//                        nameTopInitial.add(item)	;
+//							else
 							nameInitial.add(item);
 							
 						}
@@ -175,9 +175,9 @@ public class ShenduContactAdapter extends BaseAdapter implements Filterable {
 							if(item.pinyinNumber.contains(number)){
 								item.pinyinMatchId = item.pinyinNumber.indexOf(number);
 								item.num = number.length();
-							if(item.pinyinNumber.equals(number)){
-								 nameTopInitial.add(item);
-							}else
+//							if(item.pinyinNumber.equals(number)){
+//								 nameTopInitial.add(item);
+//							}else
 							     nameData.add(item);
 							}
 							else 
@@ -250,7 +250,6 @@ public class ShenduContactAdapter extends BaseAdapter implements Filterable {
 	}
     
 	public synchronized void getAll() {
-
 		long time1 = System.currentTimeMillis();
 				  if (sT9Map == null)
 			            initT9Map();
@@ -397,7 +396,7 @@ public class ShenduContactAdapter extends BaseAdapter implements Filterable {
     	 contactInfo.pinyinNumber = sbNumber.toString();
         sbNumber.setLength(0);
 //        mFirstNumberIndexs.add(sbFirst.toString());
-        contactInfo.firstNumber = sbFirst.toString();
+        contactInfo.firstNumber = sbFirst.toString()+sbNumber.toString();
         sbFirst.setLength(0);
 //    	 contactInfo.isHanzis = isBoolean;
         if(contactInfo.firstNumberIndexs!=null){

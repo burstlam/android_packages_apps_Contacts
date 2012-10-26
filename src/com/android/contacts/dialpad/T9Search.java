@@ -272,75 +272,11 @@ class T9Search {
         boolean isSuperPrimary;
     }
 
-//    public T9SearchResult search(String number) {
-//    	long itime = System.currentTimeMillis();
-//        mNameResults.clear();
-//        mNumberResults.clear();
-////        mPinyinResults.clear();
-//        number = removeNonDigits(number);
-//        int pos = 0;
-//        mSortMode = Integer.parseInt(PreferenceManager.getDefaultSharedPreferences(mContext).getString("t9_sort", "1"));
-//        boolean newQuery = mPrevInput == null || number.length() <= mPrevInput.length();
-//        // Go through each contact
-//        for (ContactItem item : (newQuery ? mContacts : mAllResults)) {
-//            item.numberMatchId = -1;
-//            item.nameMatchId = -1;
-//            item.pinyinMatchId = -1;
-//            pos = item.normalNumber.indexOf(number);
-//            if (pos != -1) {
-//                item.numberMatchId = pos;
-//                mNumberResults.add(item);
-//            }
-////            else{
-//                /**shutao 2012-10-19*/
-//                pos = item.firstNumber.indexOf(number);
-////                myLastIndexOf(item.normalName, number);
-//                if(pos != -1){
-//                    int last_space = item.firstNumber.lastIndexOf("0", pos);
-//                  if (last_space == -1) {
-//                      last_space = 0;
-//                  }
-//                  item.nameMatchId = pos - last_space;
-//                  mNameResults.add(item);
-//                }
-////                else{
-////                	   pos = item.normalName.indexOf(number);
-////                       if (pos != -1) {
-////                       	 item.pinyinMatchId = pos ;
-////                            mPinyinResults.add(item);
-////                           }
-////                }
-////            }
-//
-//        }
-//        mAllResults.clear();
-//        mPrevInput = number;
-//        Collections.sort(mNumberResults, new NumberComparator());
-//        Collections.sort(mNameResults, new NameComparator());
-////        Collections.sort(mPinyinResults, new PinyinComparator());
-//        MyLog("search -- time=== " +(System.currentTimeMillis() - itime));
-//        if (mNameResults.size() > 0 || mNumberResults.size() > 0 /*|| mPinyinResults.size() > 0*/) {
-//            switch (mSortMode) {
-//            case NAME_FIRST:
-//                mAllResults.addAll(mNameResults);
-////                mAllResults.addAll(mPinyinResults);
-//                mAllResults.addAll(mNumberResults);
-//                break;
-//            case NUMBER_FIRST:
-//                mAllResults.addAll(mNumberResults);
-//                mAllResults.addAll(mNameResults);
-////                mAllResults.addAll(mPinyinResults);
-//            }
-//            MyLog("search -- time=== " +mNameResults.size());
-//            return new T9SearchResult(new ArrayList<ContactItem>(mAllResults), mContext);
-//        }
-//        return null;
-//    }
-    
     public T9SearchResult search(String number) {
     	long itime = System.currentTimeMillis();
         mNameResults.clear();
         mNumberResults.clear();
+//        mPinyinResults.clear();
         number = removeNonDigits(number);
         int pos = 0;
         mSortMode = Integer.parseInt(PreferenceManager.getDefaultSharedPreferences(mContext).getString("t9_sort", "1"));
@@ -349,40 +285,52 @@ class T9Search {
         for (ContactItem item : (newQuery ? mContacts : mAllResults)) {
             item.numberMatchId = -1;
             item.nameMatchId = -1;
+            item.pinyinMatchId = -1;
             pos = item.normalNumber.indexOf(number);
             if (pos != -1) {
                 item.numberMatchId = pos;
                 mNumberResults.add(item);
             }
-            pos = item.normalName.indexOf(number);
-            if (pos != -1) {
-                int last_space = item.normalName.lastIndexOf("0", pos);
-                if (last_space == -1) {
-                    last_space = 0;
+//            else{
+                /**shutao 2012-10-19*/
+                pos = item.firstNumber.indexOf(number);
+//                myLastIndexOf(item.normalName, number);
+                if(pos != -1){
+                    int last_space = item.firstNumber.lastIndexOf("0", pos);
+                  if (last_space == -1) {
+                      last_space = 0;
+                  }
+                  item.nameMatchId = pos - last_space;
+                  mNameResults.add(item);
                 }
-                item.nameMatchId = pos - last_space;
-                mNameResults.add(item);
-            }
+
+
         }
         mAllResults.clear();
         mPrevInput = number;
         Collections.sort(mNumberResults, new NumberComparator());
         Collections.sort(mNameResults, new NameComparator());
+//        Collections.sort(mPinyinResults, new PinyinComparator());
         MyLog("search -- time=== " +(System.currentTimeMillis() - itime));
-        if (mNameResults.size() > 0 || mNumberResults.size() > 0) {
+        if (mNameResults.size() > 0 || mNumberResults.size() > 0 /*|| mPinyinResults.size() > 0*/) {
             switch (mSortMode) {
             case NAME_FIRST:
                 mAllResults.addAll(mNameResults);
+//                mAllResults.addAll(mPinyinResults);
                 mAllResults.addAll(mNumberResults);
                 break;
             case NUMBER_FIRST:
                 mAllResults.addAll(mNumberResults);
                 mAllResults.addAll(mNameResults);
+//                mAllResults.addAll(mPinyinResults);
             }
+            MyLog("search -- time=== " +mNameResults.size());
             return new T9SearchResult(new ArrayList<ContactItem>(mAllResults), mContext);
         }
         return null;
     }
+    
+
     
     
     private void myLastIndexOf(String number , String inputNumber){

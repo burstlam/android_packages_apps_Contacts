@@ -734,8 +734,8 @@ public class DialpadFragment extends Fragment
                 /**shutao  2012-10-15*/
 //                mT9ListTop.setAdapter(mT9AdapterTop);
 //                mT9List.setAdapter(mT9Adapter);
-            }
-//        }
+//            }
+        }
 
         if (isT9On()) {
             getActivity().getContentResolver().unregisterContentObserver(mContactObserver);
@@ -1045,18 +1045,21 @@ public class DialpadFragment extends Fragment
 //			if (sT9Search != null) {
 //				mShenduDialpadCallLogFragmentView.setVisibility(View.GONE);
 //				mShenduDialpadCallLogFragment.setMenuVisibility(false);
-//
+//				T9SearchResult result = sT9Search.search(mDigits.getText().toString());
 //					mT9List.setVisibility(View.VISIBLE);
 //					mShenduNewContactsT9List.setVisibility(View.GONE);
 //					if (mT9Adapter == null) {
-//						mT9Adapter = sT9Search.new T9Adapter(getActivity(), 0, getActivity()
-//										.getLayoutInflater(), mPhotoLoader);
+//						mT9Adapter = sT9Search.new T9Adapter(getActivity(), 0, 
+//								result.getResults(),getActivity().getLayoutInflater(), mPhotoLoader);
 //						mT9Adapter.setNotifyOnChange(true);
+//					}else{
+//						 mT9Adapter.clear();
+//	                  mT9Adapter.addAll(result.getResults());
 //					}
 //					if (mT9List.getAdapter() == null) {
 //						mT9List.setAdapter(mT9Adapter);
 //					}
-//					mT9Adapter.getFilter().filter(mDigits.getText().toString());
+////					mT9Adapter.getFilter().filter(mDigits.getText().toString());
 //					mT9Toggle.setTag(null);
 //					mShenduDialpadCallLogFragment.setMenuVisibility(false);
 //					mShenduDialpadCallLogFragmentView.setVisibility(View.GONE);
