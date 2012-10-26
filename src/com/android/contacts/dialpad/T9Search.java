@@ -104,7 +104,6 @@ class T9Search {
             long contactId = contact.getLong(0);
             if (phone.isAfterLast()) {
                 break;
-                
             }
             while (phone.getLong(1) == contactId) {
                 String num = phone.getString(0);
@@ -237,7 +236,7 @@ class T9Search {
         public T9SearchResult (final ArrayList<ContactItem> results, final Context mContext) {
             mTopContact = results.get(0);
             mResults = results;
-//            mResults.remove(0);
+            mResults.remove(0);
         }
 
         public int getNumResults() {
@@ -276,7 +275,6 @@ class T9Search {
     	long itime = System.currentTimeMillis();
         mNameResults.clear();
         mNumberResults.clear();
-//        mPinyinResults.clear();
         number = removeNonDigits(number);
         int pos = 0;
         mSortMode = Integer.parseInt(PreferenceManager.getDefaultSharedPreferences(mContext).getString("t9_sort", "1"));
@@ -285,26 +283,20 @@ class T9Search {
         for (ContactItem item : (newQuery ? mContacts : mAllResults)) {
             item.numberMatchId = -1;
             item.nameMatchId = -1;
-            item.pinyinMatchId = -1;
             pos = item.normalNumber.indexOf(number);
             if (pos != -1) {
                 item.numberMatchId = pos;
                 mNumberResults.add(item);
             }
-//            else{
-                /**shutao 2012-10-19*/
-                pos = item.firstNumber.indexOf(number);
-//                myLastIndexOf(item.normalName, number);
-                if(pos != -1){
-                    int last_space = item.firstNumber.lastIndexOf("0", pos);
-                  if (last_space == -1) {
-                      last_space = 0;
-                  }
-                  item.nameMatchId = pos - last_space;
-                  mNameResults.add(item);
+            pos = item.normalName.indexOf(number);
+            if (pos != -1) {
+                int last_space = item.normalName.lastIndexOf("0", pos);
+                if (last_space == -1) {
+                    last_space = 0;
                 }
-
-
+                item.nameMatchId = pos - last_space;
+                mNameResults.add(item);
+            }
         }
         mAllResults.clear();
         mPrevInput = number;
@@ -316,13 +308,11 @@ class T9Search {
             switch (mSortMode) {
             case NAME_FIRST:
                 mAllResults.addAll(mNameResults);
-//                mAllResults.addAll(mPinyinResults);
                 mAllResults.addAll(mNumberResults);
                 break;
             case NUMBER_FIRST:
                 mAllResults.addAll(mNumberResults);
                 mAllResults.addAll(mNameResults);
-//                mAllResults.addAll(mPinyinResults);
             }
             MyLog("search -- time=== " +mNameResults.size());
             return new T9SearchResult(new ArrayList<ContactItem>(mAllResults), mContext);
@@ -356,16 +346,6 @@ class T9Search {
         @Override
         public int compare(ContactItem lhs, ContactItem rhs) {
             int ret = Integer.compare(lhs.nameMatchId, rhs.nameMatchId);
-            if (ret == 0) ret = Integer.compare(rhs.timesContacted, lhs.timesContacted);
-            if (ret == 0) ret = Boolean.compare(rhs.isSuperPrimary, lhs.isSuperPrimary);
-            return ret;
-        }
-    }
-    
-    public static class PinyinComparator implements Comparator<ContactItem> {
-        @Override
-        public int compare(ContactItem lhs, ContactItem rhs) {
-            int ret = Integer.compare(lhs.pinyinMatchId, rhs.pinyinMatchId);
             if (ret == 0) ret = Integer.compare(rhs.timesContacted, lhs.timesContacted);
             if (ret == 0) ret = Boolean.compare(rhs.isSuperPrimary, lhs.isSuperPrimary);
             return ret;

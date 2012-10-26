@@ -1037,8 +1037,8 @@ public class DialpadFragment extends Fragment
 				return;
 			}
 			/** shutao 2012-9-21*/
-//			mShenduContactAdapter.getFilter().filter(mDigits.getText().toString());
-			mShenduContactAdapter.search(mDigits.getText().toString());
+			mShenduContactAdapter.getFilter().filter(mDigits.getText().toString());
+//			mShenduContactAdapter.search(mDigits.getText().toString());
 			mShenduDialpadCallLogFragment.setMenuVisibility(false);
 			mShenduDialpadCallLogFragmentView.setVisibility(View.GONE);
 	    	 mT9List.setVisibility(View.VISIBLE);

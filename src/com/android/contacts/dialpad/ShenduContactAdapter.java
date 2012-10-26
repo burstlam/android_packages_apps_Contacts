@@ -307,7 +307,6 @@ public class ShenduContactAdapter extends BaseAdapter implements Filterable {
 //						createDataThead = null;
 //					}
 				log("time1"+(System.currentTimeMillis() -time1 ));
-
     }
 	
 	private static final Collator COLLATOR = Collator.getInstance(Locale.CHINA);
@@ -429,7 +428,7 @@ public class ShenduContactAdapter extends BaseAdapter implements Filterable {
 	
     
     /**shutao 2012-10-25*/
-    public static String removeNonDigits(String number) {
+    public  String removeNonDigits(String number) {
         int len = number.length();
         StringBuilder sb = new StringBuilder(len);
         for (int i = 0; i < len; i++) {
@@ -555,6 +554,7 @@ public class ShenduContactAdapter extends BaseAdapter implements Filterable {
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
+		long time = System.currentTimeMillis();
         ViewHolder holder;
         if (convertView == null) {
             convertView = mInflater.inflate(R.layout.shendu_row, null);
@@ -662,6 +662,7 @@ public class ShenduContactAdapter extends BaseAdapter implements Filterable {
 		}else{
 			holder.attribution.setText("");
 		}
+		log("getview  time = "+(System.currentTimeMillis() - time));
         return convertView;
     }
 
@@ -705,101 +706,93 @@ public class ShenduContactAdapter extends BaseAdapter implements Filterable {
 				ArrayList< Shendu_ContactItem > nameTopInitial = new ArrayList<Shendu_ContactItem>();
 				ArrayList< Shendu_ContactItem > nameData = new ArrayList<Shendu_ContactItem>();
 				ArrayList< Shendu_ContactItem > numberData = new ArrayList<Shendu_ContactItem>();
-				ArrayList<Shendu_ContactItem> result = new ArrayList<Shendu_ContactItem>();
-		
-				mPrevInput = s.toString();
+//				ArrayList<Shendu_ContactItem> result = new ArrayList<Shendu_ContactItem>();
+				mPrevInput  =  s.toString();
+			    String number = removeNonDigits(s.toString());
+				boolean newQuery = mPrevInput == null || number.length() <= mPrevInput.length();
 //				log("performFiltering"+oldInfoList.size()+" phoneList.size()"+ phoneList.size());
-				String number = s.toString().replace(" ", "");
-				number=number.toString().replace("-", "");
-//				if (mOldInfoList != null && mOldInfoList.size() != 0) {
-//					if ( mPhoneList != null) {
-//			
-//						for (int i = 0; i < mPhoneList.size(); i++) {
-//							mOldInfoList.get(i).numberMatchId = -1;
-//							mOldInfoList.get(i).firstMathcId = -1;
-//							mOldInfoList.get(i).nameMatchId = -1;
-//							if(mOldInfoList.get(i).name != null){
-////								int pos = mFirstNumberIndexs.get(i).indexOf(number);
-//////								mNameTONumberList.get(i).indexOf(number);
-////								if (pos != -1) {
-////									
-////									mOldInfoList.get(i).firstMathcId = pos;
-//////									log("nameToNumList " + oldInfoList.get(i).nameMatchId);
-////									mOldInfoList.get(i).num = number.length();
-//////									result.add(oldInfoList.get(i));
-////	                            if(mFirstNumberIndexs.get(i).equals(number))
-////	                            nameTopInitial.add(mOldInfoList.get(i))	;
-////									else
-////									nameInitial.add(mOldInfoList.get(i));
-////									
-////								}
-////								else 	/**shutao 2012-10-23*/
-//									if(mNameTONumberList.get(i).contains(number)){
-//									mOldInfoList.get(i).pinyinMatchId = mNameTONumberList.get(i).indexOf(number);
-//									mOldInfoList.get(i).num = number.length();
-//									if(mNameTONumberList.get(i).equals(number)){
-//										 nameTopInitial.add(mOldInfoList.get(i));
-//									}else
-//									     nameData.add(mOldInfoList.get(i));
-//									}
-//									else 
-//									{
-//										int index = mPhoneList.get(i).indexOf(number);
-//										if (index !=-1 ) {
-//											mOldInfoList.get(i).nameMatchId = -1;
-//											mOldInfoList.get(i).numberMatchId = index;
-////											log("phoneList " + mPhoneList.get(i)+"number"+number+"mOldInfoList.get(i)"+mOldInfoList.get(i).number);
-//											mOldInfoList.get(i).num = number.length();
-//											numberData.add(mOldInfoList.get(i));
-////											result.add();
-//										}
-//									}
-////								}else{
-//////									/**shutao 2012-9-26*/
-//////									if(/*matchNumberIndexOf01*/matchNumberIndexOf(i,number,mOldInfoList.get(i))){
-////////										result.add(oldInfoList.get(i));
-//////										/**shutao 2012-9-26*/
-//////										if(mOldInfoList.get(i).nameMatchId == 0 &&
-//////												mOldInfoList.get(i).numberNums == mOldInfoList.get(i).name.length()){
-//////											 nameTopInitial.add(mOldInfoList.get(i));
-//////										}else
-//////										nameData.add(mOldInfoList.get(i));
-//////									}
-////
-//								
-//							}else{
-//								int pos = mPhoneList.get(i).indexOf(number);
-//								if (pos !=-1 ) {
-//									mOldInfoList.get(i).nameMatchId = -1;
-//									mOldInfoList.get(i).numberMatchId = pos;
-////									log("phoneList " + mPhoneList.get(i)+"number"+number+"mOldInfoList.get(i)"+mOldInfoList.get(i).number);
-//									mOldInfoList.get(i).num = number.length();
-//									numberData.add(mOldInfoList.get(i));
-////									result.add();
-//								}
-//							}
-//							 
-//						}
-//					}
-//				}
 				
-				result.addAll(nameTopInitial);
-				result.addAll(nameInitial);
-				result.addAll(nameData);
-				result.addAll(numberData);
+						for(Shendu_ContactItem item : (newQuery ? mContactinfoList :mOldInfoList)){
+							item.numberMatchId = -1;
+							item.firstMathcId = -1;
+							item.nameMatchId = -1;
+							if(item.name != null){
+								int pos = item.firstNumber.indexOf(number);
+//								mNameTONumberList.get(i).indexOf(number);
+								if (pos != -1) {
+									
+									item.firstMathcId = pos;
+//									log("nameToNumList " + oldInfoList.get(i).nameMatchId);
+									item.num = number.length();
+//									result.add(oldInfoList.get(i));
+//		                        if(item.firstNumber.equals(number))
+//		                        nameTopInitial.add(item)	;
+//									else
+									nameInitial.add(item);
+									
+								}
+								else 	/**shutao 2012-10-23*/
+									if(item.pinyinNumber.contains(number)){
+										item.pinyinMatchId = item.pinyinNumber.indexOf(number);
+										item.num = number.length();
+//									if(item.pinyinNumber.equals(number)){
+//										 nameTopInitial.add(item);
+//									}else
+									     nameData.add(item);
+									}
+									else 
+									{
+										int index = item.number.indexOf(number);
+										if (index !=-1 ) {
+											item.nameMatchId = -1;
+											item.numberMatchId = index;
+//											log("phoneList " + mPhoneList.get(i)+"number"+number+"mOldInfoList.get(i)"+mOldInfoList.get(i).number);
+											item.num = number.length();
+											numberData.add(item);
+//											result.add();
+										}
+									}
+//								}else{
+////									/**shutao 2012-9-26*/
+////									if(/*matchNumberIndexOf01*/matchNumberIndexOf(i,number,mOldInfoList.get(i))){
+//////										result.add(oldInfoList.get(i));
+////										/**shutao 2012-9-26*/
+////										if(mOldInfoList.get(i).nameMatchId == 0 &&
+////												mOldInfoList.get(i).numberNums == mOldInfoList.get(i).name.length()){
+////											 nameTopInitial.add(mOldInfoList.get(i));
+////										}else
+////										nameData.add(mOldInfoList.get(i));
+////									}
+		//
+								
+							}else{
+								int pos = item.number.indexOf(number);
+								if (pos !=-1 ) {
+									item.nameMatchId = -1;
+									item.numberMatchId = pos;
+//									log("phoneList " + mPhoneList.get(i)+"number"+number+"mOldInfoList.get(i)"+mOldInfoList.get(i).number);
+									item.num = number.length();
+									numberData.add(item);
+//									result.add();
+								}
+							}
+							 
+						}
+
+				mOldInfoList.clear();
+				mPrevInput = s.toString();
+				mOldInfoList.addAll(nameTopInitial);
+				mOldInfoList.addAll(nameInitial);
+				mOldInfoList.addAll(nameData);
+				mOldInfoList.addAll(numberData);
 //				log("performFiltering----------"+result.size());
-				results.values = result;
-				results.count = result.size();
+				results.values = new ArrayList<Shendu_ContactItem>(mOldInfoList);
+				results.count = mOldInfoList.size();
 				nameTopInitial.clear();
 				numberData.clear();
 				nameInitial.clear();
 				nameData.clear();
-				log("sech  ---  1 time "+ (System.currentTimeMillis()-time1));
-//				log("sech  ---  12 time "+ (System.currentTimeMillis()-time1));
-//				log("sech  ---  13 time "+ (System.currentTimeMillis()-time1));
-//				log("sech  ---  14 time "+ (System.currentTimeMillis()-time1));
-//				log("sech  ---   1time "+ (System.currentTimeMillis()-time1));
-//				log("sech  ---   time "+ (System.currentTimeMillis()-time1));
+				log("sech  ---  00091 time "+ (System.currentTimeMillis()-time1));
 				return results;
 			}
 		};
