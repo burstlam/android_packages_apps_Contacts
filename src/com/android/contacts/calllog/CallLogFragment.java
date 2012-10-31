@@ -406,8 +406,8 @@ public class CallLogFragment extends ListFragment
         }
     }
 
-    @VisibleForTesting
-    ShenduCallLogAdapter getAdapter() {
+
+    public ShenduCallLogAdapter getAdapter() {
         return mAdapter;
     }
 
@@ -421,6 +421,11 @@ public class CallLogFragment extends ListFragment
             } else if (isResumed()) {
                 refreshData();
             }
+        }
+        if(menuVisible){
+        	mAdapter.startRequestProcessing();
+        }else{
+        	mAdapter.stopRequestProcessing();
         }
     }
     

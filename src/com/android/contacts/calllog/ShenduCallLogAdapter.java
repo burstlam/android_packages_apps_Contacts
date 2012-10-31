@@ -26,10 +26,14 @@ import com.android.contacts.util.ExpirableCache;
 import com.android.contacts.util.UriUtils;
 import com.google.common.annotations.VisibleForTesting;
 
+import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.DialogInterface.OnClickListener;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.net.Uri;
@@ -203,6 +207,44 @@ import libcore.util.Objects;
             }
         }
     };
+    
+    /** shutao 2012-10-29*/
+    private static final int SHENDU_SEND_SMS = 0 ;
+    private final View.OnLongClickListener mPrimaryActionLongListener = new View.OnLongClickListener() {
+		
+		@Override
+		public boolean onLongClick(View v) {
+			// TODO Auto-generated method stub
+
+			if(v.getTag(R.id.shendu_tag_second) == null){
+				return false;
+			}
+			final String number = v.getTag(R.id.shendu_tag_second).toString();
+			final String name = v.getTag(R.id.shendu_tag_name).toString();
+		
+			Builder sd=new AlertDialog .Builder(mContext).setTitle(name).
+			setItems(R.array.shendu_onlongmenu_list, 
+            new OnClickListener() {
+				
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					// TODO Auto-generated method stub
+					switch (which) {
+
+					case SHENDU_SEND_SMS:
+						Intent mIntent = new Intent(Intent.ACTION_SENDTO,Uri.fromParts("sms", number, null));
+			    		mContext.startActivity( mIntent );
+						break;
+					}
+				}
+			});
+			sd.create().show();
+			
+			
+			return true;
+		}
+	};
+    
 
     @Override
     public boolean onPreDraw() {
@@ -211,9 +253,9 @@ import libcore.util.Objects;
 
         // Only schedule a thread-creation message if the thread hasn't been
         // created yet. This is purely an optimization, to queue fewer messages.
-        if (mCallerIdThread == null) {
-            mHandler.sendEmptyMessageDelayed(START_THREAD, START_PROCESSING_REQUESTS_DELAY_MILLIS);
-        }
+//        if (mCallerIdThread == null) {
+//            mHandler.sendEmptyMessageDelayed(START_THREAD, START_PROCESSING_REQUESTS_DELAY_MILLIS);
+//        }
 
         return true;
     }
@@ -282,7 +324,7 @@ import libcore.util.Objects;
      * Starts a background thread to process contact-lookup requests, unless one
      * has already been started.
      */
-    private synchronized void startRequestProcessing() {
+    public synchronized void startRequestProcessing() {
         // For unit-testing.
         if (mRequestProcessingDisabled) return;
 
@@ -465,6 +507,7 @@ import libcore.util.Objects;
     private void findAndCacheViews(View view) {
         // Get the views to bind to.
         CallLogListItemViews views = CallLogListItemViews.fromView(view);
+        views.primaryActionView.setOnLongClickListener(mPrimaryActionLongListener);
         views.primaryActionView.setOnClickListener(mPrimaryActionListener);
         views.secondaryActionView.setOnClickListener(mSecondaryActionListener);
         view.setTag(views);
@@ -528,6 +571,7 @@ import libcore.util.Objects;
             views.primaryActionView.setTag(
                     IntentProvider.getReturnCallIntentProvider(number));
             views.primaryActionView.setTag(R.id.shendu_tag_second, number);
+            views.primaryActionView.setTag(R.id.shendu_tag_name, common_name);
         } else {
             // No action enabled.
             views.primaryActionView.setTag(null);

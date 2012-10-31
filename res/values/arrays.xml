@@ -60,7 +60,6 @@
     
     <!-- shutao 2012-10-15 -->
     <string-array name="shendu_onlongmenu_list">
-        <item>Add Blacklist</item>
         <item>Send SMS</item>
     </string-array>
 </resources>

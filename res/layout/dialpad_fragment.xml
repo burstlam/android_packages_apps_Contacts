@@ -59,7 +59,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginBottom="@dimen/shendu_dialpad_bottom_height"
-            android:background="@color/shendu_background_color"
+            android:background="@drawable/shendu_background__bg"
             android:divider="@drawable/shendu_selected_bottom_divider"
             android:scrollingCache="true"
             android:visibility="gone" >
@@ -70,7 +70,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginBottom="@dimen/shendu_dialpad_bottom_height"
-            android:background="@color/shendu_background_color"
+            android:background="@drawable/shendu_background__bg"
             android:divider="@drawable/shendu_selected_bottom_divider"
             android:scrollingCache="true" />
 

@@ -1866,6 +1866,7 @@
     
     <item type="id" name="shendu_tag_first"></item>
     <item type="id" name="shendu_tag_second"></item>
+    <item type="id" name="shendu_tag_name"></item>
 
     <string name="number_of_items_selected" >%1$d selected</string>
     <string name="select_all" >Select all</string>

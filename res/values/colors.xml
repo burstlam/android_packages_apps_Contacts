@@ -106,7 +106,6 @@
     <color name="contact_detail_fragment">#ffffff</color>
     
     <!-- shendu 2012-10-15  The default background color -->
-    <color name="shendu_background_color">#EFEFEF</color>
     <color name="shendu_high_light">#F48F0C</color>
     <!--shutao 2012-10-15 callDetail -->
     <color name="shendu_calldetail_list_text_color">#595959</color>

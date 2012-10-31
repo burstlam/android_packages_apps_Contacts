@@ -59,6 +59,7 @@
         android:screenOrientation="portrait"
         android:taskAffinity="android.task.contacts"
         android:hardwareAccelerated="true"
+        android:persistent="true"
     >
 
         <!-- Intercept Dialer Intents for devices without a phone.

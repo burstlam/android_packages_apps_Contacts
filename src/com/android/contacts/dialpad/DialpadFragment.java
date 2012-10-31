@@ -62,6 +62,7 @@ import android.text.method.DialerKeyListener;
 import android.text.style.RelativeSizeSpan;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -70,6 +71,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.animation.Animation;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.TranslateAnimation;
@@ -82,6 +84,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 import android.widget.ViewFlipper;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.ListView;
@@ -439,6 +442,7 @@ public class DialpadFragment extends Fragment
         if (mT9List!= null) {
             mT9List.setOnItemClickListener(this);
             mT9List.setOnScrollListener(this);
+            mT9List.setOnCreateContextMenuListener(this);
         }
         
         /**
@@ -836,8 +840,8 @@ public class DialpadFragment extends Fragment
         super.onPause();
 
         /**shutao 2012-10-25*/
-        mShenduTimeHandler.removeCallbacks(mShenduRunnable);
-        mShenduIsNull = true;
+//        mShenduTimeHandler.removeCallbacks(mShenduRunnable);
+//        mShenduIsNull = true;
         
         // Stop listening for phone state changes.
         TelephonyManager telephonyManager =
@@ -2248,9 +2252,50 @@ public class DialpadFragment extends Fragment
 				     searchContacts();
 				    
 			} 
-			mShenduTimeHandler.postDelayed(this, SEARCH_TIME_MILLIS);
+//			mShenduTimeHandler.postDelayed(this, SEARCH_TIME_MILLIS);
 		}
 	};
+	
+	
+	/** shutao 2012-10-29 */
+	@Override
+	public boolean onContextItemSelected(MenuItem item) {
+		// TODO Auto-generated method stub
+
+		switch (item.getItemId()) {
+
+		case SHENDU_SEND_SMS :
+			Intent mIntent = new Intent(Intent.ACTION_SENDTO,Uri.fromParts("sms",mShenduMenuNumber, null));
+    		startActivity( mIntent );
+    		MyLog("DIAL_SEND_MMS");
+			break;
+		}
+		return super.onContextItemSelected(item);
+		
+	}	
+	
+    /** shutao 2012-10-29 */
+    private static final int SHENDU_ADD_BLEAKLIST = 0;
+    private static final int SHENDU_SEND_SMS = 1 ;
+	String mShenduMenuNumber = "";
+    @Override
+	public void onCreateContextMenu(ContextMenu menu, View v,
+			ContextMenuInfo menuInfo) {
+		// TODO Auto-generated method stub
+    	   AdapterView.AdapterContextMenuInfo info;
+           try {
+                info = (AdapterView.AdapterContextMenuInfo) menuInfo;
+           } catch (ClassCastException e) {
+               Log.e(TAG, "bad menuInfo", e);
+               return;
+           }
+//           Shendu_ContactItem 
+        mShenduMenuNumber =((Shendu_ContactItem)mShenduContactAdapter.getItem(info.position)).number;
+        String name = ((Shendu_ContactItem)mShenduContactAdapter.getItem(info.position)).name;
+    	 menu.setHeaderTitle(name);
+        menu.add(0, SHENDU_SEND_SMS, 0, getResources().getString(R.string.shendu_send_sms));				
+		super.onCreateContextMenu(menu, v, menuInfo);
+	}
 	
 	private void MyLog(String msg){
 		if(DEBUG){
