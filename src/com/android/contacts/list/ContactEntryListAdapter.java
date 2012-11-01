@@ -650,7 +650,8 @@ public abstract class ContactEntryListAdapter extends IndexerListAdapter {
         } else {
             final String photoUriString = cursor.getString(photoUriColumn);
             final Uri photoUri = photoUriString == null ? null : Uri.parse(photoUriString);
-            getPhotoLoader().loadPhoto(quickContact, photoUri, -1, mDarkTheme);
+            //Wang:
+            getPhotoLoader().loadPhoto(quickContact, photoUri, -1, mDarkTheme, view.getNameTextView().getText().toString());
         }
 
     }

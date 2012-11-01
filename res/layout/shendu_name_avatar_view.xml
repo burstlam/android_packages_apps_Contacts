@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="@dimen/contact_browser_list_item_photo_size"
+    android:layout_height="@dimen/contact_browser_list_item_photo_size"
+    android:minWidth="@dimen/contact_browser_list_item_photo_size"
+    android:minHeight="@dimen/contact_browser_list_item_photo_size"
+    android:singleLine="true"
+    android:textSize="32sp"
+    android:paddingLeft="16dip"
+    android:gravity="center_vertical"
+    android:background="#8cd9ec"
+    android:textColor="#ffffff" >
+    
+
+</TextView>

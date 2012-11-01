@@ -206,7 +206,8 @@ public class DefaultContactListAdapter extends ContactListAdapter {
         }
 
         bindSectionHeaderAndDivider(view, position, cursor);
-
+        //Wang:
+        bindName(view, cursor);
         if (isQuickContactEnabled()) {
             bindQuickContact(view, partition, cursor, ContactQuery.CONTACT_PHOTO_ID,
                     ContactQuery.CONTACT_PHOTO_URI, ContactQuery.CONTACT_ID,
@@ -216,8 +217,8 @@ public class DefaultContactListAdapter extends ContactListAdapter {
                 bindPhoto(view, partition, cursor);
             }
         }
-
-        bindName(view, cursor);
+          //Wang:
+//        bindName(view, cursor);
         bindPresenceAndStatusMessage(view, cursor);
 
         if (isSearchMode()) {

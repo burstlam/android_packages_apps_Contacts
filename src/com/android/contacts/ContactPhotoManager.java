@@ -19,6 +19,7 @@ package com.android.contacts;
 import com.android.contacts.model.AccountTypeManager;
 import com.android.contacts.util.BitmapUtil;
 import com.android.contacts.util.MemoryUtils;
+import com.android.contacts.util.NameAvatarUtils;
 import com.android.contacts.util.UriUtils;
 import com.google.android.collect.Lists;
 import com.google.android.collect.Sets;
@@ -187,6 +188,12 @@ public abstract class ContactPhotoManager implements ComponentCallbacks2 {
      */
     public abstract void loadPhoto(ImageView view, Uri photoUri, int requestedExtent,
             boolean darkTheme, DefaultImageProvider defaultProvider);
+    /**
+     * @hide
+     * @author Wang
+     */
+    public abstract void loadPhoto(ImageView view, Uri photoUri, int requestedExtent,
+            boolean darkTheme, DefaultImageProvider defaultProvider, String displayName);
 
     /**
      * Calls {@link #loadPhoto(ImageView, Uri, boolean, boolean, DefaultImageProvider)} with
@@ -196,6 +203,16 @@ public abstract class ContactPhotoManager implements ComponentCallbacks2 {
             boolean darkTheme) {
         loadPhoto(view, photoUri, requestedExtent, darkTheme, DEFAULT_AVATAR);
     }
+    
+    /**
+     * Fill with character avatar if there is no photo to load
+     * @author Wang
+     * @hide
+     */
+    public final void loadPhoto(ImageView view, Uri photoUri, int requestedExtent,
+            boolean darkTheme, String displayName) {
+        loadPhoto(view, photoUri, requestedExtent, darkTheme, DEFAULT_AVATAR, displayName);
+    }
 
     /**
      * Calls {@link #loadPhoto(ImageView, Uri, boolean, boolean, DefaultImageProvider)} with
@@ -203,6 +220,12 @@ public abstract class ContactPhotoManager implements ComponentCallbacks2 {
      */
     public final void loadDirectoryPhoto(ImageView view, Uri photoUri, boolean darkTheme) {
         loadPhoto(view, photoUri, -1, darkTheme, DEFAULT_AVATAR);
+    }
+    /**
+     * Wang:
+     * */
+    public final void loadDirectoryPhoto(ImageView view, Uri photoUri, boolean darkTheme, String name) {
+        loadPhoto(view, photoUri, -1, darkTheme, DEFAULT_AVATAR, name);
     }
 
     /**
@@ -486,17 +509,30 @@ class ContactPhotoManagerImpl extends ContactPhotoManager implements Callback {
     @Override
     public void loadPhoto(ImageView view, Uri photoUri, int requestedExtent, boolean darkTheme,
             DefaultImageProvider defaultProvider) {
+        loadPhoto(view, photoUri, requestedExtent, darkTheme, defaultProvider, null);
+    }
+   //Wang:
+    @Override
+    public void loadPhoto(ImageView view, Uri photoUri, int requestedExtent, boolean darkTheme,
+            DefaultImageProvider defaultProvider, String displayName) {
+        log("=====>loadPhoto>>>photoUri="+photoUri+" ,displayName="+displayName);
         if (photoUri == null) {
-            // No photo is needed
-            defaultProvider.applyDefaultImage(view, requestedExtent, darkTheme);
+            String cnCharacter = NameAvatarUtils.containsChinese(displayName);
+            if(!TextUtils.isEmpty(cnCharacter)){
+                NameAvatarUtils.setAvatar(view, cnCharacter);
+            }else{
+                // No photo is needed
+                defaultProvider.applyDefaultImage(view, requestedExtent, darkTheme);
+            }
             mPendingRequests.remove(view);
         } else {
             if (DEBUG) Log.d(TAG, "loadPhoto request: " + photoUri);
             loadPhotoByIdOrUri(view, Request.createFromUri(photoUri, requestedExtent, darkTheme,
                     defaultProvider));
         }
+        
     }
-
+    
     private void loadPhotoByIdOrUri(ImageView view, Request request) {
         boolean loaded = loadCachedPhoto(view, request, false);
         if (loaded) {
@@ -1219,5 +1255,9 @@ class ContactPhotoManagerImpl extends ContactPhotoManager implements Callback {
         public void applyDefaultImage(ImageView view) {
             mDefaultProvider.applyDefaultImage(view, mRequestedExtent, mDarkTheme);
         }
+    }
+    private static boolean debug = true;
+    public static void log(String msg){
+        if(debug) Log.i("photo", msg);
     }
 }
