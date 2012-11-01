@@ -1256,7 +1256,7 @@ class ContactPhotoManagerImpl extends ContactPhotoManager implements Callback {
             mDefaultProvider.applyDefaultImage(view, mRequestedExtent, mDarkTheme);
         }
     }
-    private static boolean debug = true;
+    private static boolean debug = false;
     public static void log(String msg){
         if(debug) Log.i("photo", msg);
     }

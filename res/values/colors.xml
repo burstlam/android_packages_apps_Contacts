@@ -111,5 +111,7 @@
     <color name="shendu_calldetail_list_text_color">#595959</color>
     <color name="shendu_calldetail_blue_text_color">#35B5E5</color>
     <color name="shendu_group_title">#35B5E5</color>
-
+     <!--Wang 2012-11-1 name avatar ui -->
+     <color name="shendu_name_avatar_background">#8cd9ec</color>
+     <color name="shendu_name_avatar_text_color">#FFFFFF</color>
 </resources>

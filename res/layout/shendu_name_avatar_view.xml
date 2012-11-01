@@ -8,8 +8,8 @@
     android:textSize="32sp"
     android:paddingLeft="16dip"
     android:gravity="center_vertical"
-    android:background="#8cd9ec"
-    android:textColor="#ffffff" >
+    android:background="@color/shendu_name_avatar_background"
+    android:textColor="@color/shendu_name_avatar_text_color" >
     
 
 </TextView>
