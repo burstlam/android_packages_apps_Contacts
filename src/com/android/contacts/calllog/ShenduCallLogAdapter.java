@@ -445,7 +445,6 @@ import libcore.util.Objects;
             while (true) {
                 // Check if thread is finished, and if so return immediately.
                 if (mDone) return;
-
                 // Obtain next request, if any is available.
                 // Keep synchronized section small.
                 ContactInfoRequest req = null;

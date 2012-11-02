@@ -554,7 +554,7 @@ public class ShenduContactAdapter extends BaseAdapter implements Filterable {
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		long time = System.currentTimeMillis();
+
         ViewHolder holder;
         if (convertView == null) {
             convertView = mInflater.inflate(R.layout.shendu_row, null);
@@ -590,28 +590,37 @@ public class ShenduContactAdapter extends BaseAdapter implements Filterable {
             holder.pinYin.setVisibility(View.VISIBLE);
             holder.pinYin.setText(o.pinYin ,TextView.BufferType.SPANNABLE);
             holder.number.setVisibility(View.VISIBLE);
-            if (o.firstMathcId != -1) {
-                Spannable s = (Spannable) holder.name.getText();
-                Spannable sPinYin = (Spannable) holder.pinYin.getText();
-                int sLeng = s.length(); 
-                int nameStart = o.firstMathcId;
-                int send = (nameStart + o.num) >= sLeng ?sLeng:(nameStart + o.num);
-                
-//                log("getview yy== "+nameStart+"num"+send+"name"+o.name+s.toString());
-//                s.setSpan(new ForegroundColorSpan(mContext.getResources().getColor(R.color.shendu_high_light)),
-//                        nameStart, send , Spannable.SPAN_INCLUSIVE_INCLUSIVE);
-                for(int index = nameStart ; index< o.firstNumberIndexs.size();index++){
-                	if(index-nameStart == o.num){
-                		break;
-                	}
-             	   int num =o.firstNumberIndexs.get(index);
-//         		   log("o.firstNumberIndexs"+num+o.name);
-         		   sPinYin.setSpan(new ForegroundColorSpan(mContext.getResources().getColor(R.color.shendu_high_light)),
-         				   num-1, num , Spannable.SPAN_INCLUSIVE_INCLUSIVE);
-                }
-//                holder.name.setText(s);
-                holder.pinYin.setText(sPinYin);
-            }else 
+            if (o.numberMatchId != -1) {
+          	  holder.pinYin.setVisibility(View.GONE);
+              Spannable s = (Spannable) holder.number.getText();
+              int numberStart = o.numberMatchId;
+              s.setSpan(new ForegroundColorSpan(mContext.getResources().getColor(R.color.shendu_high_light)),
+                      numberStart, numberStart + o.num, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+              holder.number.setText(s);
+          }else 
+
+              if (o.firstMathcId != -1) {
+                  Spannable s = (Spannable) holder.name.getText();
+                  Spannable sPinYin = (Spannable) holder.pinYin.getText();
+                  int sLeng = s.length(); 
+                  int nameStart = o.firstMathcId;
+                  int send = (nameStart + o.num) >= sLeng ?sLeng:(nameStart + o.num);
+                  
+//                  log("getview yy== "+nameStart+"num"+send+"name"+o.name+s.toString());
+//                  s.setSpan(new ForegroundColorSpan(mContext.getResources().getColor(R.color.shendu_high_light)),
+//                          nameStart, send , Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+                  for(int index = nameStart ; index< o.firstNumberIndexs.size();index++){
+                  	if(index-nameStart == o.num){
+                  		break;
+                  	}
+               	   int num =o.firstNumberIndexs.get(index);
+//           		   log("o.firstNumberIndexs"+num+o.name);
+           		   sPinYin.setSpan(new ForegroundColorSpan(mContext.getResources().getColor(R.color.shendu_high_light)),
+           				   num-1, num , Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+                  }
+//                  holder.name.setText(s);
+                  holder.pinYin.setText(sPinYin);
+              }
 //            	if(o.nameMatchId != -1){
 ////            	 Spannable s = (Spannable) holder.name.getText();
 //            	 Spannable sPinYin = (Spannable) holder.pinYin.getText();
@@ -630,14 +639,7 @@ public class ShenduContactAdapter extends BaseAdapter implements Filterable {
 //                 holder.pinYin.setText(sPinYin);
 ////                 holder.name.setText(s);
 //            }else
-            if (o.numberMatchId != -1) {
-            	 holder.pinYin.setVisibility(View.GONE);
-                Spannable s = (Spannable) holder.number.getText();
-                int numberStart = o.numberMatchId;
-                s.setSpan(new ForegroundColorSpan(mContext.getResources().getColor(R.color.shendu_high_light)),
-                        numberStart, numberStart + o.num, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
-                holder.number.setText(s);
-            }
+          
             else if(o.pinyinMatchId != -1){
             	 Spannable sPinYin = (Spannable) holder.pinYin.getText();
             	 int sLeng = sPinYin.length();
@@ -662,7 +664,7 @@ public class ShenduContactAdapter extends BaseAdapter implements Filterable {
 		}else{
 			holder.attribution.setText("");
 		}
-		log("getview  time = "+(System.currentTimeMillis() - time));
+
         return convertView;
     }
 
@@ -684,8 +686,10 @@ public class ShenduContactAdapter extends BaseAdapter implements Filterable {
 				// TODO Auto-generated method stub
 			
 				if(constraint.toString().equals(mPrevInput)){
-//					log("publishResults =-===  "+constraint.toString()+"currentCharSequence"+currentCharSequence);
+//					log("publishResults =-===  "+constraint.toString());
 					/**shutao 2012-10-26*/
+					
+					if(mInfoList != null ) mInfoList.clear();
 					mInfoList = (ArrayList<Shendu_ContactItem>) results.values;
 					if (results.count > 0) {
 						notifyDataSetChanged();
@@ -706,12 +710,17 @@ public class ShenduContactAdapter extends BaseAdapter implements Filterable {
 				ArrayList< Shendu_ContactItem > nameTopInitial = new ArrayList<Shendu_ContactItem>();
 				ArrayList< Shendu_ContactItem > nameData = new ArrayList<Shendu_ContactItem>();
 				ArrayList< Shendu_ContactItem > numberData = new ArrayList<Shendu_ContactItem>();
-//				ArrayList<Shendu_ContactItem> result = new ArrayList<Shendu_ContactItem>();
-				mPrevInput  =  s.toString();
+//				mPrevInput  =  s.toString();
 			    String number = removeNonDigits(s.toString());
-				boolean newQuery = mPrevInput == null || number.length() <= mPrevInput.length();
-//				log("performFiltering"+oldInfoList.size()+" phoneList.size()"+ phoneList.size());
+				boolean newQuery = /*mPrevInput == null || number.length() <= mPrevInput.length()*/true;
 				
+				if(mPrevInput == null){
+					newQuery = true;
+				}else{
+					newQuery = s.toString().length()<=mPrevInput.length();
+				}
+//				log("performFiltering"+oldInfoList.size()+" phoneList.size()"+ phoneList.size());
+//				int contact=0;
 						for(Shendu_ContactItem item : (newQuery ? mContactinfoList :mOldInfoList)){
 							item.numberMatchId = -1;
 							item.firstMathcId = -1;
@@ -729,7 +738,7 @@ public class ShenduContactAdapter extends BaseAdapter implements Filterable {
 //		                        nameTopInitial.add(item)	;
 //									else
 									nameInitial.add(item);
-									
+//									contact++;
 								}
 								else 	/**shutao 2012-10-23*/
 									if(item.pinyinNumber.contains(number)){
@@ -739,6 +748,7 @@ public class ShenduContactAdapter extends BaseAdapter implements Filterable {
 //										 nameTopInitial.add(item);
 //									}else
 									     nameData.add(item);
+//									     contact++;
 									}
 									else 
 									{
@@ -749,6 +759,7 @@ public class ShenduContactAdapter extends BaseAdapter implements Filterable {
 //											log("phoneList " + mPhoneList.get(i)+"number"+number+"mOldInfoList.get(i)"+mOldInfoList.get(i).number);
 											item.num = number.length();
 											numberData.add(item);
+//											contact++;
 //											result.add();
 										}
 									}
@@ -773,9 +784,13 @@ public class ShenduContactAdapter extends BaseAdapter implements Filterable {
 //									log("phoneList " + mPhoneList.get(i)+"number"+number+"mOldInfoList.get(i)"+mOldInfoList.get(i).number);
 									item.num = number.length();
 									numberData.add(item);
+//									contact++;
 //									result.add();
 								}
 							}
+//							if(contact>25){
+//								break;
+//							}
 							 
 						}
 

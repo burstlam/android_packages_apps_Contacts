@@ -35,7 +35,7 @@ public class ShenduVibrate {
 		mContentResolver = context.getContentResolver();
 	}
 
-	long[] pattern = { 0, 18 };
+	long[] pattern = { 0, 25 };
 
 	public void playVibrate(int type) {
 		if (isOpen) {
