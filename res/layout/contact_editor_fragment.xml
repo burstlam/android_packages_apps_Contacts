@@ -19,7 +19,7 @@
     android:layout_height="match_parent"
     android:fillViewport="true"
     android:fadingEdge="none"
-    android:background="@color/background_primary"
+    android:background="@color/shendu_background_primary"
 >
 
     <LinearLayout android:id="@+id/editors"
