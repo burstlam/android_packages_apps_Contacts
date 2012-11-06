@@ -230,6 +230,8 @@
 
     <style name="ContactListFilterTheme" parent="@android:Theme.Holo.Light">
         <item name="android:listViewStyle">@style/ListViewStyle</item>
+        <!-- Wang: -->
+        <item name="android:actionBarStyle">@style/ShenDuContactsActionBarStyle</item>
     </style>
 
     <style name="CustomContactListFilterView" parent="ContactListFilterTheme">

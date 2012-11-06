@@ -256,13 +256,14 @@ public class ActionBarAdapter implements OnQueryTextListener, OnCloseListener {
 
     private void addTab(int expectedTabIndex, int icon, int description) {
         final Tab tab = mActionBar.newTab();
+        tab.setText(description);
         tab.setTabListener(mTabListener);
-        if (mShowTabsAsText) {
-            tab.setText(description);
-        } else {
-            tab.setIcon(icon);
-            tab.setContentDescription(description);
-        }
+//        if (mShowTabsAsText) {
+//            tab.setText(description);
+//        } else {
+//            tab.setIcon(icon);
+//            tab.setContentDescription(description);
+//        }
         mActionBar.addTab(tab);
         if (expectedTabIndex != tab.getPosition()) {
             throw new IllegalStateException("Tabs must be created in the right order");
