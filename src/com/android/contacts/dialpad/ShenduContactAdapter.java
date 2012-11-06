@@ -3,19 +3,17 @@ package com.android.contacts.dialpad;
 import java.text.Collator;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Locale;
 import java.util.Set;
-
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
+import android.os.Process;
 import android.provider.CallLog;
 import android.provider.ContactsContract.Contacts;
 import android.provider.ContactsContract.CommonDataKinds.Phone;
-import android.telephony.PhoneNumberUtils;
 import android.text.Spannable;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
@@ -29,8 +27,7 @@ import android.widget.QuickContactBadge;
 import android.widget.TextView;
 import com.android.contacts.ContactPhotoManager;
 import com.android.contacts.R;
-import com.android.contacts.dialpad.T9Search.ContactItem;
-import com.android.contacts.vcard.VCardService.MyBinder;
+import com.android.contacts.dialpad.FirstNumberInfo.NodeShendu_ContactItem;
 import com.android.phone.location.PhoneLocation;
 
 /**
@@ -45,22 +42,10 @@ public class ShenduContactAdapter extends BaseAdapter implements Filterable {
 	private LayoutInflater mInflater;
 	//Save the current search contact
 	private ArrayList<Shendu_ContactItem> mContactinfoList = new ArrayList<Shendu_ContactItem>();
-	//Save all your contacts
-	private Set<Shendu_ContactItem> mOldInfoList = new LinkedHashSet<Shendu_ContactItem>();
 
 	private ArrayList<Shendu_ContactItem> mInfoList = new ArrayList<ShenduContactAdapter.Shendu_ContactItem>();
 	
-	//List of names, a list of numbers
-	private List<String> mNameList = new ArrayList<String>();
-	private List<String> mPhoneList  = new ArrayList<String>();
-	//The name is converted to digital
-	private List<String> mFirstNumberIndexs  = new ArrayList<String>();
-	
-	private ArrayList<String> mNameTONumberList =  new ArrayList<String>();
-	private ArrayList<ArrayList<String>> mPinyinNumNames = new ArrayList<ArrayList<String>>();
-	
-	private ArrayList<Shendu_ContactItem> mStrangeCalls = new ArrayList<ShenduContactAdapter.Shendu_ContactItem>();
-	
+
     private ContactPhotoManager mPhotoLoader;
 	
 	private Context mContext;
@@ -71,6 +56,10 @@ public class ShenduContactAdapter extends BaseAdapter implements Filterable {
     
     private Thread createDataThead;
     
+//    private NameSearchTree nameSearchTree;
+    /**shutao 2012-10-30*/
+    private FirstNumberInfo mFirstNumberInfo;
+    
     /**shutao 2012-10-26*/
     private Handler mHandler = new Handler(){
 
@@ -80,17 +69,18 @@ public class ShenduContactAdapter extends BaseAdapter implements Filterable {
 //			super.handleMessage(msg);
 			Results results = (Results)msg.obj;
 			if(results.constraint.equals(mPrevInput)){
-//				log("publishResults =-===  "+constraint.toString()+"currentCharSequence"+currentCharSequence);
+			
 				/**shutao 2012-10-26*/
+				mInfoList.clear();
 				mInfoList = (ArrayList<Shendu_ContactItem>) results.values;
-				if (results.count > 0) {
+				if (mInfoList!=null && mInfoList.size() > 0) {
 					notifyDataSetChanged();
 					mContactsListener.Contacts();
 				} else {
-					notifyDataSetInvalidated();
 					mContactsListener.notContacts();
 				}
 			}
+		
 		}
     	
     };
@@ -122,127 +112,56 @@ public class ShenduContactAdapter extends BaseAdapter implements Filterable {
 		mContext = context;
 	    mPhotoLoader = ContactPhotoManager.getInstance(context);
        mPhotoLoader.preloadPhotosInBackground();
-		if (mContactinfoList != null) {
-			mContactinfoList.clear();
-		}
+//		nameSearchTree = new NameSearchTree();
+		mFirstNumberInfo = new FirstNumberInfo();
 //		getAll();
 //		initSomeList();
 	
 	}
 
+	private final int MAXNUMS = 100000;
+	
 	/**SHUTAO 2012-10-16*/
-	public synchronized void search(final String s){
+	public  void search(final String s, final boolean isAll){
 		
-//		createDataThead = new Thread(new Runnable() {
-		
+//	   createDataThead = new Thread(new Runnable() {
+//		
 //		@Override
 //		public void run() {
-			// TODO Auto-generated method stub
+////			// TODO Auto-generated method stub
+//			
+//		Process.setThreadPriority(Process.THREAD_PRIORITY_DISPLAY );
 		
 		long time1 = System.currentTimeMillis();
 		// TODO Auto-generated method stub
 		Results results = new Results();
-		ArrayList< Shendu_ContactItem > nameInitial = new ArrayList<Shendu_ContactItem>();
-		ArrayList< Shendu_ContactItem > nameTopInitial = new ArrayList<Shendu_ContactItem>();
-		ArrayList< Shendu_ContactItem > nameData = new ArrayList<Shendu_ContactItem>();
-		ArrayList< Shendu_ContactItem > numberData = new ArrayList<Shendu_ContactItem>();
-//		ArrayList<Shendu_ContactItem> result = new ArrayList<Shendu_ContactItem>();
-		results.constraint =  s.toString();
-	    String number = removeNonDigits(s);
-		boolean newQuery = mPrevInput == null || number.length() <= mPrevInput.length();
-//		log("performFiltering"+oldInfoList.size()+" phoneList.size()"+ phoneList.size());
-		
-				for(Shendu_ContactItem item : (newQuery ? mContactinfoList :mOldInfoList)){
-					item.numberMatchId = -1;
-					item.firstMathcId = -1;
-					item.nameMatchId = -1;
-					if(item.name != null){
-						int pos = item.firstNumber.indexOf(number);
-//						mNameTONumberList.get(i).indexOf(number);
-						if (pos != -1) {
-							
-							item.firstMathcId = pos;
-//							log("nameToNumList " + oldInfoList.get(i).nameMatchId);
-							item.num = number.length();
-//							result.add(oldInfoList.get(i));
-//                        if(item.firstNumber.equals(number))
-//                        nameTopInitial.add(item)	;
-//							else
-							nameInitial.add(item);
-							
-						}
-						else 	/**shutao 2012-10-23*/
-							if(item.pinyinNumber.contains(number)){
-								item.pinyinMatchId = item.pinyinNumber.indexOf(number);
-								item.num = number.length();
-//							if(item.pinyinNumber.equals(number)){
-//								 nameTopInitial.add(item);
-//							}else
-							     nameData.add(item);
-							}
-							else 
-							{
-								int index = item.number.indexOf(number);
-								if (index !=-1 ) {
-									item.nameMatchId = -1;
-									item.numberMatchId = index;
-//									log("phoneList " + mPhoneList.get(i)+"number"+number+"mOldInfoList.get(i)"+mOldInfoList.get(i).number);
-									item.num = number.length();
-									numberData.add(item);
-//									result.add();
-								}
-							}
-//						}else{
-////							/**shutao 2012-9-26*/
-////							if(/*matchNumberIndexOf01*/matchNumberIndexOf(i,number,mOldInfoList.get(i))){
-//////								result.add(oldInfoList.get(i));
-////								/**shutao 2012-9-26*/
-////								if(mOldInfoList.get(i).nameMatchId == 0 &&
-////										mOldInfoList.get(i).numberNums == mOldInfoList.get(i).name.length()){
-////									 nameTopInitial.add(mOldInfoList.get(i));
-////								}else
-////								nameData.add(mOldInfoList.get(i));
-////							}
-//
-						
-					}else{
-						int pos = item.number.indexOf(number);
-						if (pos !=-1 ) {
-							item.nameMatchId = -1;
-							item.numberMatchId = pos;
-//							log("phoneList " + mPhoneList.get(i)+"number"+number+"mOldInfoList.get(i)"+mOldInfoList.get(i).number);
-							item.num = number.length();
-							numberData.add(item);
-//							result.add();
-						}
-					}
-					 
-				}
-
-		mOldInfoList.clear();
-		mPrevInput = s.toString();
-		mOldInfoList.addAll(nameTopInitial);
-		mOldInfoList.addAll(nameInitial);
-		mOldInfoList.addAll(nameData);
-		mOldInfoList.addAll(numberData);
-//		log("performFiltering----------"+result.size());
-		results.values = new ArrayList<Shendu_ContactItem>(mOldInfoList);
-		results.count = mOldInfoList.size();
-		nameTopInitial.clear();
-		numberData.clear();
-		nameInitial.clear();
-		nameData.clear();
+		mPrevInput  = removeNonDigits(s.toString());
+		if (mContactinfoList != null) {
+			mContactinfoList.clear();
+		}
+		if(isAll){
+			mContactinfoList = mFirstNumberInfo.searchNumber(mPrevInput,MAXNUMS);
+		}else{
+			mContactinfoList = mFirstNumberInfo.searchNumber(mPrevInput,4);
+		}
+       
+		results.values = mContactinfoList;
+		results.count = mContactinfoList.size();
+		results.constraint = mPrevInput;
 		Message msg = new Message();
+
+//		msg.obj = mPrevInput;
 		msg.obj = results;
 		mHandler.sendMessage(msg);
-		log("sech  ---  00091 time "+ (System.currentTimeMillis()-time1));
+		log("sech  ---   time "+ (System.currentTimeMillis()-time1));
 //		if(createDataThead!=null){
 //		createDataThead.interrupt();
 //		createDataThead = null;
 //	}
 //		}
 //	});
-//	createDataThead.start();
+
+	
 	}
 	
 	public void setSearchContactsListener(SearchContactsListener contactsListener){
@@ -251,22 +170,18 @@ public class ShenduContactAdapter extends BaseAdapter implements Filterable {
     
 	public synchronized void getAll() {
 		long time1 = System.currentTimeMillis();
+		mFirstNumberInfo.clearAll();
 				  if (sT9Map == null)
 			            initT9Map();
 
 			        Cursor contact = mContext.getContentResolver().query(Contacts.CONTENT_URI, CONTACT_PROJECTION, CONTACT_QUERY, null, CONTACT_SORT);
 			        Cursor phone = mContext.getContentResolver().query(Phone.CONTENT_URI, PHONE_PROJECTION, PHONE_ID_SELECTION, PHONE_ID_SELECTION_ARGS, PHONE_SORT);
 			        phone.moveToFirst();
-			        mNameList.clear();
-			        mPhoneList.clear();
-			        mNameTONumberList.clear();
-			        mFirstNumberIndexs.clear();
-					 mPinyinNumNames.clear();
-			        if(mContactinfoList != null){
-			        	mContactinfoList.clear();
-			        }else{
-			        	mContactinfoList = new ArrayList<ShenduContactAdapter.Shendu_ContactItem>();
-			        }
+//			        if(mContactinfoList != null){
+//			        	mContactinfoList.clear();
+//			        }else{
+//			        	mContactinfoList = new ArrayList<ShenduContactAdapter.Shendu_ContactItem>();
+//			        }
 
 			        
 			        while (contact.moveToNext()) {
@@ -277,21 +192,21 @@ public class ShenduContactAdapter extends BaseAdapter implements Filterable {
 			            while (phone.getLong(1) == contactId) {
 			                String num = phone.getString(0);
 			                Shendu_ContactItem contactInfo = new Shendu_ContactItem();
-			                contactInfo.id = contactId;
+//			                contactInfo.id = contactId;
 			                contactInfo.name = contact.getString(1);
 			                contactInfo.number = removeNonDigits(num);
-			                mNameList.add(contactInfo.name);
-//			            	  contactInfo.pinYin = MyHanziToPinyin.getPinYin(contactInfo.name.replaceAll(",", ""));
-//			            	  log("getall"+contactInfo.name+contactInfo.pinyin);
 			                nameToPinYinAndNumber(contact.getString(4), contactInfo);
-			                mPhoneList.add(contactInfo.number);
-			                contactInfo.timesContacted = contact.getInt(2);
-			                contactInfo.isSuperPrimary = phone.getInt(2) > 0;
-			                contactInfo.groupType = Phone.getTypeLabel(mContext.getResources(), phone.getInt(3), phone.getString(4));
+			                contactInfo.city = PhoneLocation.getCityFromPhone(contactInfo.number);
+//			                contactInfo.timesContacted = contact.getInt(2);
+//			                contactInfo.isSuperPrimary = phone.getInt(2) > 0;
+//			                contactInfo.groupType = Phone.getTypeLabel(mContext.getResources(), phone.getInt(3), phone.getString(4));
 			                if (!contact.isNull(3)) {
 			                    contactInfo.photo = Uri.parse(contact.getString(3));
 			                }
-			                mContactinfoList.add(contactInfo);
+//			                mContactinfoList.add(contactInfo);
+			                
+//			                nameSearchTree.insert(contactInfo, contactInfo.hanziNums);
+			                
 			                if (!phone.moveToNext()) {
 			                    break;
 			                }
@@ -300,14 +215,10 @@ public class ShenduContactAdapter extends BaseAdapter implements Filterable {
 			        contact.close();
 			        phone.close();
 			       getStrangeCallLogs();
-			       mContactinfoList.addAll(mStrangeCalls);
-//					mOldInfoList = mContactinfoList;
-//					if(createDataThead!=null){
-//						createDataThead.interrupt();
-//						createDataThead = null;
-//					}
+			       mFirstNumberInfo. comparatorArraylist();
 				log("time1"+(System.currentTimeMillis() -time1 ));
     }
+	
 	
 	private static final Collator COLLATOR = Collator.getInstance(Locale.CHINA);
     private static final String FIRST_PINYIN_UNIHAN = "\u963F";
@@ -335,7 +246,6 @@ public class ShenduContactAdapter extends BaseAdapter implements Filterable {
     			 isFirst = true;
     			 if(hanzis.toString()!=null && !hanzis.toString().equals("")){
         			 numberNum.add(hanzis.toString());
-//    				 log("hanzitustring = "+hanzis.toString());
     			 }
     			 hanzis.setLength(0);
     		 }else if (character < 256) {
@@ -401,10 +311,56 @@ public class ShenduContactAdapter extends BaseAdapter implements Filterable {
         if(contactInfo.firstNumberIndexs!=null){
         	contactInfo.firstNumberIndexs.clear();
         }
+     
+        contactInfo.hanziNums = numberNum;
     	 contactInfo.firstNumberIndexs = firstNumberIndexs;
-        mPinyinNumNames.add(numberNum);
+        setFirstNumberInfo(contactInfo);
     	
     }
+    
+    /**shutao 2012-10-31*/
+	private void setFirstNumberInfo(Shendu_ContactItem contactInfo) {
+
+		if (contactInfo.name != null) {
+			String first = contactInfo.firstNumber;
+			for (int index = 0; index < contactInfo.hanziNums.size(); index++) {
+				String firstNum = first.substring(index, first.length());
+				NodeShendu_ContactItem contactItemFirst = new NodeShendu_ContactItem();
+				contactItemFirst.number = firstNum;
+				contactItemFirst.type = mFirstNumberInfo.FIRST;
+				contactItemFirst.contactItem = contactInfo;
+				char numFirst = contactItemFirst.number.toCharArray()[0];
+				mFirstNumberInfo.setNumberContactsItem(numFirst,
+						contactItemFirst);
+
+				StringBuilder name = new StringBuilder();
+				for (int j = index; j < contactInfo.hanziNums.size(); j++) {
+					name = name.append(contactInfo.hanziNums.get(j));
+				}
+				NodeShendu_ContactItem contactItem = new NodeShendu_ContactItem();
+				contactItem.number = name.toString();
+				contactItem.type = mFirstNumberInfo.PINYIN;
+				contactItem.contactItem = contactInfo;
+				char num = contactItem.number.toCharArray()[0];
+				mFirstNumberInfo.setNumberContactsItem(num, contactItem);
+				name.setLength(0);
+			}
+		}
+		String mNumber = contactInfo.number;
+		for (int j = 0; j < mNumber.length(); j++) {
+
+			NodeShendu_ContactItem contactItemNumber = new NodeShendu_ContactItem();
+			String numb = mNumber.substring(j, mNumber.length());
+			contactItemNumber.number = numb;
+			contactItemNumber.type = mFirstNumberInfo.NUMBER;
+			contactItemNumber.contactItem = contactInfo;
+			char mFirst = contactItemNumber.number.toCharArray()[0];
+
+			mFirstNumberInfo.setNumberContactsItem(mFirst, contactItemNumber);
+			numb = null;
+		}
+
+	}
     
     /**shutao 2012-10-19*/
     private static char LetterToNumber(char letter) {
@@ -440,7 +396,6 @@ public class ShenduContactAdapter extends BaseAdapter implements Filterable {
         return sb.toString();
     }
 	private void getStrangeCallLogs() {
-		mStrangeCalls.clear();
 		/** shutao 2012-9-27*/
 		String selection = "_id in (select _id  from calls where "+CallLog.Calls.CACHED_NAME + " is null or "+CallLog.Calls.CACHED_NAME +"= \"\"  group by number having count (number) > 0)";
 		Cursor cursor = mContext.getContentResolver().query(
@@ -454,63 +409,21 @@ public class ShenduContactAdapter extends BaseAdapter implements Filterable {
 		
 		while (cursor.moveToNext()){
 			Shendu_ContactItem r = new Shendu_ContactItem();
-			r.number = cursor.getString(0);
-			mPhoneList.add(r.number);
+			r.number = removeNonDigits(cursor.getString(0));
+
 //			log("getStrangeCallLogs == "+r.number);
 			r.name = null;
-			mStrangeCalls.add(r);
+			r.city = PhoneLocation.getCityFromPhone(r.number);
+			setFirstNumberInfo(r);
 		}
 		cursor.close();
 
 	}
 	
 	
-//	   private  String nameToNumber(String name) {
-//		   String [] names = name.split(",");
-//		   StringBuilder sb = new StringBuilder();
-//		   
-//		   String [] numberNum =  new String[names.length]; ;
-//		   
-//		   StringBuilder first = new StringBuilder();
-//		   for(int index = 0 ;index < names.length ; index++){
-//			
-//			   StringBuilder nums = new StringBuilder();
-//			   String nameNum = names[index];
-//			   int len = nameNum.length();
-//		        for (int i = 0; i < len; i++) {
-//		            boolean matched = false;
-//		            char ch = Character.toLowerCase(nameNum.charAt(i));
-//		            for (char[] row : sT9Map) {
-//		                for (char a : row) {
-//		                    if (ch == a) {
-//		                        matched = true;
-//		                        nums.append(row[0]);
-//		                        break;
-//		                    }
-//		                }
-//		                if (matched) {
-//		                    break;
-//		                }
-//		            }
-//		            if (!matched) {
-//		            	nums.append(sT9Map[0][0]);
-//		            }
-//		        }
-//		        
-////		          log("subSequence"+(nums.toString().equals("")?"":nums.toString().subSequence(0, 1))+"nums"+nums.toString());
-//		            first.append(nums.toString().equals("")?"":nums.subSequence(0, 1));
-//		            sb.append(nums);
-//		            numberNum[index] = nums.toString(); 
-//		            nums.setLength(0);
-//		            
-//		   }
-////		   mPinyinNumNames.add(numberNum);
-//		   mFirstNumberIndexs.add(first.toString());
-////	        log("nameToNumber"+sb.toString()+"first"+first.toString());
-//	        return sb.toString();
-//	    }
-	
+
     private void initT9Map() {
+    	
         String[] t9Array = mContext.getResources().getStringArray(R.array.t9_map);
         sT9Map = new char[t9Array.length][];
         int rc = 0;
@@ -568,108 +481,130 @@ public class ShenduContactAdapter extends BaseAdapter implements Filterable {
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-        Shendu_ContactItem o = mInfoList.get(position);
-        if (o.name == null) {
-            holder.name.setText(o.number , TextView.BufferType.SPANNABLE);
+        Shendu_ContactItem contactItem = mInfoList.get(position);
+        if (contactItem.name == null) {
+            holder.name.setText(contactItem.number , TextView.BufferType.SPANNABLE);
             holder.number.setVisibility(View.GONE);
             holder.imPhoto.setImageResource(R.drawable.ic_contact_picture_holo_dark);
-            holder.imPhoto.assignContactFromPhone(o.number, true);
+            holder.imPhoto.assignContactFromPhone(contactItem.number, true);
         	  holder.pinYin.setVisibility(View.GONE);
-            if (o.numberMatchId != -1) {
+            if (contactItem.number.contains(mPrevInput)) {
                 Spannable s = (Spannable) holder.name.getText();
-                int numberStart = o.numberMatchId;
+                int numberStart = contactItem.number.indexOf(mPrevInput);
 //           	  log("getview yy== "+numberStart+"num"+(numberStart + o.num)+"name"+o.number);
                 s.setSpan(new ForegroundColorSpan(mContext.getResources().getColor(R.color.shendu_high_light)),
-                        numberStart, numberStart + o.num, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+                        numberStart, numberStart + mPrevInput.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
                 holder.name.setText(s);
             }
         } else {
-            holder.name.setText(o.name, TextView.BufferType.SPANNABLE);
-            holder.number.setText(o.number , TextView.BufferType.SPANNABLE);
+            holder.name.setText(contactItem.name, TextView.BufferType.SPANNABLE);
+            holder.number.setText(contactItem.number , TextView.BufferType.SPANNABLE);
             /**shutao 2012-10-19*/
             holder.pinYin.setVisibility(View.VISIBLE);
-            holder.pinYin.setText(o.pinYin ,TextView.BufferType.SPANNABLE);
+            holder.pinYin.setText(contactItem.pinYin ,TextView.BufferType.SPANNABLE);
             holder.number.setVisibility(View.VISIBLE);
-            if (o.numberMatchId != -1) {
-          	  holder.pinYin.setVisibility(View.GONE);
-              Spannable s = (Spannable) holder.number.getText();
-              int numberStart = o.numberMatchId;
-              s.setSpan(new ForegroundColorSpan(mContext.getResources().getColor(R.color.shendu_high_light)),
-                      numberStart, numberStart + o.num, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
-              holder.number.setText(s);
-          }else 
 
-              if (o.firstMathcId != -1) {
-                  Spannable s = (Spannable) holder.name.getText();
-                  Spannable sPinYin = (Spannable) holder.pinYin.getText();
-                  int sLeng = s.length(); 
-                  int nameStart = o.firstMathcId;
-                  int send = (nameStart + o.num) >= sLeng ?sLeng:(nameStart + o.num);
-                  
-//                  log("getview yy== "+nameStart+"num"+send+"name"+o.name+s.toString());
-//                  s.setSpan(new ForegroundColorSpan(mContext.getResources().getColor(R.color.shendu_high_light)),
-//                          nameStart, send , Spannable.SPAN_INCLUSIVE_INCLUSIVE);
-                  for(int index = nameStart ; index< o.firstNumberIndexs.size();index++){
-                  	if(index-nameStart == o.num){
-                  		break;
-                  	}
-               	   int num =o.firstNumberIndexs.get(index);
-//           		   log("o.firstNumberIndexs"+num+o.name);
-           		   sPinYin.setSpan(new ForegroundColorSpan(mContext.getResources().getColor(R.color.shendu_high_light)),
-           				   num-1, num , Spannable.SPAN_INCLUSIVE_INCLUSIVE);
-                  }
-//                  holder.name.setText(s);
-                  holder.pinYin.setText(sPinYin);
-              }
-//            	if(o.nameMatchId != -1){
-////            	 Spannable s = (Spannable) holder.name.getText();
-//            	 Spannable sPinYin = (Spannable) holder.pinYin.getText();
-////            	int sLeng = sPinYin.length(); 
-////            	int send = (o.numberNums+nameStart) >= sLeng ?sLeng:(o.numberNums+nameStart);
-////          	   sPinYin.setSpan(new ForegroundColorSpan(mContext.getResources().getColor(R.color.shendu_high_light)),
-////          			 nameStart, send , Spannable.SPAN_INCLUSIVE_INCLUSIVE);
-////                 log("getview ss== "+nameStart+"num"+ o.numberNums+"name"+o.name);
-//
-//
-//                 for(int index = 0 ; index< o.pinyinNumberIndexs.size();index++){
-//                 	int sPinyinStart = o.pinyinNumberIndexs.get(index);
-//          		   sPinYin.setSpan(new ForegroundColorSpan(mContext.getResources().getColor(R.color.shendu_high_light)),
-//          				  sPinyinStart, sPinyinStart+1 , Spannable.SPAN_INCLUSIVE_INCLUSIVE);
-//                 }
-//                 holder.pinYin.setText(sPinYin);
-////                 holder.name.setText(s);
-//            }else
-          
-            else if(o.pinyinMatchId != -1){
-            	 Spannable sPinYin = (Spannable) holder.pinYin.getText();
-            	 int sLeng = sPinYin.length();
-            	 int nameStart = o.pinyinMatchId;
-            	 int send = (o.num+nameStart) >= sLeng ?sLeng:(o.num+nameStart);
-//            	 log("nameStart"+nameStart+"send = "+send);
-        	     sPinYin.setSpan(new ForegroundColorSpan(mContext.getResources().getColor(R.color.shendu_high_light)),
-        			 nameStart, send , Spannable.SPAN_INCLUSIVE_INCLUSIVE);
-        	     holder.pinYin.setText(sPinYin);
-            }
-            if (o.photo != null)
-                mPhotoLoader.loadDirectoryPhoto(holder.imPhoto, o.photo, true);
+			switch (contactItem.type) {
+			case 0:{
+				Spannable s = (Spannable) holder.number.getText();
+				int numberStart = contactItem.number.indexOf(mPrevInput);
+				s.setSpan(new ForegroundColorSpan(mContext.getResources()
+						.getColor(R.color.shendu_high_light)), numberStart,
+						numberStart + mPrevInput.length(),
+						Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+
+				holder.number.setText(s);
+				break;
+			}
+			case 1:{
+				Spannable sFirstPinYin = (Spannable) holder.pinYin.getText();
+				int num = mPrevInput.length();
+				int nameStart = contactItem.firstNumber.indexOf(mPrevInput);
+				for (int index = nameStart; index < contactItem.firstNumberIndexs.size(); index++) {
+					if (index - nameStart == num) {
+						break;
+					}
+					int nums = contactItem.firstNumberIndexs.get(index);
+
+					sFirstPinYin.setSpan(
+							new ForegroundColorSpan(mContext.getResources()
+									.getColor(R.color.shendu_high_light)),
+							nums - 1, nums, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+				}
+
+				holder.pinYin.setText(sFirstPinYin);
+			}
+				break;
+			case 2:{
+				Spannable sPinYin = (Spannable) holder.pinYin.getText();
+				int sLeng = sPinYin.length();
+				int pinyinStart = contactItem.pinyinNumber.indexOf(mPrevInput);
+				int send = (mPrevInput.length() + pinyinStart) >= sLeng ? sLeng
+						: (mPrevInput.length() + pinyinStart);
+
+				sPinYin.setSpan(new ForegroundColorSpan(mContext.getResources()
+						.getColor(R.color.shendu_high_light)), pinyinStart, send,
+						Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+				holder.pinYin.setText(sPinYin);
+				break;
+			}
+			}
+          	
+//            if(contactItem.pinyinNumber.contains(mPrevInput)){
+//      
+//           	 Spannable sPinYin = (Spannable) holder.pinYin.getText();
+//           	 int sLeng = sPinYin.length();
+//           	 int nameStart = contactItem.pinyinNumber.indexOf(mPrevInput);
+//           	 int send = (contactItem.num+nameStart) >= sLeng ?sLeng:(contactItem.num+nameStart);
+////           	 log("nameStart"+nameStart+"send = "+send);
+//       	     sPinYin.setSpan(new ForegroundColorSpan(mContext.getResources().getColor(R.color.shendu_high_light)),
+//       			 nameStart, send , Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+//       	     holder.pinYin.setText(sPinYin);
+//           }else if(contactItem.firstNumber.contains(mPrevInput)){
+//        	   Spannable s = (Spannable) holder.name.getText();
+//             Spannable sPinYin = (Spannable) holder.pinYin.getText();
+//             int num = mPrevInput.length();
+//             int nameStart = contactItem.firstNumber.indexOf(mPrevInput);
+//             for(int index = nameStart ; index< contactItem.firstNumberIndexs.size();index++){
+//             	if(index-nameStart == num){
+//             		break;
+//             	}
+//          	   int nums =contactItem.firstNumberIndexs.get(index);
+////      		   log("o.firstNumberIndexs"+num+o.name);
+//      		   sPinYin.setSpan(new ForegroundColorSpan(mContext.getResources().getColor(R.color.shendu_high_light)),
+//      				 nums-1, nums , Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+//             }
+////             holder.name.setText(s);
+//             holder.pinYin.setText(sPinYin);
+//           }else if(contactItem.number.contains(mPrevInput)){
+//    
+//             Spannable s = (Spannable) holder.number.getText();
+//             int numberStart = contactItem.number.indexOf(mPrevInput);
+//             s.setSpan(new ForegroundColorSpan(mContext.getResources().getColor(R.color.shendu_high_light)),
+//                     numberStart, numberStart + mPrevInput.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+//             
+//             holder.number.setText(s);
+//           }
+       
+            if (contactItem.photo != null)
+                mPhotoLoader.loadDirectoryPhoto(holder.imPhoto, contactItem.photo, true);
             else
                 holder.imPhoto.setImageResource(ContactPhotoManager.getDefaultAvatarResId(false, true));
                
-            holder.imPhoto.assignContactFromPhone(o.number, true);
+            holder.imPhoto.assignContactFromPhone(contactItem.number, true);
         }
         
-    	String city = PhoneLocation.getCityFromPhone(o.number);
-		if(city != null){
-			holder.attribution.setText(city);
-		}else{
-			holder.attribution.setText("");
+		if(contactItem.city != null){
+			holder.attribution.setText(contactItem.city);
 		}
-
+		   contactItem = null ;
+//		log("getview  time = "+(System.currentTimeMillis() - time));
         return convertView;
     }
 
 	
 	private String mPrevInput = null;
+	private boolean isSearch = false ;
 	/***
 	 * shutao 2012-9-14
 	 * The following is added to the ListView filtering methods, 
@@ -684,12 +619,10 @@ public class ShenduContactAdapter extends BaseAdapter implements Filterable {
 			protected void publishResults(CharSequence constraint,
 					FilterResults results) {
 				// TODO Auto-generated method stub
-			
-				if(constraint.toString().equals(mPrevInput)){
-//					log("publishResults =-===  "+constraint.toString());
+				String number = removeNonDigits(constraint.toString());
+				if(isSearch && number.equals(mPrevInput)){
+		
 					/**shutao 2012-10-26*/
-					
-					if(mInfoList != null ) mInfoList.clear();
 					mInfoList = (ArrayList<Shendu_ContactItem>) results.values;
 					if (results.count > 0) {
 						notifyDataSetChanged();
@@ -698,116 +631,27 @@ public class ShenduContactAdapter extends BaseAdapter implements Filterable {
 						notifyDataSetInvalidated();
 						mContactsListener.notContacts();
 					}
+					isSearch = false;
+			
 				}
 			}
 
 			@Override
 			protected FilterResults performFiltering(CharSequence s) {
+				isSearch =false;
 				long time1 = System.currentTimeMillis();
 				// TODO Auto-generated method stub
 				FilterResults results = new FilterResults();
-				ArrayList< Shendu_ContactItem > nameInitial = new ArrayList<Shendu_ContactItem>();
-				ArrayList< Shendu_ContactItem > nameTopInitial = new ArrayList<Shendu_ContactItem>();
-				ArrayList< Shendu_ContactItem > nameData = new ArrayList<Shendu_ContactItem>();
-				ArrayList< Shendu_ContactItem > numberData = new ArrayList<Shendu_ContactItem>();
-//				mPrevInput  =  s.toString();
-			    String number = removeNonDigits(s.toString());
-				boolean newQuery = /*mPrevInput == null || number.length() <= mPrevInput.length()*/true;
-				
-				if(mPrevInput == null){
-					newQuery = true;
-				}else{
-					newQuery = s.toString().length()<=mPrevInput.length();
-				}
-//				log("performFiltering"+oldInfoList.size()+" phoneList.size()"+ phoneList.size());
-//				int contact=0;
-						for(Shendu_ContactItem item : (newQuery ? mContactinfoList :mOldInfoList)){
-							item.numberMatchId = -1;
-							item.firstMathcId = -1;
-							item.nameMatchId = -1;
-							if(item.name != null){
-								int pos = item.firstNumber.indexOf(number);
-//								mNameTONumberList.get(i).indexOf(number);
-								if (pos != -1) {
-									
-									item.firstMathcId = pos;
-//									log("nameToNumList " + oldInfoList.get(i).nameMatchId);
-									item.num = number.length();
-//									result.add(oldInfoList.get(i));
-//		                        if(item.firstNumber.equals(number))
-//		                        nameTopInitial.add(item)	;
-//									else
-									nameInitial.add(item);
-//									contact++;
-								}
-								else 	/**shutao 2012-10-23*/
-									if(item.pinyinNumber.contains(number)){
-										item.pinyinMatchId = item.pinyinNumber.indexOf(number);
-										item.num = number.length();
-//									if(item.pinyinNumber.equals(number)){
-//										 nameTopInitial.add(item);
-//									}else
-									     nameData.add(item);
-//									     contact++;
-									}
-									else 
-									{
-										int index = item.number.indexOf(number);
-										if (index !=-1 ) {
-											item.nameMatchId = -1;
-											item.numberMatchId = index;
-//											log("phoneList " + mPhoneList.get(i)+"number"+number+"mOldInfoList.get(i)"+mOldInfoList.get(i).number);
-											item.num = number.length();
-											numberData.add(item);
-//											contact++;
-//											result.add();
-										}
-									}
-//								}else{
-////									/**shutao 2012-9-26*/
-////									if(/*matchNumberIndexOf01*/matchNumberIndexOf(i,number,mOldInfoList.get(i))){
-//////										result.add(oldInfoList.get(i));
-////										/**shutao 2012-9-26*/
-////										if(mOldInfoList.get(i).nameMatchId == 0 &&
-////												mOldInfoList.get(i).numberNums == mOldInfoList.get(i).name.length()){
-////											 nameTopInitial.add(mOldInfoList.get(i));
-////										}else
-////										nameData.add(mOldInfoList.get(i));
-////									}
-		//
-								
-							}else{
-								int pos = item.number.indexOf(number);
-								if (pos !=-1 ) {
-									item.nameMatchId = -1;
-									item.numberMatchId = pos;
-//									log("phoneList " + mPhoneList.get(i)+"number"+number+"mOldInfoList.get(i)"+mOldInfoList.get(i).number);
-									item.num = number.length();
-									numberData.add(item);
-//									contact++;
-//									result.add();
-								}
-							}
-//							if(contact>25){
-//								break;
-//							}
-							 
-						}
 
-				mOldInfoList.clear();
-				mPrevInput = s.toString();
-				mOldInfoList.addAll(nameTopInitial);
-				mOldInfoList.addAll(nameInitial);
-				mOldInfoList.addAll(nameData);
-				mOldInfoList.addAll(numberData);
-//				log("performFiltering----------"+result.size());
-				results.values = new ArrayList<Shendu_ContactItem>(mOldInfoList);
-				results.count = mOldInfoList.size();
-				nameTopInitial.clear();
-				numberData.clear();
-				nameInitial.clear();
-				nameData.clear();
+				mPrevInput  = removeNonDigits(s.toString());
+//				mContactinfoList = mFirstNumberInfo.searchNumber(mPrevInput,15);				
+//				log("size"+mContactinfoList.size());
+//
+//				results.values = mContactinfoList/*new ArrayList<Shendu_ContactItem>(mOldInfoList)*/;
+//				results.count =mContactinfoList /*mOldInfoList*/.size();
+
 				log("sech  ---  00091 time "+ (System.currentTimeMillis()-time1));
+				isSearch =true;
 				return results;
 			}
 		};
@@ -824,133 +668,6 @@ public class ShenduContactAdapter extends BaseAdapter implements Filterable {
 		return false;
 	}
 
-	private synchronized boolean matchNumberIndexOf01(int index,String inputNumber,Shendu_ContactItem shendu_ContactItem){
-		
-		char[] inputNumbers = inputNumber.toCharArray();
-		ArrayList<String> numbers = mPinyinNumNames.get(index);
-		shendu_ContactItem.numberNums = 0;
-	    int indexOne = -1;
-
-		for(int inputIndex = 0 ,numberNum = 0 , numberIndex = 0 ; inputIndex <inputNumbers.length ; ){
-			if(numberNum == numbers.size()){
-    			shendu_ContactItem.numberNums = 0;
-    			return false;
-    		}
-//			log("new"+"inputIndex = " + inputIndex + " numberNum = "+ numberNum + "numberIndex = " + numberIndex + shendu_ContactItem.name +"cheng"+inputNumbers[inputIndex]+"--"+ numbers[numberNum]);
-			if(numbers.get(numberNum).equals("")){
-				numberNum++;
-				numberIndex=0;
-			}else
-			
-			if(inputNumbers[inputIndex] == numbers.get(numberNum).charAt(numberIndex)){
-//				log("inputIndex = " + inputIndex + " numberNum = "+ numberNum + "numberIndex = " + numberIndex + shendu_ContactItem.name +"cheng"+inputNumbers[inputIndex]+"--"+ numbers[numberNum].charAt(numberIndex));
-				if(numberIndex == 0){
-	    			++shendu_ContactItem.numberNums;
-//	    	  		log("cheng"+indexOne+"numberNums"+shendu_ContactItem.numberNums);
-		    	}
-				inputIndex ++ ;
-				numberIndex ++ ; 
-				if(indexOne<0){
-					indexOne = numberNum;
-				}
-				if( numberIndex == numbers.get(numberNum).length()){
-		    		numberNum++;
-		    		numberIndex=0;
-		    	}
-				
-				
-			}else{
-//		  		log("inputIndex = " + inputIndex + " numberNum = "+ numberNum + "numberIndex = " + numberIndex + shendu_ContactItem.name+"back");
-				if( inputIndex==0 && numberIndex <= 1 ){
-					numberNum ++ ;
-					numberIndex = 0;
-					if(numberIndex==0 && indexOne>=0){
-//						log("duankai-----"+numberIndex);
-						shendu_ContactItem.numberNums = 0;
-		    			return false;
-					}
-				}else{
-	    			shendu_ContactItem.numberNums = 0;
-	    			return false;
-	    		}
-			}
-			
-		}
-		
-		shendu_ContactItem.nameMatchId = indexOne;
-		
-		return true;
-		
-	}
-	
-	
-	
-	/**
-	 * shutao 2012-9-25
-	 * @param index 
-	 * @param number
-	 * @param shendu_ContactItem
-	 * @return Index input array to record the start and end positions
-	 */
-	private synchronized boolean matchNumberIndexOf(int index,String inputNumber,Shendu_ContactItem shendu_ContactItem){
-		char[] inputNumbers = inputNumber.toCharArray();
-		ArrayList<String> numbers = mPinyinNumNames.get(index);
-		shendu_ContactItem.numberNums = 0;
-		if(shendu_ContactItem.pinyinNumberIndexs!=null){
-		shendu_ContactItem.pinyinNumberIndexs.clear();
-		}
-		String sName = "";
-//		log("index  --- == "+index);
-		int [] indexNums = new int[numbers.size()];
-		for(int i=0 ;i<numbers.size();i++){
-			sName = sName+numbers.get(i);
-			indexNums[i]=sName.length();
-		}
-	    int indexOne = -1;
-	    for(int inputIndex = 0 , numberNum = 0 , numberIndex = 0 ; inputIndex <inputNumbers.length ;){
-	    	if(numberNum == numbers.size()){
-    			shendu_ContactItem.numberNums = 0;
-    			return false;
-    		}
-//	    	log("new"+"inputIndex = " + inputIndex + " numberNum = "+ numberNum + "numberIndex = " + numberIndex + shendu_ContactItem.name +"cheng"+inputNumbers[inputIndex]+"--"+ numbers[numberNum]);
-	    	if(inputNumbers[inputIndex] == numbers.get(numberNum).charAt(numberIndex)){
-//	    		log("inputIndex = " + inputIndex + " numberNum = "+ numberNum + "numberIndex = " + numberIndex + shendu_ContactItem.name +"cheng"+inputNumbers[inputIndex]+"--"+ numbers[numberNum].charAt(numberIndex));
-	    		int num = numberNum==0?0:indexNums[numberNum-1];
-//	    		log("num ====="+num);
-	    		shendu_ContactItem.pinyinNumberIndexs.add(num+numberIndex);
-	    		
-	    		if(numberIndex == 0){
-	    			++shendu_ContactItem.numberNums;
-//	    	  		log("cheng"+indexOne+"numberNums"+shendu_ContactItem.numberNums);
-		    		}
-	    		numberIndex++;
-	    		inputIndex++;
-	    		if(indexOne<0){
-					indexOne = numberNum;
-				}
-	    		if( numberIndex == numbers.get(numberNum).length()){
-	    			numberNum++;
-	    			numberIndex=0;
-		    	}
-	    	}else{
-//	    		log("inputIndex = " + inputIndex + " numberNum = "+ numberNum + "numberIndex = " + numberIndex + shendu_ContactItem.name+"back");
-	    		if(numberIndex==1){
-	    			numberNum++;
-	    			numberIndex=0;
-	    		}else{
-	    			shendu_ContactItem.numberNums = 0;
-	    			return false;
-	    		}
-	    	}
-	    }
-	    
-		shendu_ContactItem.nameMatchId = indexOne;
-		
-		return true;
-		
-	}
-	
-
 	
 	private static boolean debug = false;
 
@@ -963,22 +680,14 @@ public class ShenduContactAdapter extends BaseAdapter implements Filterable {
         Uri photo;
         String name;
         String number;
-        String normalNumber;
-        String normalName;
         String pinYin;
         String firstNumber;
         String pinyinNumber;
-        int timesContacted;
-        int firstMathcId;
-        int numberMatchId;
-        int nameMatchId;
+        String city;
         int pinyinMatchId;
-        int numberNums ;
         int num;
-        CharSequence groupType;
-        long id;
+        int type;
+        ArrayList<String> hanziNums;
         ArrayList<Integer> firstNumberIndexs;
-        ArrayList<Integer> pinyinNumberIndexs = new ArrayList<Integer>();
-        boolean isSuperPrimary;
     }
 }

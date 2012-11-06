@@ -487,7 +487,7 @@ public class DialtactsActivity extends TransactionSafeActivity
         fixIntent(intent);
 
         setContentView(R.layout.dialtacts_activity);
-
+        getActionBar().hide();
         mContactListFilterController = ContactListFilterController.getInstance(this);
         mContactListFilterController.addListener(mContactListFilterListener);
 
@@ -529,7 +529,7 @@ public class DialtactsActivity extends TransactionSafeActivity
 //        getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 //        getActionBar().setDisplayShowTitleEnabled(false);
 //        getActionBar().setDisplayShowHomeEnabled(false);
-        getActionBar().hide();
+
 
         // Load the last manually loaded tab
         mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
@@ -1127,10 +1127,10 @@ public class DialtactsActivity extends TransactionSafeActivity
 
         mSearchView.setQuery(null, true);
 
-        actionBar.setDisplayShowCustomEnabled(true);
-        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-        actionBar.setDisplayShowHomeEnabled(true);
-        actionBar.setDisplayHomeAsUpEnabled(true);
+//        actionBar.setDisplayShowCustomEnabled(true);
+//        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+//        actionBar.setDisplayShowHomeEnabled(true);
+//        actionBar.setDisplayHomeAsUpEnabled(true);
 
         updateFakeMenuButtonsVisibility(false);
 

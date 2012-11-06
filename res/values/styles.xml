@@ -303,7 +303,7 @@
         <item name="android:layout_height">150dip</item>
     </style>
 
-    <style name="DialtactsActionBarStyle" parent="android:Widget.Holo.ActionBar">
+    <style name="DialtactsActionBarStyle" parent="@android:style/Widget.Holo.Light.ActionBar">
         <item name="android:backgroundSplit">@null</item>
         <item name="android:backgroundStacked">@drawable/ab_stacked_opaque_dark_holo</item>
         <item name="android:displayOptions"></item>

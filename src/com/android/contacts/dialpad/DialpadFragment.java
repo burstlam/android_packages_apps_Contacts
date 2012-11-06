@@ -39,6 +39,7 @@ import android.media.ToneGenerator;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Process;
 import android.os.RemoteException;
 import android.os.ServiceManager;
 import android.os.SystemProperties;
@@ -336,7 +337,7 @@ public class DialpadFragment extends Fragment
 //    		mShenduTimeHandler.removeCallbacks(mShenduRunnable);
     		try{
     		    if(input.toString().equals("")){
-    		    	MyLog("afterTextChanged == kong");
+//    		    	MyLog("afterTextChanged == kong");
     		    	mShenduHistoricalThreadString = "";
     		    	mShenduIsNull = true;
 //    		    	mShenduTimeHandler.removeCallbacks(mShenduRunnable);
@@ -349,8 +350,9 @@ public class DialpadFragment extends Fragment
 					getActivity().invalidateOptionsMenu();
     		    	}
     	         }else{
-    	        	 MyLog("afterTextChanged == bukong"+input.toString().replaceAll(" ", ""));
-    	        	 searchContacts();
+//    	        	 MyLog("afterTextChanged == bukong"+input.toString().replaceAll(" ", ""));
+    	        	 searchContacts(false);
+//    	        	 mIsSearch = true;
 //    	        	 mShenduTimeHandler.postDelayed(mShenduRunnable, SEARCH_TIME_MILLIS);
 //    	        	   	if(mShenduIsNull){
 //        	            	mShenduTimeHandler.postDelayed(mShenduRunnable, SEARCH_TIME_MILLIS);
@@ -405,6 +407,7 @@ public class DialpadFragment extends Fragment
         // Add LOCALE_CHAGNED event receiver.
         IntentFilter localeChangedfilter = new IntentFilter(Intent.ACTION_LOCALE_CHANGED);
         getActivity().registerReceiver(mLocaleChangedReceiver, localeChangedfilter);
+        
     }
 
     private ContentObserver mContactObserver = new ContentObserver(new Handler()) {
@@ -534,6 +537,7 @@ public class DialpadFragment extends Fragment
 			public void notContacts() {
 				// TODO Auto-generated method stub
 				mShenduNewContactT9Adapter.setNewContactNumber(mDigits.getText().toString());
+				if(mShenduNewContactsT9List.getVisibility() == View.GONE)
 				mShenduNewContactsT9List.setVisibility(View.VISIBLE);
 				
 			}
@@ -541,8 +545,10 @@ public class DialpadFragment extends Fragment
 			@Override
 			public void Contacts() {
 				// TODO Auto-generated method stub
+				if(mShenduNewContactsT9List.getVisibility() == View.VISIBLE){
 				mShenduNewContactsT9List.setVisibility(View.GONE);
 				toggleT9();
+				}
 			}
 		});
         
@@ -1030,7 +1036,7 @@ public class DialpadFragment extends Fragment
      * Toggles view visibility based on results
      * shutao 2012-10-15
      */
-	private void searchContacts() {
+	private synchronized void searchContacts(boolean isAll) {
 		if (!isT9On())
 			return;
 		final int length = mDigits.length();
@@ -1046,8 +1052,8 @@ public class DialpadFragment extends Fragment
 				return;
 			}
 			/** shutao 2012-9-21*/
-			mShenduContactAdapter.getFilter().filter(mDigits.getText().toString());
-//			mShenduContactAdapter.search(mDigits.getText().toString());
+//			mShenduContactAdapter.getFilter().filter(mDigits.getText().toString());
+			mShenduContactAdapter.search(mDigits.getText().toString(),isAll);
 			mShenduDialpadCallLogFragment.setMenuVisibility(false);
 			mShenduDialpadCallLogFragmentView.setVisibility(View.GONE);
 	    	 mT9List.setVisibility(View.VISIBLE);
@@ -1420,6 +1426,9 @@ public class DialpadFragment extends Fragment
 			return;
 		}
 		case R.id.t9toggle: {
+			
+			searchContacts(true);
+			
 			animateT9();
 			return;
 		}
@@ -2247,6 +2256,9 @@ public class DialpadFragment extends Fragment
 	public void onScrollStateChanged(AbsListView view, int scrollState) {
 		// TODO Auto-generated method stub
 		 if (!mT9Toggle.isChecked()) {
+           MyLog("down------------------------shutao");
+
+           searchContacts(true);
 			 mT9Toggle.setChecked(true);
 			 animateT9();
 		 }
@@ -2257,6 +2269,12 @@ public class DialpadFragment extends Fragment
 	/**
 	 * shutao 2012-9-3  Loop search RUN method
 	 */
+    public void startThread(){
+    	mT9List.setVisibility(View.VISIBLE);
+    	new Thread(mShenduRunnable).start();
+    }
+    
+    public boolean mIsSearch = false;
     public final long  SEARCH_TIME_MILLIS = 100;
     public String mShenduHistoricalThreadString = "";
 	public Handler mShenduTimeHandler = new Handler();
@@ -2267,11 +2285,20 @@ public class DialpadFragment extends Fragment
 		public void run() {
 			// TODO Auto-generated method stub
 //			MyLog("timeHandler------------------------");
-			if(!mShenduHistoricalThreadString.equals(mDigits.getText().toString())){
-				mShenduHistoricalThreadString = mDigits.getText().toString();
-				     searchContacts();
-				    
-			} 
+			while(true){
+				if(mIsSearch){
+//					searchContacts(false);
+					mShenduContactAdapter.search(mDigits.getText().toString(),false);
+					if(!mShenduHistoricalThreadString.equals(mDigits.getText().toString())){
+						mShenduHistoricalThreadString = mDigits.getText().toString();
+						
+						mIsSearch = true;
+					}else{
+						mIsSearch = false;
+					}
+				}	
+			}
+		
 //			mShenduTimeHandler.postDelayed(this, SEARCH_TIME_MILLIS);
 		}
 	};

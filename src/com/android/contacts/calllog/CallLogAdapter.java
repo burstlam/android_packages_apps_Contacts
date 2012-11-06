@@ -32,6 +32,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
+import android.os.Process;
 import android.provider.CallLog.Calls;
 import android.provider.ContactsContract.PhoneLookup;
 import android.text.TextUtils;
@@ -395,6 +396,8 @@ import libcore.util.Objects;
 
         @Override
         public void run() {
+        	/**shutao 2012-11-5 */
+        	 Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND );
             boolean needRedraw = false;
             while (true) {
                 // Check if thread is finished, and if so return immediately.
