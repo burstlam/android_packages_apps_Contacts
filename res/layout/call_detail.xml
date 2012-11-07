@@ -20,7 +20,7 @@
     android:id="@+id/call_detail"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/shendu_background__bg"
+    android:background="@drawable/shendu_background_bg"
     android:visibility="gone" >
 
     <!-- All the controls which are part of the pinned header are in this layout. -->
