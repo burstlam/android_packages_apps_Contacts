@@ -408,10 +408,11 @@
             android:clearTaskOnLaunch="true"/>
 
         <!-- Views the details of a single group -->
+         <!-- Wang:modify theme -->
         <activity android:name=".activities.GroupDetailActivity"
             android:label=""
             android:screenOrientation="portrait"
-            android:theme="@style/DetailActivityTheme"/>
+            android:theme="@style/ShenduActivityTheme"/>
 
         <!-- Create a new or edit an existing group -->
         <!-- Wang:portrait set -->
@@ -498,9 +499,10 @@
         </activity>
 
         <!-- Views the details of a single contact -->
+        <!-- Wang: -->
         <activity android:name=".activities.ContactDetailActivity"
             android:label="@string/viewContactTitle"
-            android:theme="@style/DetailActivityTheme"
+            android:theme="@style/ShenduActivityTheme"
             android:screenOrientation="portrait"
             android:parentActivityName=".activities.PeopleActivity">
 

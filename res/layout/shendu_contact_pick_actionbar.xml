@@ -54,7 +54,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:gravity="center_vertical"
-                android:text="@string/menu_discard"
+                android:text="@string/menu_doNotSave"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textColor="@color/action_bar_button_text_color" />
         </LinearLayout>
