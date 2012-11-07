@@ -900,7 +900,7 @@ public class DialpadFragment extends Fragment
         super.onCreateOptionsMenu(menu, inflater);
         final boolean isLandscape = getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
         if ((ViewConfiguration.get(getActivity()).hasPermanentMenuKey() || isLandscape) &&
-                isLayoutReady() && mDialpadChooser != null) {
+                isLayoutReady() /*&& mDialpadChooser != null*/) {
             inflater.inflate(R.menu.dialpad_options, menu);
         }
     }
@@ -910,7 +910,7 @@ public class DialpadFragment extends Fragment
         final boolean isLandscape = getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
         // Hardware menu key should be available and Views should already be ready.
         if ((ViewConfiguration.get(getActivity()).hasPermanentMenuKey() || isLandscape) &&
-                isLayoutReady() && mDialpadChooser != null) {
+                isLayoutReady() /*&& mDialpadChooser != null*/) {
              setupMenuItems(menu);
         }
     }
@@ -968,21 +968,27 @@ public class DialpadFragment extends Fragment
 
                 if (selectionStart != 0) {
                     // Pause can be visible if cursor is not in the begining
-                    twoSecPauseMenuItem.setVisible(true);
+                	/**shutao 2012-11-7*/
+                    twoSecPauseMenuItem.setVisible(false);
 
                     // For Wait to be visible set of condition to meet
-                    waitMenuItem.setVisible(showWait(selectionStart, selectionEnd, strDigits));
+                    /**shutao 2012-11-7*/
+//                    waitMenuItem.setVisible(showWait(selectionStart, selectionEnd, strDigits));
+                    waitMenuItem.setVisible(false);
                 } else {
                     // cursor in the beginning both pause and wait to be invisible
                     twoSecPauseMenuItem.setVisible(false);
                     waitMenuItem.setVisible(false);
                 }
             } else {
-                twoSecPauseMenuItem.setVisible(true);
+            	/**shutao 2012-11-7*/
+                twoSecPauseMenuItem.setVisible(false);
 
                 // cursor is not selected so assume new digit is added to the end
                 int strLength = strDigits.length();
-                waitMenuItem.setVisible(showWait(strLength, strLength, strDigits));
+            	/**shutao 2012-11-7*/                
+//                waitMenuItem.setVisible(showWait(strLength, strLength, strDigits));
+                waitMenuItem.setVisible(false);
             }
         }
     }
@@ -1043,10 +1049,10 @@ public class DialpadFragment extends Fragment
 		if (length > 0) {
 			if(mDigits.getText().toString().equals("1")){
 				if(	mT9List.getVisibility() == View.VISIBLE){
-					mShenduNewContactsT9List.setVisibility(View.GONE);
-					mT9List.setVisibility(View.GONE);
 					mShenduDialpadCallLogFragmentView.setVisibility(View.VISIBLE);
 					mShenduDialpadCallLogFragment.setMenuVisibility(true);
+					mShenduNewContactsT9List.setVisibility(View.GONE);
+					mT9List.setVisibility(View.GONE);
 					getActivity().invalidateOptionsMenu();
 				}
 				return;
@@ -1054,9 +1060,10 @@ public class DialpadFragment extends Fragment
 			/** shutao 2012-9-21*/
 //			mShenduContactAdapter.getFilter().filter(mDigits.getText().toString());
 			mShenduContactAdapter.search(mDigits.getText().toString(),isAll);
+			mT9List.setVisibility(View.VISIBLE);
 			mShenduDialpadCallLogFragment.setMenuVisibility(false);
 			mShenduDialpadCallLogFragmentView.setVisibility(View.GONE);
-	    	 mT9List.setVisibility(View.VISIBLE);
+			getActivity().invalidateOptionsMenu();
 //			if (sT9Search != null) {
 //				mShenduDialpadCallLogFragmentView.setVisibility(View.GONE);
 //				mShenduDialpadCallLogFragment.setMenuVisibility(false);
@@ -1082,11 +1089,13 @@ public class DialpadFragment extends Fragment
 //			}
 
 		} else {
-			mT9List.setVisibility(View.GONE);
-//			mT9ListTop.setVisibility(View.GONE);
+			
 			mShenduNewContactsT9List.setVisibility(View.GONE);
 			mShenduDialpadCallLogFragmentView.setVisibility(View.VISIBLE);
 			mShenduDialpadCallLogFragment.setMenuVisibility(true);
+			mT9List.setVisibility(View.GONE);
+//			mT9ListTop.setVisibility(View.GONE);
+		
 			// mT9Toggle.setVisibility(View.INVISIBLE);
 			toggleT9();
 		}
@@ -1426,7 +1435,7 @@ public class DialpadFragment extends Fragment
 			return;
 		}
 		case R.id.t9toggle: {
-			
+			/**shutao 2012-11-6*/
 			searchContacts(true);
 			
 			animateT9();
