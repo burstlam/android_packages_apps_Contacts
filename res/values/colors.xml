@@ -114,4 +114,9 @@
      <!--Wang 2012-11-1 name avatar ui -->
      <color name="shendu_name_avatar_background">#8cd9ec</color>
      <color name="shendu_name_avatar_text_color">#FFFFFF</color>
+     <!-- Wang 2012-11-8  text color for theme -->
+     <color name="shendu_primary_text_color">#333333</color>
+     <color name="shendu_secondary_text_color">#777777</color>
+     <!--  <color name="shendu_primary_text_color">#ff8a00</color>
+     <color name="shendu_secondary_text_color">#4c6d17</color>  -->
 </resources>
