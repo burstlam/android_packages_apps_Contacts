@@ -35,6 +35,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.SearchView;
 import android.widget.SearchView.OnCloseListener;
 import android.widget.SearchView.OnQueryTextListener;
@@ -162,6 +163,14 @@ public class ActionBarAdapter implements OnQueryTextListener, OnCloseListener {
         // and can go away once the user starts typing.)
         mSearchView.setIconifiedByDefault(true);
         mSearchView.setQueryHint(mContext.getString(R.string.hint_findContacts));
+        
+        //=====================================
+        // Wang: change searchview text color 2012-11-8
+        int searchSrcTextID = mSearchView.getContext().getResources().getIdentifier("android:id/search_src_text",null,null);
+        EditText searchSrcTextView = (EditText)mSearchView.findViewById(searchSrcTextID);
+        searchSrcTextView.setTextColor(R.color.shendu_primary_text_color);
+        searchSrcTextView.setHintTextColor(R.color.shendu_secondary_text_color);
+        //=====================================
         mSearchView.setOnQueryTextListener(this);
         mSearchView.setOnCloseListener(this);
         mSearchView.setQuery(mQueryString, false);
