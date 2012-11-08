@@ -212,8 +212,13 @@ public class ContactDetailDisplayUtils {
         if (!isDirectoryEntry && !isUserProfile) {
             starredMenuItem.setVisible(true);
             final int resId = isStarred
-                    ? R.drawable.btn_star_on_normal_holo_dark
-                    : R.drawable.btn_star_off_normal_holo_dark;
+//                    ? R.drawable.btn_star_on_normal_holo_dark
+//                    : R.drawable.btn_star_off_normal_holo_dark;
+                      //==============================
+                      // Wang: star style 2012-11-8
+                       ? R.drawable.btn_star_on_normal_holo_light
+                       : R.drawable.btn_star_off_normal_holo_light;
+                      //==============================
             starredMenuItem.setIcon(resId);
             starredMenuItem.setChecked(isStarred);
             starredMenuItem.setTitle(isStarred ? R.string.menu_removeStar : R.string.menu_addStar);
