@@ -124,14 +124,13 @@ public class ShenduContactAdapter extends BaseAdapter implements Filterable {
 	/**SHUTAO 2012-10-16*/
 	public  void search(final String s, final boolean isAll){
 		
-//	   createDataThead = new Thread(new Runnable() {
-//		
-//		@Override
-//		public void run() {
-////			// TODO Auto-generated method stub
-//			
-//		Process.setThreadPriority(Process.THREAD_PRIORITY_DISPLAY );
+	   createDataThead = new Thread(new Runnable() {
 		
+		@Override
+		public void run() {
+//			// TODO Auto-generated method stub
+			
+//		Process.setThreadPriority(Process.THREAD_PRIORITY_DISPLAY );
 		long time1 = System.currentTimeMillis();
 		// TODO Auto-generated method stub
 		Results results = new Results();
@@ -139,12 +138,12 @@ public class ShenduContactAdapter extends BaseAdapter implements Filterable {
 		if (mContactinfoList != null) {
 			mContactinfoList.clear();
 		}
+	
 		if(isAll){
 			mContactinfoList = mFirstNumberInfo.searchNumber(mPrevInput,MAXNUMS);
 		}else{
 			mContactinfoList = mFirstNumberInfo.searchNumber(mPrevInput,4);
 		}
-       
 		results.values = mContactinfoList;
 		results.count = mContactinfoList.size();
 		results.constraint = mPrevInput;
@@ -154,13 +153,13 @@ public class ShenduContactAdapter extends BaseAdapter implements Filterable {
 		msg.obj = results;
 		mHandler.sendMessage(msg);
 		log("sech  ---   time "+ (System.currentTimeMillis()-time1));
-//		if(createDataThead!=null){
-//		createDataThead.interrupt();
-//		createDataThead = null;
-//	}
-//		}
-//	});
-
+		if(createDataThead!=null){
+		createDataThead.interrupt();
+		createDataThead = null;
+	}
+		}
+	});
+	   createDataThead.start();
 	
 	}
 	
@@ -332,7 +331,6 @@ public class ShenduContactAdapter extends BaseAdapter implements Filterable {
 				char numFirst = contactItemFirst.number.toCharArray()[0];
 				mFirstNumberInfo.setNumberContactsItem(numFirst,
 						contactItemFirst);
-
 				StringBuilder name = new StringBuilder();
 				for (int j = index; j < contactInfo.hanziNums.size(); j++) {
 					name = name.append(contactInfo.hanziNums.get(j));

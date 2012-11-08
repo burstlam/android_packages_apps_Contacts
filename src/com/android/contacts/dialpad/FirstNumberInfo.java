@@ -201,11 +201,18 @@ public class FirstNumberInfo {
 		ArrayList< Shendu_ContactItem > numberList = new ArrayList<ShenduContactAdapter.Shendu_ContactItem>();
 		ArrayList< Shendu_ContactItem > pinyinList = new ArrayList<ShenduContactAdapter.Shendu_ContactItem>();
 		char num = input.toCharArray()[0];
-		int inputCount = input.length();
-		ArrayList<NodeShendu_ContactItem>  data = getNumberContactsItem(num);
-		int start = binSearchMin(data, 0, data.size()-1, input)+1;
-//		System.out.println("start="+start+"num = "+num);
 		
+		int inputCount = input.length();
+		ArrayList<NodeShendu_ContactItem> data = getNumberContactsItem(num);
+		/**shutao 2012-11-8*/
+		if(data == null || data.size()<1){
+			return numberList;
+		}
+
+		int start = binSearchMin(data, 0, data.size()-1, input)+1;
+		if(start == data.size()){
+			start = data.size()-1;
+		}
 //		int listSize = 0;
 		if(start == -1){
 
@@ -295,7 +302,6 @@ public class FirstNumberInfo {
 	}
 	
 	private int binSearchMin(ArrayList<NodeShendu_ContactItem>  data , int start , int end ,String input){
-		
 		int mid = (end - start) / 2 + start; 
 		if (matchMin(data,mid,input)) {   
             return mid;   

@@ -253,10 +253,9 @@ import libcore.util.Objects;
 
         // Only schedule a thread-creation message if the thread hasn't been
         // created yet. This is purely an optimization, to queue fewer messages.
-//        if (mCallerIdThread == null) {
-//            mHandler.sendEmptyMessageDelayed(START_THREAD, START_PROCESSING_REQUESTS_DELAY_MILLIS);
-//        }
-
+        if (mCallerIdThread == null) {
+            mHandler.sendEmptyMessageDelayed(START_THREAD, START_PROCESSING_REQUESTS_DELAY_MILLIS);
+        }
         return true;
     }
 
