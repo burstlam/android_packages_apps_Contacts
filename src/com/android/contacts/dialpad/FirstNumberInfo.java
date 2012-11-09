@@ -6,7 +6,13 @@ import java.util.Comparator;
 import java.util.HashMap;
 
 import com.android.contacts.dialpad.ShenduContactAdapter.Shendu_ContactItem;
-
+/**
+ * @Time 2012-9-14 
+ * @author shutao shutao@shendu.com
+ * @module : Contacts
+ * @Project: ShenDu OS 2.0
+ * Linked list search logic data classes
+ */
 public class FirstNumberInfo {
 	
 	public  int NUMBER = 0;
@@ -205,14 +211,15 @@ public class FirstNumberInfo {
 		int inputCount = input.length();
 		ArrayList<NodeShendu_ContactItem> data = getNumberContactsItem(num);
 		/**shutao 2012-11-8*/
-		if(data == null || data.size()<1){
+		if( data==null || data.size()<1){
 			return numberList;
 		}
-
-		int start = binSearchMin(data, 0, data.size()-1, input)+1;
+		int start = binSearchMin(data , 0 , data.size()-1 , input)+1;
 		if(start == data.size()){
 			start = data.size()-1;
 		}
+//		System.out.println("start="+start+"num = "+num);
+		
 //		int listSize = 0;
 		if(start == -1){
 
@@ -239,14 +246,11 @@ public class FirstNumberInfo {
 			        }
 				}
 			}else{
-//				System.out.println("time iinfo = "+(System.currentTimeMillis() - time));
 				pinyinList.addAll( numberList );
 				return pinyinList;
 			}
 		}else{
-
 			for(int  index = start ; index < data.size()  ; index++){
-
 //				int pos = data.get(index).number.indexOf(input);
 //		        if(pos!=-1){
 				NodeShendu_ContactItem itme = data.get(index);
@@ -260,7 +264,6 @@ public class FirstNumberInfo {
 						}
 			        	itme.contactItem.num = inputCount;
 			        	matchMap.put(itme.contactItem.number, "");
-//			         	listSize ++;
 					}
 		        }else{
 		        	break;
@@ -316,6 +319,24 @@ public class FirstNumberInfo {
 		return -1;
 		
 	}
+	
+//	private int binSearchMin(ArrayList<NodeShendu_ContactItem>  data,String input){
+//		
+//		int start = 0; 
+//		int end = data.size()-1;
+//		while( end > start+1 ){
+//			int middle = ( start + end ) / 2;
+//			if(matchMin(data,middle,input)){
+//				return middle;
+//			}
+//			if(data.get( middle ).number.compareTo( input ) < 0){
+//				start = middle;
+//			}else if(data.get( middle ).number.compareTo( input ) >= 0){
+//				end = middle;
+//			}
+//		}
+//		return -1;		
+//	}
 	
 	
 	public  void  comparatorArraylist(){

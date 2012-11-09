@@ -71,6 +71,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
+            android:ellipsize="end"
+            android:maxWidth="150dp"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textColor="@color/shendu_calldetail_list_text_color" />
 

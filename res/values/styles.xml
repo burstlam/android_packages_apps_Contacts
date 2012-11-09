@@ -74,6 +74,7 @@
     <style name="CallDetailActivityTheme1" parent="@android:style/Theme.Holo.Light">
         <item name="android:windowBackground">@drawable/shendu_background_dial_holo_dark</item>
         <item name="android:gravity">top</item>
+        <item name="android:actionBarStyle">@*android:style/Widget.Holo.Light.ActionBar</item>
         <item name="android:listViewStyle">@style/ListViewStyle</item>
     </style>
 
