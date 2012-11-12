@@ -286,7 +286,7 @@ public class DialpadFragment extends Fragment
             if (intent.getAction().equals(Intent.ACTION_LOCALE_CHANGED)) {
                 if (isT9On()) {
 //                    sT9Search = new T9Search(getActivity()); 
-                	MyLog("onReceive------++++++++++++++++ACTION_LOCALE_CHANGED");
+//                	MyLog("onReceive------++++++++++++++++ACTION_LOCALE_CHANGED");
                 }
             }
         }
@@ -389,7 +389,7 @@ public class DialpadFragment extends Fragment
         try {
         	mVibrate = new ShenduVibrate(getActivity());
       	    mVibrate.setOpen(getResources().getBoolean(R.bool.config_enable_dialer_key_vibration));
-            mHaptic.init(getActivity(),
+           mHaptic.init(getActivity(),
                          getResources().getBoolean(R.bool.config_enable_dialer_key_vibration));
         } catch (Resources.NotFoundException nfe) {
              Log.e(TAG, "Vibrate control bool missing.", nfe);

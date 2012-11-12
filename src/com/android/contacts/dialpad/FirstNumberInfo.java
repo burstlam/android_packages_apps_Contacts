@@ -25,139 +25,91 @@ public class FirstNumberInfo {
 		public int type;
 	}
 	
-	private ArrayList<NodeShendu_ContactItem> timeArrayList0 = new ArrayList<NodeShendu_ContactItem>();
-	private ArrayList<NodeShendu_ContactItem> timeArrayList1 = new ArrayList<NodeShendu_ContactItem>();
-	private ArrayList<NodeShendu_ContactItem> timeArrayList2 = new ArrayList<NodeShendu_ContactItem>();
-	private ArrayList<NodeShendu_ContactItem> timeArrayList3 = new ArrayList<NodeShendu_ContactItem>();
-	private ArrayList<NodeShendu_ContactItem> timeArrayList4 = new ArrayList<NodeShendu_ContactItem>();
-	private ArrayList<NodeShendu_ContactItem> timeArrayList5 = new ArrayList<NodeShendu_ContactItem>();
-	private ArrayList<NodeShendu_ContactItem> timeArrayList6 = new ArrayList<NodeShendu_ContactItem>();
-	private ArrayList<NodeShendu_ContactItem> timeArrayList7 = new ArrayList<NodeShendu_ContactItem>();
-	private ArrayList<NodeShendu_ContactItem> timeArrayList8 = new ArrayList<NodeShendu_ContactItem>();
-	private ArrayList<NodeShendu_ContactItem> timeArrayList9 = new ArrayList<NodeShendu_ContactItem>();
+	private ArrayList<NodeShendu_ContactItem> phoneDataArrayList0 = new ArrayList<NodeShendu_ContactItem>();
+	private ArrayList<NodeShendu_ContactItem> phoneDataArrayList1 = new ArrayList<NodeShendu_ContactItem>();
+	private ArrayList<NodeShendu_ContactItem> phoneDataArrayList2 = new ArrayList<NodeShendu_ContactItem>();
+	private ArrayList<NodeShendu_ContactItem> phoneDataArrayList3 = new ArrayList<NodeShendu_ContactItem>();
+	private ArrayList<NodeShendu_ContactItem> phoneDataArrayList4 = new ArrayList<NodeShendu_ContactItem>();
+	private ArrayList<NodeShendu_ContactItem> phoneDataArrayList5 = new ArrayList<NodeShendu_ContactItem>();
+	private ArrayList<NodeShendu_ContactItem> phoneDataArrayList6 = new ArrayList<NodeShendu_ContactItem>();
+	private ArrayList<NodeShendu_ContactItem> phoneDataArrayList7 = new ArrayList<NodeShendu_ContactItem>();
+	private ArrayList<NodeShendu_ContactItem> phoneDataArrayList8 = new ArrayList<NodeShendu_ContactItem>();
+	private ArrayList<NodeShendu_ContactItem> phoneDataArrayList9 = new ArrayList<NodeShendu_ContactItem>();
 	
-	private ArrayList<NodeShendu_ContactItem> timeArrayListAdd = new ArrayList<NodeShendu_ContactItem>();
+	private ArrayList<NodeShendu_ContactItem> phoneDataArrayListAdd = new ArrayList<NodeShendu_ContactItem>();
 	
-	public ArrayList<NodeShendu_ContactItem> getTimeArrayListAdd() {
-		return timeArrayListAdd;
+	public ArrayList<NodeShendu_ContactItem> getPhoneDataArrayListAdd() {
+		return phoneDataArrayListAdd;
 	}
-
-	public void setTimeArrayListAdd(
-			ArrayList<NodeShendu_ContactItem> timeArrayListAdd) {
-		this.timeArrayListAdd = timeArrayListAdd;
-	}
-
 
 	private HashMap<String, String> matchMap = new HashMap<String, String>();
 	
-	public ArrayList<NodeShendu_ContactItem> getTimeArrayList0() {
-		return timeArrayList0;
+	public ArrayList<NodeShendu_ContactItem> getPhoneDataArrayList0() {
+		return phoneDataArrayList0;
 	}
 
-	public void setTimeArrayList0(ArrayList<NodeShendu_ContactItem> timeArrayList0) {
-		this.timeArrayList0 = timeArrayList0;
+	public ArrayList<NodeShendu_ContactItem> getPhoneDataArrayList1() {
+		return phoneDataArrayList1;
 	}
 
-	public ArrayList<NodeShendu_ContactItem> getTimeArrayList1() {
-		return timeArrayList1;
+	public ArrayList<NodeShendu_ContactItem> getPhoneDataArrayList2() {
+		return phoneDataArrayList2;
 	}
 
-	public void setTimeArrayList1(ArrayList<NodeShendu_ContactItem> timeArrayList1) {
-		this.timeArrayList1 = timeArrayList1;
+	public ArrayList<NodeShendu_ContactItem> getPhoneDataArrayList3() {
+		return phoneDataArrayList3;
 	}
 
-	public ArrayList<NodeShendu_ContactItem> getTimeArrayList2() {
-		return timeArrayList2;
+	public ArrayList<NodeShendu_ContactItem> getPhoneDataArrayList4() {
+		return phoneDataArrayList4;
 	}
 
-	public void setTimeArrayList2(ArrayList<NodeShendu_ContactItem> timeArrayList2) {
-		this.timeArrayList2 = timeArrayList2;
+	public ArrayList<NodeShendu_ContactItem> getPhoneDataArrayList5() {
+		return phoneDataArrayList5;
 	}
 
-	public ArrayList<NodeShendu_ContactItem> getTimeArrayList3() {
-		return timeArrayList3;
+	public ArrayList<NodeShendu_ContactItem> getPhoneDataArrayList6() {
+		return phoneDataArrayList6;
 	}
 
-	public void setTimeArrayList3(ArrayList<NodeShendu_ContactItem> timeArrayList3) {
-		this.timeArrayList3 = timeArrayList3;
+	public ArrayList<NodeShendu_ContactItem> getPhoneDataArrayList7() {
+		return phoneDataArrayList7;
 	}
 
-	public ArrayList<NodeShendu_ContactItem> getTimeArrayList4() {
-		return timeArrayList4;
+	public ArrayList<NodeShendu_ContactItem> getPhoneDataArrayList8() {
+		return phoneDataArrayList8;
 	}
 
-	public void setTimeArrayList4(ArrayList<NodeShendu_ContactItem> timeArrayList4) {
-		this.timeArrayList4 = timeArrayList4;
+	public ArrayList<NodeShendu_ContactItem> getPhoneDataArrayList9() {
+		return phoneDataArrayList9;
 	}
 
-	public ArrayList<NodeShendu_ContactItem> getTimeArrayList5() {
-		return timeArrayList5;
-	}
-
-	public void setTimeArrayList5(ArrayList<NodeShendu_ContactItem> timeArrayList5) {
-		this.timeArrayList5 = timeArrayList5;
-	}
-
-	public ArrayList<NodeShendu_ContactItem> getTimeArrayList6() {
-		return timeArrayList6;
-	}
-
-	public void setTimeArrayList6(ArrayList<NodeShendu_ContactItem> timeArrayList6) {
-		this.timeArrayList6 = timeArrayList6;
-	}
-
-	public ArrayList<NodeShendu_ContactItem> getTimeArrayList7() {
-		return timeArrayList7;
-	}
-
-	public void setTimeArrayList7(ArrayList<NodeShendu_ContactItem> timeArrayList7) {
-		this.timeArrayList7 = timeArrayList7;
-	}
-
-	public ArrayList<NodeShendu_ContactItem> getTimeArrayList8() {
-		return timeArrayList8;
-	}
-
-	public void setTimeArrayList8(ArrayList<NodeShendu_ContactItem> timeArrayList8) {
-		this.timeArrayList8 = timeArrayList8;
-	}
-
-	public ArrayList<NodeShendu_ContactItem> getTimeArrayList9() {
-		return timeArrayList9;
-	}
-
-	public void setTimeArrayList9(ArrayList<NodeShendu_ContactItem> timeArrayList9) {
-		this.timeArrayList9 = timeArrayList9;
-	}
-	
-	
 	
 	public ArrayList<NodeShendu_ContactItem> getNumberContactsItem(char number){
 		switch(number){
 		case 43:
-		  return getTimeArrayListAdd();
+		  return getPhoneDataArrayListAdd();
 		case 48:
-		  return	getTimeArrayList0();
+		  return	getPhoneDataArrayList0();
 		case 49:
-			return	getTimeArrayList1();
+			return	getPhoneDataArrayList1();
 		case 50:
-			return	getTimeArrayList2();
+			return	getPhoneDataArrayList2();
 		case 51:
-			return	getTimeArrayList3();
+			return	getPhoneDataArrayList3();
 		case 52:
-			return	getTimeArrayList4();
+			return	getPhoneDataArrayList4();
 		case 53:
-			return	getTimeArrayList5();
+			return	getPhoneDataArrayList5();
 		case 54:
-			return	getTimeArrayList6();
+			return	getPhoneDataArrayList6();
 		case 55:
-			return	getTimeArrayList7();
+			return	getPhoneDataArrayList7();
 		case 56:
-			return	getTimeArrayList8();
+			return	getPhoneDataArrayList8();
 		case 57:
-			return	getTimeArrayList9();
+			return	getPhoneDataArrayList9();
 		}
-		
 		return null;
 		
 	}
@@ -165,37 +117,37 @@ public class FirstNumberInfo {
 	public void setNumberContactsItem(char number , NodeShendu_ContactItem contactItem){
 		switch(number){
 		case 43:
-			timeArrayListAdd.add(contactItem);
+			phoneDataArrayListAdd.add(contactItem);
 			break;
 		case 48:
-			timeArrayList0.add(contactItem);
+			phoneDataArrayList0.add(contactItem);
 		   break;
 		case 49:
-			timeArrayList1.add(contactItem);
+			phoneDataArrayList1.add(contactItem);
 			break;
 		case 50:
-			timeArrayList2.add(contactItem);
+			phoneDataArrayList2.add(contactItem);
 			break;
 		case 51:
-			timeArrayList3.add(contactItem);
+			phoneDataArrayList3.add(contactItem);
 			break;
 		case 52:
-			timeArrayList4.add(contactItem);
+			phoneDataArrayList4.add(contactItem);
 			break;
 		case 53:
-			timeArrayList5.add(contactItem);
+			phoneDataArrayList5.add(contactItem);
 			break;
 		case 54:
-			timeArrayList6.add(contactItem);
+			phoneDataArrayList6.add(contactItem);
 			break;
 		case 55:
-			timeArrayList7.add(contactItem);
+			phoneDataArrayList7.add(contactItem);
 			break;
 		case 56:
-			timeArrayList8.add(contactItem);
+			phoneDataArrayList8.add(contactItem);
 			break;
 		case 57:
-			timeArrayList9.add(contactItem);
+			phoneDataArrayList9.add(contactItem);
 			break;
 		}
 		
@@ -203,7 +155,7 @@ public class FirstNumberInfo {
 	private final int MAXNUMS = 100000;
 	public  synchronized ArrayList<Shendu_ContactItem>  searchNumber(String  input , int count){
 		matchMap.clear();
-		long time = System.currentTimeMillis();
+		
 		ArrayList< Shendu_ContactItem > numberList = new ArrayList<ShenduContactAdapter.Shendu_ContactItem>();
 		ArrayList< Shendu_ContactItem > pinyinList = new ArrayList<ShenduContactAdapter.Shendu_ContactItem>();
 		char num = input.toCharArray()[0];
@@ -218,16 +170,12 @@ public class FirstNumberInfo {
 		if(start == data.size()){
 			start = data.size()-1;
 		}
-//		System.out.println("start="+start+"num = "+num);
-		
-//		int listSize = 0;
+
 		if(start == -1){
 
 			if(data.get(0).number.contains(input)){
 				start = 0;
 				for(int  index = start ; index < data.size()  ; index++){
-//					int pos = data.get(index).number.indexOf(input);
-//			        if(pos!=-1){
 					NodeShendu_ContactItem itme = data.get(index);
 					if(itme.number.contains(input) /*&& listSize < count*/ ){
 						if(!matchMap.containsKey(itme.contactItem.number)){
@@ -239,7 +187,6 @@ public class FirstNumberInfo {
 							}
 				        	itme.contactItem.num = inputCount;
 				        	matchMap.put(itme.contactItem.number, "");
-//				         	listSize ++;
 						}
 			        }else{
 			        	break;
@@ -251,8 +198,6 @@ public class FirstNumberInfo {
 			}
 		}else{
 			for(int  index = start ; index < data.size()  ; index++){
-//				int pos = data.get(index).number.indexOf(input);
-//		        if(pos!=-1){
 				NodeShendu_ContactItem itme = data.get(index);
 				if(itme.number.contains(input)/* && listSize < count*/){
 					if(!matchMap.containsKey(itme.contactItem.number)){
@@ -301,10 +246,10 @@ public class FirstNumberInfo {
 		}
 		String after = data.get(mid+1).number;
 		return before.indexOf(input) != 0 && after.indexOf(input) ==0;
-		//return false;
 	}
 	
 	private int binSearchMin(ArrayList<NodeShendu_ContactItem>  data , int start , int end ,String input){
+		
 		int mid = (end - start) / 2 + start; 
 		if (matchMin(data,mid,input)) {   
             return mid;   
@@ -347,17 +292,17 @@ public class FirstNumberInfo {
 				return lhs.number.compareTo(rhs.number);
 				//return 0;
 			}};
-		Collections.sort(timeArrayListAdd,comparator);
-		Collections.sort(timeArrayList0,comparator);
-		Collections.sort(timeArrayList1,comparator);
-		Collections.sort(timeArrayList2,comparator);
-		Collections.sort(timeArrayList3,comparator);
-		Collections.sort(timeArrayList4,comparator);
-		Collections.sort(timeArrayList5,comparator);
-		Collections.sort(timeArrayList6,comparator);
-		Collections.sort(timeArrayList7,comparator);
-		Collections.sort(timeArrayList8,comparator);
-		Collections.sort(timeArrayList9,comparator);
+		Collections.sort(phoneDataArrayListAdd,comparator);
+		Collections.sort(phoneDataArrayList0,comparator);
+		Collections.sort(phoneDataArrayList1,comparator);
+		Collections.sort(phoneDataArrayList2,comparator);
+		Collections.sort(phoneDataArrayList3,comparator);
+		Collections.sort(phoneDataArrayList4,comparator);
+		Collections.sort(phoneDataArrayList5,comparator);
+		Collections.sort(phoneDataArrayList6,comparator);
+		Collections.sort(phoneDataArrayList7,comparator);
+		Collections.sort(phoneDataArrayList8,comparator);
+		Collections.sort(phoneDataArrayList9,comparator);
 		
 //		System.out.println("add size = " + timeArrayListAdd.size()+"list 1 = siaze = "+ timeArrayList1.size());
 		
@@ -366,17 +311,17 @@ public class FirstNumberInfo {
 	
 	public void clearAll(){
 		
-		timeArrayList0.clear();
-		timeArrayList1.clear();
-		timeArrayList2.clear();
-		timeArrayList3.clear();
-		timeArrayList4.clear();
-		timeArrayList5.clear();
-		timeArrayList6.clear();
-		timeArrayList7.clear();
-		timeArrayList8.clear();
-		timeArrayList9.clear();
-		timeArrayListAdd.clear();
+		phoneDataArrayList0.clear();
+		phoneDataArrayList1.clear();
+		phoneDataArrayList2.clear();
+		phoneDataArrayList3.clear();
+		phoneDataArrayList4.clear();
+		phoneDataArrayList5.clear();
+		phoneDataArrayList6.clear();
+		phoneDataArrayList7.clear();
+		phoneDataArrayList8.clear();
+		phoneDataArrayList9.clear();
+		phoneDataArrayListAdd.clear();
 		
 	}
 

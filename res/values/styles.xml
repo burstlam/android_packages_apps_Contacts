@@ -218,9 +218,11 @@
         <item name="favorites_padding_bottom">0dip</item>
     </style>
 
-    <style name="ContactsActionBarStyle" parent="@android:style/Widget.Holo.Light.ActionBar.Solid.Inverse">
+   <!--  shutao 2012-11-12  -->
+    <style name="ContactsActionBarStyle" parent="@android:style/Widget.Holo.Light.ActionBar">
         <item name="android:background">@drawable/ab_solid_custom_blue_inverse_holo</item>
         <item name="android:backgroundStacked">@drawable/ab_solid_custom_blue_inverse_holo</item>
+        <item name="android:backgroundSplit">@drawable/shendu_people_split_bg</item>
         <item name="android:displayOptions"></item>
     </style>
 

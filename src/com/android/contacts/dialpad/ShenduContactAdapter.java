@@ -688,4 +688,5 @@ public class ShenduContactAdapter extends BaseAdapter implements Filterable {
         ArrayList<String> hanziNums;
         ArrayList<Integer> firstNumberIndexs;
     }
+
 }
