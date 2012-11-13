@@ -21,11 +21,15 @@ import com.android.contacts.ContactPhotoManager;
 import com.android.contacts.PhoneCallDetails;
 import com.android.contacts.PhoneCallDetailsHelper;
 import com.android.contacts.R;
+import com.android.contacts.CallDetailActivity.Tasks;
 import com.android.contacts.calllog.CallLogAdapter.CallFetcher;
+import com.android.contacts.util.AsyncTaskExecutor;
+import com.android.contacts.util.AsyncTaskExecutors;
 import com.android.contacts.util.ExpirableCache;
 import com.android.contacts.util.UriUtils;
 import com.google.common.annotations.VisibleForTesting;
 
+import android.R.string;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.content.ContentUris;
@@ -37,12 +41,14 @@ import android.content.DialogInterface.OnClickListener;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.CallLog.Calls;
 import android.provider.ContactsContract.PhoneLookup;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -210,6 +216,8 @@ import libcore.util.Objects;
     
     /** shutao 2012-10-29*/
     private static final int SHENDU_SEND_SMS = 0 ;
+    private static final int SHENDU_REMOVE_CALLLOG = 1;
+    private AsyncTaskExecutor mAsyncTaskExecutor;
     private final View.OnLongClickListener mPrimaryActionLongListener = new View.OnLongClickListener() {
 		
 		@Override
@@ -223,7 +231,7 @@ import libcore.util.Objects;
 			final String name = v.getTag(R.id.shendu_tag_name).toString();
 		
 			Builder sd=new AlertDialog .Builder(mContext).setTitle(name).
-			setItems(R.array.shendu_onlongmenu_list, 
+			setItems(R.array.shendu_calllog_list, 
             new OnClickListener() {
 				
 				@Override
@@ -235,6 +243,10 @@ import libcore.util.Objects;
 						Intent mIntent = new Intent(Intent.ACTION_SENDTO,Uri.fromParts("sms", number, null));
 			    		mContext.startActivity( mIntent );
 						break;
+						  /**shutao 2012-11-13*/
+					case SHENDU_REMOVE_CALLLOG:
+						onMenuRemoveFromCallLog(name);
+						break;
 					}
 				}
 			});
@@ -244,7 +256,57 @@ import libcore.util.Objects;
 			return true;
 		}
 	};
+	
+	  /**shutao 2012-11-13*/
+    public void onMenuRemoveFromCallLog(String name) {
+    	   
+        final StringBuilder callIds = new StringBuilder();
+        for (Uri callUri : getCallLogEntryUris(name)) {
+            if (callIds.length() != 0) {
+                callIds.append(",");
+            }
+            callIds.append(ContentUris.parseId(callUri));
+        }
+        mAsyncTaskExecutor.submit(Tasks.REMOVE_FROM_CALL_LOG_AND_FINISH,
+                new AsyncTask<Void, Void, Void>() {
+                    @Override
+                    public Void doInBackground(Void... params) {
+                       mContext.getContentResolver().delete(Calls.CONTENT_URI_WITH_VOICEMAIL,
+                                Calls._ID + " IN (" + callIds + ")", null);
+                        return null;
+                    }
+
+                    @Override
+                    public void onPostExecute(Void result) {
+//                        finish();
+                    }
+                });
+    }
+	
     
+    /**shutao 2012-11-13*/
+    private Uri[] getCallLogEntryUris(String name) {
+
+//        Uri uri = ContentUris.withAppendedId(
+//				Calls.CONTENT_URI_WITH_VOICEMAIL,
+//				mCallLogGroupBuilder.getChildCallLogName().get(name).ids.get(0));
+//        if (uri != null) {
+//            // If there is a data on the intent, it takes precedence over the extra.
+//            return new Uri[]{ uri };
+//        }
+    	ArrayList<Long> list = mCallLogGroupBuilder.getChildCallLogName().get(name).ids;
+		long[] ids = new long[list.size()];
+		// Copy the ids of the rows in the group.
+		for (int index = 0; index < list.size(); ++index) {
+			ids[index] = list.get(index);
+		}
+   
+        Uri[] uris = new Uri[ids.length];
+        for (int index = 0; index < ids.length; ++index) {
+            uris[index] = ContentUris.withAppendedId(Calls.CONTENT_URI_WITH_VOICEMAIL, ids[index]);
+        }
+        return uris;
+    }
 
     @Override
     public boolean onPreDraw() {
@@ -276,7 +338,7 @@ import libcore.util.Objects;
     ShenduCallLogAdapter(Context context, CallFetcher callFetcher,
             ContactInfoHelper contactInfoHelper) {
         super(context);
-
+        mAsyncTaskExecutor = AsyncTaskExecutors.createThreadPoolExecutor();
         mContext = context;
         mCallFetcher = callFetcher;
         mContactInfoHelper = contactInfoHelper;

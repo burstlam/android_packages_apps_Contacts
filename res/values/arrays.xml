@@ -62,4 +62,9 @@
     <string-array name="shendu_onlongmenu_list">
         <item>Send SMS</item>
     </string-array>
+    
+     <string-array name="shendu_calllog_list">
+        <item>Send SMS</item>
+        <item>Remove From Call Log</item>
+    </string-array>
 </resources>

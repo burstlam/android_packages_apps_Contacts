@@ -12,5 +12,9 @@
     <string-array name="shendu_onlongmenu_list">
         <item>发送短信</item>
     </string-array>
+    <string-array name="shendu_calllog_list">
+        <item>发送短信</item>
+        <item>从通话记录中删除</item>
+    </string-array>
 
 </resources>

@@ -810,6 +810,7 @@ public class CallDetailActivity extends Activity implements ProximitySensorAware
     }
 
     public void onMenuRemoveFromCallLog(MenuItem menuItem) {
+   
         final StringBuilder callIds = new StringBuilder();
         for (Uri callUri : getCallLogEntryUris()) {
             if (callIds.length() != 0) {
