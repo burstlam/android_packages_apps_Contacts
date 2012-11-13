@@ -102,7 +102,7 @@
     </style>
     
     <!-- By Wang -->
-    <style name="ShenDuContactsActionBarStyle" parent="@android:style/Widget.Holo.Light.ActionBar.Solid.Inverse">
+    <style name="ShenDuContactsActionBarStyle" parent="@android:style/Widget.Holo.Light.ActionBar">
         <item name="android:background">@drawable/ab_solid_custom_blue_inverse_holo</item>
         <item name="android:backgroundStacked">@drawable/ab_solid_custom_blue_inverse_holo</item>
     </style>
@@ -168,7 +168,7 @@
         <item name="android:listViewStyle">@style/ListViewStyle</item>
     </style>
 
-    <style name="PeopleTheme1" parent="@android:style/Theme.Holo.Light.DarkActionBar">
+    <style name="PeopleTheme1" parent="@android:style/Theme.Holo.Light">
         <item name="android:actionBarStyle">@style/ContactsActionBarStyle</item>
         <item name="android:actionBarItemBackground">@drawable/action_bar_item_background</item>
         <item name="android:actionBarWidgetTheme">@style/ContactsActionBarTheme</item>

@@ -146,7 +146,6 @@ public class DialpadFragment extends Fragment
     private static final int DIAL_RECENTCALLS_ADDTOCONTACT = 2;
     private static final int DIAL_SEND_MMS       = 3;
     
-
     /**
      * View (usually FrameLayout) containing mDigits field. This can be null, in which mDigits
      * isn't enclosed by the container.
