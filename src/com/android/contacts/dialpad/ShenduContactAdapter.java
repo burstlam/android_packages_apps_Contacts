@@ -320,7 +320,7 @@ public class ShenduContactAdapter extends BaseAdapter implements Filterable {
     /**shutao 2012-10-31*/
 	private void setFirstNumberInfo(Shendu_ContactItem contactInfo) {
 
-		if (contactInfo.name != null) {
+		if (contactInfo.name != null && !contactInfo.firstNumber.equals("")) {
 			String first = contactInfo.firstNumber;
 			for (int index = 0; index < contactInfo.hanziNums.size(); index++) {
 				String firstNum = first.substring(index, first.length());
