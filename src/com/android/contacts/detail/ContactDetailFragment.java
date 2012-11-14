@@ -42,6 +42,7 @@ import com.android.contacts.util.ClipboardUtils;
 import com.android.contacts.util.Constants;
 import com.android.contacts.util.DataStatus;
 import com.android.contacts.util.DateUtils;
+import com.android.contacts.util.NameAvatarUtils;
 import com.android.contacts.util.PhoneCapabilityTester;
 import com.android.contacts.util.StructuredPostalUtils;
 import com.android.internal.telephony.ITelephony;
@@ -1528,6 +1529,9 @@ public class ContactDetailFragment extends Fragment implements FragmentKeyListen
             ContactDetailDisplayUtils.setDisplayName(mContext, mContactData,
                     viewCache.displayNameView);
             ContactDetailDisplayUtils.setCompanyName(mContext, mContactData, viewCache.companyView);
+            
+            //Wang:2012-11-14
+            NameAvatarUtils.setupNameAvatar(viewCache.photoView, mContactData.getId(), mContactData.getDisplayName());
 
             // Set the photo if it should be displayed
             if (viewCache.photoView != null) {

@@ -17,6 +17,7 @@ package com.android.contacts.list;
 
 import com.android.contacts.ContactPhotoManager;
 import com.android.contacts.R;
+import com.android.contacts.list.ContactListAdapter.ContactQuery;
 import com.android.contacts.widget.IndexerListAdapter;
 
 import android.content.Context;
@@ -649,9 +650,18 @@ public abstract class ContactEntryListAdapter extends IndexerListAdapter {
             getPhotoLoader().loadThumbnail(quickContact, photoId, mDarkTheme);
         } else {
             final String photoUriString = cursor.getString(photoUriColumn);
-            final Uri photoUri = photoUriString == null ? null : Uri.parse(photoUriString);
+            final Uri photoUri = photoUriString == null ? null : Uri.parse(photoUriString);  
+            //====================
             //Wang:
-            getPhotoLoader().loadPhoto(quickContact, photoUri, -1, mDarkTheme, view.getNameTextView().getText().toString());
+            long contactID = -1;
+            try {
+                contactID = cursor.getLong(ContactQuery.CONTACT_ID);
+            } catch (Exception e) {
+                contactID = -1;
+            }
+            getPhotoLoader().loadPhoto(quickContact, photoUri, -1, mDarkTheme,
+                    view.getNameTextView().getText().toString(), contactID);
+            //====================
         }
 
     }

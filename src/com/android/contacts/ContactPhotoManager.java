@@ -126,8 +126,12 @@ public abstract class ContactPhotoManager implements ComponentCallbacks2 {
         public void applyDefaultImage(ImageView view, int extent, boolean darkTheme) {
             if (sDrawable == null) {
                 Context context = view.getContext();
+                //Wang:
+//                sDrawable = new ColorDrawable(context.getResources().getColor(
+//                        R.color.image_placeholder));
                 sDrawable = new ColorDrawable(context.getResources().getColor(
-                        R.color.image_placeholder));
+                        R.color.shendu_name_avatar_background));
+                
             }
             view.setImageDrawable(sDrawable);
         }
@@ -191,9 +195,10 @@ public abstract class ContactPhotoManager implements ComponentCallbacks2 {
     /**
      * @hide
      * @author Wang
+     * @date 2012-11-12
      */
     public abstract void loadPhoto(ImageView view, Uri photoUri, int requestedExtent,
-            boolean darkTheme, DefaultImageProvider defaultProvider, String displayName);
+            boolean darkTheme, DefaultImageProvider defaultProvider, String displayName, long contactID);
 
     /**
      * Calls {@link #loadPhoto(ImageView, Uri, boolean, boolean, DefaultImageProvider)} with
@@ -207,11 +212,13 @@ public abstract class ContactPhotoManager implements ComponentCallbacks2 {
     /**
      * Fill with character avatar if there is no photo to load
      * @author Wang
+     * @date 2012-11-12
+     * @date 2012-11-14
      * @hide
      */
     public final void loadPhoto(ImageView view, Uri photoUri, int requestedExtent,
-            boolean darkTheme, String displayName) {
-        loadPhoto(view, photoUri, requestedExtent, darkTheme, DEFAULT_AVATAR, displayName);
+            boolean darkTheme, String displayName, long contactID) {
+        loadPhoto(view, photoUri, requestedExtent, darkTheme, DEFAULT_BLANK, displayName, contactID);
     }
 
     /**
@@ -223,9 +230,11 @@ public abstract class ContactPhotoManager implements ComponentCallbacks2 {
     }
     /**
      * Wang:
+     * @hide
+     * @date 2012-11-12
      * */
-    public final void loadDirectoryPhoto(ImageView view, Uri photoUri, boolean darkTheme, String name) {
-        loadPhoto(view, photoUri, -1, darkTheme, DEFAULT_AVATAR, name);
+    public final void loadDirectoryPhoto(ImageView view, Uri photoUri, boolean darkTheme, String name, long contactID) {
+        loadPhoto(view, photoUri, -1, darkTheme, DEFAULT_BLANK, name, -1);
     }
 
     /**
@@ -509,21 +518,19 @@ class ContactPhotoManagerImpl extends ContactPhotoManager implements Callback {
     @Override
     public void loadPhoto(ImageView view, Uri photoUri, int requestedExtent, boolean darkTheme,
             DefaultImageProvider defaultProvider) {
-        loadPhoto(view, photoUri, requestedExtent, darkTheme, defaultProvider, null);
+        //Wang : 2012-11-12
+        loadPhoto(view, photoUri, requestedExtent, darkTheme, defaultProvider, null, -1);
     }
    //Wang:
     @Override
     public void loadPhoto(ImageView view, Uri photoUri, int requestedExtent, boolean darkTheme,
-            DefaultImageProvider defaultProvider, String displayName) {
+            DefaultImageProvider defaultProvider, String displayName,long contactID) {
         log("=====>loadPhoto>>>photoUri="+photoUri+" ,displayName="+displayName);
         if (photoUri == null) {
-            String cnCharacter = NameAvatarUtils.containsChinese(displayName);
-            if(!TextUtils.isEmpty(cnCharacter)){
-                NameAvatarUtils.setAvatar(view, cnCharacter);
-            }else{
-                // No photo is needed
-                defaultProvider.applyDefaultImage(view, requestedExtent, darkTheme);
-            }
+         // No photo is needed 
+         //Wang:
+//          defaultProvider.applyDefaultImage(view, requestedExtent, darkTheme);
+            NameAvatarUtils.setupNameAvatar(view, contactID, displayName);
             mPendingRequests.remove(view);
         } else {
             if (DEBUG) Log.d(TAG, "loadPhoto request: " + photoUri);

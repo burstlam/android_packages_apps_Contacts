@@ -1878,5 +1878,8 @@
     <string name="default_group_friend" >Friend</string>
     <string name="default_group_family" >Family</string>
     <string name="default_group_colleague" >Colleague</string>
+    
+    <!--Wang: Sim export infor-->
+    <string name="export_to_sim" product="default">Export to SIM card</string>
 
 </resources>

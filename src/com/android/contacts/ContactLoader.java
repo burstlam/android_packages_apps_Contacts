@@ -323,8 +323,8 @@ public class ContactLoader extends AsyncTaskLoader<ContactLoader.Result> {
         /**
          * Returns the contact ID.
          */
-        @VisibleForTesting
-        /* package */ long getId() {
+        // @VisibleForTesting Wang:2012-11-14
+        /* package */public long getId() {
             return mId;
         }
 
