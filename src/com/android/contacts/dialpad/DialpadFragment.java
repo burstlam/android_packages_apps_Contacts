@@ -1982,9 +1982,9 @@ public class DialpadFragment extends Fragment
               intent.putExtra(Insert.PHONE, mDigits.getText().toString().replaceAll(" ", ""));
         		startActivity(intent);
         		break;
-        	case DIAL_RECENTCALLS_ADDTOCONTACT:
-        		startActivity(getAddToContactIntent(mDigits.getText().toString().replaceAll(" ", "")));
-        		break;
+//        	case DIAL_RECENTCALLS_ADDTOCONTACT:
+//        		startActivity(getAddToContactIntent(mDigits.getText().toString().replaceAll(" ", "")));
+//        		break;
         	case DIAL_SEND_MMS:
         		Intent mIntent = new Intent(Intent.ACTION_SENDTO,Uri.fromParts("sms", mDigits.getText().toString(), null));
         		startActivity( mIntent );

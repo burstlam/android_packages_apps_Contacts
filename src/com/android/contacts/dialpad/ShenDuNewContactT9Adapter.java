@@ -19,7 +19,7 @@ import com.android.phone.location.PhoneLocation;
  */
 public class ShenDuNewContactT9Adapter extends BaseAdapter{
 	
-	private final int mMenuCount = 4; 
+	private final int mMenuCount = 3; 
 	private Context mContext;
 	private String[] mShenduMenutValues;
 	private String mNumber;
@@ -83,12 +83,12 @@ public class ShenDuNewContactT9Adapter extends BaseAdapter{
 				views.dialpad_menu_content.setText(mShenduMenutValues[position]);
 			}
 			break;
-		case 3:	
-			if(position == 3){
-				views.dialpad_menu_icon.setImageResource(R.drawable.shendu_ic_mms);
-			}
-			views.dialpad_menu_content.setText(mShenduMenutValues[position]);
-			break;
+//		case 3:	
+//			if(position == 3){
+//				views.dialpad_menu_icon.setImageResource(R.drawable.shendu_ic_mms);
+//			}
+//			views.dialpad_menu_content.setText(mShenduMenutValues[position]);
+//			break;
 
 		default:
 			views.dialpad_menu_icon.setImageResource(R.drawable.shendu_ic_menu_add_contact_holo_light);

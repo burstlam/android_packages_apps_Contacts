@@ -44,7 +44,7 @@ public class CallDetailHistoryAdapter extends BaseAdapter {
 	private final Context mContext;
 	private final LayoutInflater mLayoutInflater;
 	private final CallTypeHelper mCallTypeHelper;
-	private final PhoneCallDetails[] mPhoneCallDetails;
+	private PhoneCallDetails[] mPhoneCallDetails;
 	/** Whether the voicemail controls are shown. */
 	private final boolean mShowVoicemail;
 	/** Whether the call and SMS controls are shown. */
@@ -88,6 +88,24 @@ public class CallDetailHistoryAdapter extends BaseAdapter {
 		return mPhoneCallDetails.length /* + 1 */;
 	}
 
+	
+	/**shutao 2012-11-14*/
+	public void removeDetails(int position) {
+		
+		PhoneCallDetails[] details  = new PhoneCallDetails[mPhoneCallDetails.length-1];
+		int i = 0;
+		for(int index=0 ; index< mPhoneCallDetails.length ; index++){
+	
+	        		if(index != position){
+	
+	        			details[i] = mPhoneCallDetails[index];
+	        			i++;
+	        		}
+		}
+		mPhoneCallDetails = details;
+	
+	}
+	
 	@Override
 	public Object getItem(int position) {
 		if (position == 0) {

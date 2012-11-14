@@ -191,7 +191,7 @@ public class ShenduContactAdapter extends BaseAdapter implements Filterable {
 			            while (phone.getLong(1) == contactId) {
 			                String num = phone.getString(0);
 			                Shendu_ContactItem contactInfo = new Shendu_ContactItem();
-//			                contactInfo.id = contactId;
+			                contactInfo.id = contactId;
 			                contactInfo.name = contact.getString(1);
 			                contactInfo.number = removeNonDigits(num);
 			                nameToPinYinAndNumber(contact.getString(4), contactInfo);
@@ -675,6 +675,7 @@ public class ShenduContactAdapter extends BaseAdapter implements Filterable {
 	}
 	
     public static class Shendu_ContactItem {
+    	 long id;
         Uri photo;
         String name;
         String number;

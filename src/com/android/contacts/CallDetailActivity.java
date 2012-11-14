@@ -57,12 +57,14 @@ import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.ActionMode;
+import android.view.ContextMenu;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -155,6 +157,8 @@ public class CallDetailActivity extends Activity implements ProximitySensorAware
 
     private CharSequence mPhoneNumberLabelToCopy;
     private CharSequence mPhoneNumberToCopy;
+    
+    private CallDetailHistoryAdapter mCallDetailHistoryAdapter;
 
     /** Listener to changes in the proximity sensor state. */
     private class ProximitySensorListener implements ProximitySensorManager.Listener {
@@ -563,10 +567,11 @@ public class CallDetailActivity extends Activity implements ProximitySensorAware
                 /** shutao 2012-10-17 */
                 shendu_Details = details;
                 historyList.setOnItemClickListener(CallDetailActivity.this);
-                historyList.setAdapter(
-                        new CallDetailHistoryAdapter(CallDetailActivity.this, mInflater,
-                                mCallTypeHelper, details, hasVoicemail(), canPlaceCallsTo,
-                                findViewById(R.id.controls)));
+                historyList.setOnCreateContextMenuListener(CallDetailActivity.this);
+                mCallDetailHistoryAdapter = new CallDetailHistoryAdapter(CallDetailActivity.this, mInflater,
+                        mCallTypeHelper, details, hasVoicemail(), canPlaceCallsTo,
+                        findViewById(R.id.controls));
+                historyList.setAdapter(mCallDetailHistoryAdapter);
                 /**shutao 2012-10-17*/
 //                BackScrollManager.bind(
 //                        new ScrollableHeader() {
@@ -801,14 +806,62 @@ public class CallDetailActivity extends Activity implements ProximitySensorAware
             case android.R.id.home: {
                 onHomeSelected();
                 return true;
-            }
-
+            }	
             // All the options menu items are handled by onMenu... methods.
-            default:
-                throw new IllegalArgumentException();
+//            default:
+//                throw new IllegalArgumentException();
         }
+    	switch (item.getItemId()) {
+
+		case SHENDU_SEND_SMS :
+			Intent mIntent = new Intent(Intent.ACTION_SENDTO,Uri.fromParts("sms",mShenduMenuNumber, null));
+    		startActivity( mIntent );
+			break;
+		case SHENDU_REMOVE_FROM_RECENTLIST:
+			onMenuRemoveItemCallLog(position);
+			break;
+		}
+    	return super.onMenuItemSelected( featureId, item);
     }
 
+    /**shutao 2012-11-14*/
+    public void onMenuRemoveItemCallLog(final int index) {
+    
+    	 final StringBuilder callIds = new StringBuilder();
+    	 Uri uris;
+    	   Uri uri = getIntent().getData();
+           if (uri != null) {
+               // If there is a data on the intent, it takes precedence over the extra.
+//        	   System.out.println("--------00000000");
+        	   uris = uri;
+           }else{
+//        	   System.out.println("--------11111111");
+        	   long[] ids = getIntent().getLongArrayExtra(EXTRA_CALL_LOG_IDS);
+        	   uris = ContentUris.withAppendedId(Calls.CONTENT_URI_WITH_VOICEMAIL, ids[index]);
+           }
+ 
+        callIds.append(ContentUris.parseId(uris));
+        
+        mAsyncTaskExecutor.submit(Tasks.REMOVE_FROM_CALL_LOG_AND_FINISH,
+                new AsyncTask<Void, Void, Void>() {
+                    @Override
+                    public Void doInBackground(Void... params) {
+                        getContentResolver().delete(Calls.CONTENT_URI_WITH_VOICEMAIL,
+                                Calls._ID + " IN (" + callIds + ")", null);
+                        return null;
+                    }
+                    @Override
+                    public void onPostExecute(Void result) {     
+                    	mCallDetailHistoryAdapter.removeDetails(index);
+                    	mCallDetailHistoryAdapter.notifyDataSetChanged();
+                    	if(mCallDetailHistoryAdapter.getCount() == 0){
+                    		  finish();
+                    	}
+                    }
+                });
+    }
+    
+    
     public void onMenuRemoveFromCallLog(MenuItem menuItem) {
    
         final StringBuilder callIds = new StringBuilder();
@@ -826,7 +879,6 @@ public class CallDetailActivity extends Activity implements ProximitySensorAware
                                 Calls._ID + " IN (" + callIds + ")", null);
                         return null;
                     }
-
                     @Override
                     public void onPostExecute(Void result) {
                         finish();
@@ -880,7 +932,7 @@ public class CallDetailActivity extends Activity implements ProximitySensorAware
 			actionBar.setDisplayOptions(change);
 			actionBar.setDisplayOptions(change | ActionBar.DISPLAY_SHOW_CUSTOM,
 					ActionBar.DISPLAY_SHOW_CUSTOM);
-			actionBar.setBackgroundDrawable(getResources().getDrawable(R.drawable.shendu_ab_solid_custom_blue_inverse_holo));
+			actionBar.setBackgroundDrawable(getResources().getDrawable(R.drawable.ab_solid_custom_blue_inverse_holo));
 		}
 	}
 
@@ -987,6 +1039,34 @@ public class CallDetailActivity extends Activity implements ProximitySensorAware
 			 finish();
 		 }
 	}
+	
+	
+	  private static final int SHENDU_SEND_SMS = 1 ;
+	  private static final int SHENDU_REMOVE_FROM_RECENTLIST = 2;
+	  String mShenduMenuNumber = "";
+	  int position = 0;
+	 @Override
+		public void onCreateContextMenu(ContextMenu menu, View v,
+				ContextMenuInfo menuInfo) {
+			// TODO Auto-generated method stub
+		
+		  AdapterView.AdapterContextMenuInfo info;
+          try {
+               info = (AdapterView.AdapterContextMenuInfo) menuInfo;
+          } catch (ClassCastException e) {
+              Log.e(TAG, "bad menuInfo", e);
+              return;
+          }
+        position = info.position;
+        PhoneCallDetails firstDetails = shendu_Details[info.position];
+		 menu.setHeaderTitle(firstDetails.name != null ? firstDetails.name : firstDetails.number);
+		 mShenduMenuNumber = firstDetails.number.toString();
+		 menu.add(0, SHENDU_SEND_SMS, 0, getResources().getString(R.string.shendu_send_sms));	
+		 menu.add(0, SHENDU_REMOVE_FROM_RECENTLIST, 0, getResources().getString(R.string.recentCalls_removeFromRecentList));	
+		 
+		 super.onCreateContextMenu(menu, v, menuInfo);
+	 }
+		
 	
 	 private Intent newDialNumberIntent(String number) {
 	        final Intent intent = new Intent(Intent.ACTION_CALL_PRIVILEGED,
