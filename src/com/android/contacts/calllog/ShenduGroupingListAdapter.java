@@ -166,7 +166,8 @@ public abstract class ShenduGroupingListAdapter extends BaseAdapter {
 
     }
 
-    public Cursor getCursor() {
+
+	public Cursor getCursor() {
         return mCursor;
     }
 

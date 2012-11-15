@@ -275,7 +275,7 @@ public class DialpadFragment extends Fragment
     
     private View mShenduToContact;
 
-    private static final String PREF_DIGITS_FILLED_BY_INTENT = "pref_digits_filled_by_intent";
+    public static final String PREF_DIGITS_FILLED_BY_INTENT = "pref_digits_filled_by_intent";
 
     // Add LOCALE_CHAGNED event receiver.
     private final BroadcastReceiver mLocaleChangedReceiver = new BroadcastReceiver() {
@@ -287,6 +287,22 @@ public class DialpadFragment extends Fragment
 //                    sT9Search = new T9Search(getActivity()); 
 //                	MyLog("onReceive------++++++++++++++++ACTION_LOCALE_CHANGED");
                 }
+            } else if(intent.getAction().equals(REMOVER_CALLLOG)){
+
+                Thread loadContacts = new Thread(new Runnable() {
+                    public void run () {
+
+                    	 if (mShenduContactAdapter == null) {
+//                    		 MyLog("mShendu_ContactAdapter == null");
+                    		 mShenduContactAdapter = new ShenduContactAdapter(getActivity());
+                    		 mShenduContactAdapter.getAll();
+                    	 }else{
+//                    		 MyLog("mShendu_ContactAdapter != null");
+                    	    mShenduContactAdapter.getAll();
+                    	 }
+                    }
+                });
+                loadContacts.start();
             }
         }
     };
@@ -377,6 +393,9 @@ public class DialpadFragment extends Fragment
 
         updateDialAndDeleteButtonEnabledState();
     }
+    
+    /**shutao 2012-11-15*/
+    public static final String REMOVER_CALLLOG = "shendu.action.REMOVER_CALLLOG";
 
     @Override
     public void onCreate(Bundle state) {
@@ -405,6 +424,7 @@ public class DialpadFragment extends Fragment
 
         // Add LOCALE_CHAGNED event receiver.
         IntentFilter localeChangedfilter = new IntentFilter(Intent.ACTION_LOCALE_CHANGED);
+        localeChangedfilter.addAction(REMOVER_CALLLOG);
         getActivity().registerReceiver(mLocaleChangedReceiver, localeChangedfilter);
         
     }

@@ -595,8 +595,7 @@ public class ShenduContactAdapter extends BaseAdapter implements Filterable {
             	}else{
             		 mPhotoLoader.loadDirectoryPhoto(holder.imPhoto, contactItem.photo, true ,contactItem.name ,contactItem.id );
             	}
-            		
-             
+
               }
             holder.imPhoto.assignContactFromPhone(contactItem.number, true);
         }

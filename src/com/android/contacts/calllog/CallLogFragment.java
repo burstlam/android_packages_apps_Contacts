@@ -345,7 +345,7 @@ public class CallLogFragment extends ListFragment
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.delete_all:
-                ClearCallLogDialog.show(getFragmentManager());
+                ClearCallLogDialog.show(getFragmentManager(),CallLogFragment.this.getActivity());
                 return true;
 
             case R.id.show_voicemails_only:

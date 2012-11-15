@@ -22,6 +22,7 @@ import com.android.contacts.calllog.CallTypeHelper;
 import com.android.contacts.calllog.ContactInfo;
 import com.android.contacts.calllog.ContactInfoHelper;
 import com.android.contacts.calllog.PhoneNumberHelper;
+import com.android.contacts.dialpad.DialpadFragment;
 import com.android.contacts.format.FormatUtils;
 import com.android.contacts.util.AsyncTaskExecutor;
 import com.android.contacts.util.AsyncTaskExecutors;
@@ -854,6 +855,8 @@ public class CallDetailActivity extends Activity implements ProximitySensorAware
                     public void onPostExecute(Void result) {     
                     	mCallDetailHistoryAdapter.removeDetails(index);
                     	mCallDetailHistoryAdapter.notifyDataSetChanged();
+                    	Intent intent = new Intent(DialpadFragment.REMOVER_CALLLOG);
+                    	CallDetailActivity.this.sendBroadcast(intent);
                     	if(mCallDetailHistoryAdapter.getCount() == 0){
                     		  finish();
                     	}
@@ -881,6 +884,8 @@ public class CallDetailActivity extends Activity implements ProximitySensorAware
                     }
                     @Override
                     public void onPostExecute(Void result) {
+                    	Intent intent = new Intent(DialpadFragment.REMOVER_CALLLOG);
+                    	CallDetailActivity.this.sendBroadcast(intent);
                         finish();
                     }
                 });

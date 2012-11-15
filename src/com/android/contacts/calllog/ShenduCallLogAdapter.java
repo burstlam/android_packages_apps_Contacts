@@ -23,6 +23,7 @@ import com.android.contacts.PhoneCallDetailsHelper;
 import com.android.contacts.R;
 import com.android.contacts.CallDetailActivity.Tasks;
 import com.android.contacts.calllog.CallLogAdapter.CallFetcher;
+import com.android.contacts.dialpad.DialpadFragment;
 import com.android.contacts.util.AsyncTaskExecutor;
 import com.android.contacts.util.AsyncTaskExecutors;
 import com.android.contacts.util.ExpirableCache;
@@ -278,6 +279,8 @@ import libcore.util.Objects;
 
                     @Override
                     public void onPostExecute(Void result) {
+                    	Intent intent = new Intent(DialpadFragment.REMOVER_CALLLOG);
+                    	mContext.sendBroadcast(intent);
 //                        finish();
                     }
                 });
@@ -514,7 +517,6 @@ import libcore.util.Objects;
                         req = mRequests.removeFirst();
                     }
                 }
-
                 if (req != null) {
                     // Process the request. If the lookup succeeds, schedule a
                     // redraw.
