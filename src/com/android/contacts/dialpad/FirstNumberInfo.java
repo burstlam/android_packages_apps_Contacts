@@ -115,6 +115,7 @@ public class FirstNumberInfo {
 	}
 	
 	public void setNumberContactsItem(char number , NodeShendu_ContactItem contactItem){
+		
 		switch(number){
 		case 43:
 			phoneDataArrayListAdd.add(contactItem);

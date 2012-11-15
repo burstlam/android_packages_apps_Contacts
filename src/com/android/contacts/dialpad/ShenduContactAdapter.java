@@ -407,8 +407,7 @@ public class ShenduContactAdapter extends BaseAdapter implements Filterable {
 		if (cursor == null) {
 			return;
 		}
-//		log("cursor--getCount"+cursor.getCount());
-		
+
 		while (cursor.moveToNext()){
 			Shendu_ContactItem r = new Shendu_ContactItem();
 			r.number = removeNonDigits(cursor.getString(0));

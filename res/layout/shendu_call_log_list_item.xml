@@ -83,7 +83,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:singleLine="true"
-                    android:textColor="?attr/call_log_secondary_text_color"
+                    android:textColor="@color/shendu_secondary_text_color"
                     android:textSize="14sp" />
             </LinearLayout>
 
@@ -106,7 +106,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:singleLine="true"
-                    android:textColor="?attr/call_log_secondary_text_color"
+                    android:textColor="@color/shendu_secondary_text_color"
                     android:textSize="14sp" />
 
                 <TextView
@@ -115,7 +115,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="5dp"
                     android:singleLine="true"
-                    android:textColor="?attr/call_log_secondary_text_color"
+                    android:textColor="@color/shendu_secondary_text_color"
                     android:textSize="14sp" />
             </LinearLayout>
         </LinearLayout>
@@ -145,6 +145,7 @@
     <TextView
         android:id="@+id/call_log_header"
         style="@style/ContactListSeparatorTextViewStyle"
+        android:textColor="@color/shendu_secondary_text_color"
         android:layout_marginLeft="@dimen/call_log_outer_margin"
         android:layout_marginRight="@dimen/call_log_outer_margin"
         android:paddingBottom="@dimen/call_log_inner_margin"

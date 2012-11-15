@@ -97,6 +97,7 @@ public class CallLogFragment extends ListFragment
         }
         @Override
         public void onChange(boolean selfChange) {
+//        	System.out.println("----------------------onChange");
             mRefreshDataRequired = true;
         }
     }

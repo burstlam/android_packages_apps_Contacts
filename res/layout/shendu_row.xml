@@ -39,6 +39,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:maxWidth="140dp"
+                android:textColor="@color/shendu_secondary_text_color"
                 android:ellipsize="end"
                 android:singleLine="true" />
         </LinearLayout>
@@ -51,12 +52,14 @@
                 android:id="@+id/rowNumber"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textColor="@color/shendu_secondary_text_color"
                 android:gravity="center_vertical" />
             <TextView 
                 android:id="@+id/shendu_row_attribution"
                 android:layout_marginLeft="3dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textColor="@color/shendu_secondary_text_color"
                 android:gravity="center_vertical" />
         </LinearLayout>
     </LinearLayout>
