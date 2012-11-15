@@ -5,6 +5,9 @@ import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.Locale;
 import java.util.Set;
+
+import org.w3c.dom.Text;
+
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
@@ -15,6 +18,7 @@ import android.provider.CallLog;
 import android.provider.ContactsContract.Contacts;
 import android.provider.ContactsContract.CommonDataKinds.Phone;
 import android.text.Spannable;
+import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -583,12 +587,17 @@ public class ShenduContactAdapter extends BaseAdapter implements Filterable {
 //             
 //             holder.number.setText(s);
 //           }
-       
-            if (contactItem.photo != null)
-                mPhotoLoader.loadDirectoryPhoto(holder.imPhoto, contactItem.photo, true);
-            else
-                holder.imPhoto.setImageResource(ContactPhotoManager.getDefaultAvatarResId(false, true));
-               
+            if (contactItem.photo != null){
+                mPhotoLoader.loadDirectoryPhoto(holder.imPhoto, contactItem.photo, true );
+            }else{
+            	if(TextUtils.isEmpty(contactItem.name)){
+            		 holder.imPhoto.setImageResource(ContactPhotoManager.getDefaultAvatarResId(false, true)); 
+            	}else{
+            		 mPhotoLoader.loadDirectoryPhoto(holder.imPhoto, contactItem.photo, true ,contactItem.name ,contactItem.id );
+            	}
+            		
+             
+              }
             holder.imPhoto.assignContactFromPhone(contactItem.number, true);
         }
         

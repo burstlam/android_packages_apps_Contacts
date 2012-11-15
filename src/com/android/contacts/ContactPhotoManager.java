@@ -175,6 +175,13 @@ public abstract class ContactPhotoManager implements ComponentCallbacks2 {
     public final void loadThumbnail(ImageView view, long photoId, boolean darkTheme) {
         loadThumbnail(view, photoId, darkTheme, DEFAULT_AVATAR);
     }
+    
+    /**
+     * @author Wang
+     * @date 2012-11-14
+     * */
+    public abstract void loadThumbnail(ImageView view, long photoId, boolean darkTheme,
+            DefaultImageProvider defaultProvider, String displayName, long contactId);
 
     /**
      * Load photo into the supplied image view. If the photo is already cached,
@@ -199,6 +206,15 @@ public abstract class ContactPhotoManager implements ComponentCallbacks2 {
      */
     public abstract void loadPhoto(ImageView view, Uri photoUri, int requestedExtent,
             boolean darkTheme, DefaultImageProvider defaultProvider, String displayName, long contactID);
+    
+    /**
+     * @hide
+     * @author Wang
+     * @date 2012-11-12
+     */
+    public final void loadThumbnail(ImageView view, long photoId, boolean darkTheme, String displayName, long contactID) {
+        loadThumbnail(view, photoId, darkTheme, DEFAULT_AVATAR, displayName, contactID);
+    }
 
     /**
      * Calls {@link #loadPhoto(ImageView, Uri, boolean, boolean, DefaultImageProvider)} with
@@ -504,16 +520,29 @@ class ContactPhotoManagerImpl extends ContactPhotoManager implements Callback {
     @Override
     public void loadThumbnail(ImageView view, long photoId, boolean darkTheme,
             DefaultImageProvider defaultProvider) {
-        if (photoId == 0) {
-            // No photo is needed
-            defaultProvider.applyDefaultImage(view, -1, darkTheme);
+    	//Wang:2012-11-14
+    	loadThumbnail(view, photoId, darkTheme, defaultProvider, null, -1);
+    }
+    //Wang:
+    @Override
+	public void loadThumbnail(ImageView view, long photoId, boolean darkTheme,
+			DefaultImageProvider defaultProvider, String displayname,
+			long contactId) {
+		if (photoId == 0) {
+			  //Wang:
+            boolean succeed = NameAvatarUtils.setupNameAvatar(view, contactId, displayname);
+            if(!succeed){
+            	// No photo is needed
+              defaultProvider.applyDefaultImage(view, -1, darkTheme);
+              }
             mPendingRequests.remove(view);
         } else {
             if (DEBUG) Log.d(TAG, "loadPhoto request: " + photoId);
             loadPhotoByIdOrUri(view, Request.createFromThumbnailId(photoId, darkTheme,
                     defaultProvider));
         }
-    }
+		
+	}
 
     @Override
     public void loadPhoto(ImageView view, Uri photoUri, int requestedExtent, boolean darkTheme,
@@ -522,15 +551,16 @@ class ContactPhotoManagerImpl extends ContactPhotoManager implements Callback {
         loadPhoto(view, photoUri, requestedExtent, darkTheme, defaultProvider, null, -1);
     }
    //Wang:
-    @Override
+    @Override 
     public void loadPhoto(ImageView view, Uri photoUri, int requestedExtent, boolean darkTheme,
             DefaultImageProvider defaultProvider, String displayName,long contactID) {
         log("=====>loadPhoto>>>photoUri="+photoUri+" ,displayName="+displayName);
         if (photoUri == null) {
-         // No photo is needed 
-         //Wang:
-//          defaultProvider.applyDefaultImage(view, requestedExtent, darkTheme);
-            NameAvatarUtils.setupNameAvatar(view, contactID, displayName);
+        	 boolean succeed = NameAvatarUtils.setupNameAvatar(view, contactID, displayName);
+            if(!succeed){
+            	// No photo is needed
+              defaultProvider.applyDefaultImage(view, -1, darkTheme);
+              };
             mPendingRequests.remove(view);
         } else {
             if (DEBUG) Log.d(TAG, "loadPhoto request: " + photoUri);

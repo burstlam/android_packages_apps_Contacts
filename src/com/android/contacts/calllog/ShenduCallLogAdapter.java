@@ -696,7 +696,7 @@ import libcore.util.Objects;
         // New items also use the highlighted version of the text.
         final boolean isHighlighted = isNew;
         mCallLogViewsHelper.setPhoneCallDetails(views, details, isHighlighted);
-        setPhoto(views, photoId, lookupUri);
+        setPhoto(name,views, photoId, lookupUri);
         /**shutao  2012-10-26*/
         views.quickContactView.assignContactFromPhone(info.number, true);
         // Listen for the first draw
@@ -824,9 +824,9 @@ import libcore.util.Objects;
 		return callTypes;
     }
 
-    private void setPhoto(CallLogListItemViews views, long photoId, Uri contactUri) {
+    private void setPhoto(String name,CallLogListItemViews views, long photoId, Uri contactUri) {
         views.quickContactView.assignContactUri(contactUri);
-        mContactPhotoManager.loadThumbnail(views.quickContactView, photoId, true);
+        mContactPhotoManager.loadThumbnail(views.quickContactView, photoId, true,name,-1);
     }
 
     /**

@@ -86,16 +86,20 @@ public class NameAvatarUtils {
      * @author Wang
      * @date 2012-11-14
      * */
-    public static void setupNameAvatar(ImageView view, long contactID, String displayName){
+    public static boolean setupNameAvatar(ImageView view, long contactID, String displayName){
         String cnCharacter = NameAvatarUtils.containsChinese(displayName);
         if(!TextUtils.isEmpty(cnCharacter)){
             NameAvatarUtils.setAvatar(view, cnCharacter, contactID);
+            return true;
         }else{
             if(!TextUtils.isEmpty(displayName)){
                 NameAvatarUtils.setAvatar(view, displayName.substring(0, 1).toUpperCase(), contactID);
+                return true;
             }else{
                 //Wang:2012-11-13
-                NameAvatarUtils.setAvatar(view, " ", contactID);
+//                NameAvatarUtils.setAvatar(view, " ", contactID);
+            	//Wang:2012-11-14
+            	return false;
             }
         }
     }
@@ -155,8 +159,8 @@ public class NameAvatarUtils {
 //        Bitmap bm = makeAvatar(view.getContext(), chara).get();
         if (bm != null) {
             if(view != null) view.setImageBitmap(bm);
-            AvatarRequest request = new AvatarRequest(contactID, bm, chara);
-            new AvatarTask(view.getContext()).execute(request);
+//            AvatarRequest request = new AvatarRequest(contactID, bm, chara);
+//            new AvatarTask(view.getContext()).execute(request);
         }
 
     }
