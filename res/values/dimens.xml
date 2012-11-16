@@ -264,6 +264,7 @@
     <dimen name="shendu_dialpad_bootom_dialButton_width">192dip</dimen>
     <dimen name="shendu_call_log_list_contact_photo_size">48dip</dimen>
     <dimen name="shendu_call_divider_padding">8dip</dimen>
+    <dimen name="shendu_dialpad_new_item_height">61dip</dimen>
     
     <!-- Wang: Name Avatar params -->  
     <dimen name="shendu_name_avatar_size">64dip</dimen>  <!-- Wang: 2012-11-12  -->

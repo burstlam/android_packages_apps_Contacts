@@ -94,10 +94,10 @@ public class CallLogFragment extends ListFragment
     private class CustomContentObserver extends ContentObserver {
         public CustomContentObserver() {
             super(mHandler);
+
         }
         @Override
         public void onChange(boolean selfChange) {
-//        	System.out.println("----------------------onChange");
             mRefreshDataRequired = true;
         }
     }
