@@ -1529,9 +1529,6 @@ public class ContactDetailFragment extends Fragment implements FragmentKeyListen
             ContactDetailDisplayUtils.setDisplayName(mContext, mContactData,
                     viewCache.displayNameView);
             ContactDetailDisplayUtils.setCompanyName(mContext, mContactData, viewCache.companyView);
-            
-            //Wang:2012-11-14
-            NameAvatarUtils.setupNameAvatar(viewCache.photoView, mContactData.getId(), mContactData.getDisplayName());
 
             // Set the photo if it should be displayed
             if (viewCache.photoView != null) {

@@ -89,11 +89,11 @@ public class NameAvatarUtils {
     public static boolean setupNameAvatar(ImageView view, long contactID, String displayName){
         String cnCharacter = NameAvatarUtils.containsChinese(displayName);
         if(!TextUtils.isEmpty(cnCharacter)){
-            NameAvatarUtils.setAvatar(view, cnCharacter, contactID);
+            setAvatar(view, cnCharacter, contactID);
             return true;
         }else{
             if(!TextUtils.isEmpty(displayName)){
-                NameAvatarUtils.setAvatar(view, displayName.substring(0, 1).toUpperCase(), contactID);
+                setAvatar(view, displayName.substring(0, 1).toUpperCase(), contactID);
                 return true;
             }else{
                 //Wang:2012-11-13
@@ -103,13 +103,32 @@ public class NameAvatarUtils {
             }
         }
     }
+    
+    /**
+     * 
+     * @author Wang
+     * @date 2012-11-15
+     * */
+    public static Bitmap makeNameAvatarBitmap(Context ctx, String displayName){
+        String cnCharacter = NameAvatarUtils.containsChinese(displayName);
+        if(!TextUtils.isEmpty(cnCharacter)){
+            return makeAvatarBitmap(ctx, cnCharacter);
+        }else{
+            if(!TextUtils.isEmpty(displayName)){
+                return makeAvatarBitmap(ctx, displayName.substring(0, 1).toUpperCase());
+            }else{
+                return null;
+            }
+        }
+    }
+    
     /**
      * Draw the view into a bitmap.
      * 
      * @author Wang
      * @date 2012-10-10
      */
-    public static Bitmap getViewBitmap(View v) {
+    private static Bitmap getViewBitmap(View v) {
         v.clearFocus();
         v.setPressed(false);
 

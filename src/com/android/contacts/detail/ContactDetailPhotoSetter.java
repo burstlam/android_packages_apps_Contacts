@@ -39,7 +39,9 @@ public class ContactDetailPhotoSetter extends ImageViewDrawableSetter {
     public OnClickListener setupContactPhotoForClick(Context context, Result contactData,
             ImageView photoView, boolean expandPhotoOnClick) {
         setTarget(photoView);
-        Bitmap bitmap = setCompressedImage(contactData.getPhotoBinaryData());
+        /*Wang:2012-11-15*/
+//        Bitmap bitmap = setCompressedImage(contactData.getPhotoBinaryData());
+        Bitmap bitmap = setCompressedImage(context, contactData);
         return setupClickListener(context, contactData, bitmap, expandPhotoOnClick);
     }
 

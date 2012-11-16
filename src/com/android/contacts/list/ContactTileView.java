@@ -127,16 +127,18 @@ public abstract class ContactTileView extends FrameLayout {
 
             if (mPhotoManager != null) {
                 if (mPhoto != null) {
+                    /*Wang:2012-11-15*/
                     mPhotoManager.loadPhoto(mPhoto, entry.photoUri, getApproximateImageSize(),
-                            isDarkTheme());
+                            isDarkTheme(), entry.name, -1);
 
                     if (mQuickContact != null) {
                         mQuickContact.assignContactUri(mLookupUri);
                     }
                 } else if (mQuickContact != null) {
                     mQuickContact.assignContactUri(mLookupUri);
+                    /*Wang:2012-11-15*/
                     mPhotoManager.loadPhoto(mQuickContact, entry.photoUri,
-                            getApproximateImageSize(), isDarkTheme());
+                            getApproximateImageSize(), isDarkTheme(), entry.name, -1);
                 }
             } else {
                 Log.w(TAG, "contactPhotoManager not set");

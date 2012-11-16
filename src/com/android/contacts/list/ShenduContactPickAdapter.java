@@ -190,8 +190,8 @@ public class ShenduContactPickAdapter extends ContactEntryListAdapter implements
         if (!cursor.isNull(ContactsQuery.CONTACT_PHOTO_ID)) {
             photoId = cursor.getLong(ContactsQuery.CONTACT_PHOTO_ID);
         }
-        /*Wang: 2012-10-15*/
-        getPhotoLoader().loadThumbnail(view.getPhotoView(), photoId,false);
+        /*Wang: 2012-11-15*/
+        getPhotoLoader().loadThumbnail(view.getPhotoView(), photoId,false, view.getNameTextView().getText().toString(), -1);
     }
 
     private void bindSectionHeaderAndDivider(ContactListItemView view, int position, Cursor cursor) {
