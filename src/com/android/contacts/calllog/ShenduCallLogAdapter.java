@@ -732,7 +732,7 @@ import libcore.util.Objects;
             ContactInfo updatedInfo, ContactInfo callLogInfo) {
         final ContentValues values = new ContentValues();
         boolean needsUpdate = false;
-
+         
         if (callLogInfo != null) {
             if (!TextUtils.equals(updatedInfo.name, callLogInfo.name)) {
                 values.put(Calls.CACHED_NAME, updatedInfo.name);

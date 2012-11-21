@@ -218,7 +218,8 @@ public class CallDetailActivity extends Activity implements ProximitySensorAware
         CallLog.Calls.NUMBER,
         CallLog.Calls.TYPE,
         CallLog.Calls.COUNTRY_ISO,
-        CallLog.Calls.GEOCODED_LOCATION,
+        CallLog.Calls.GEOCODED_LOCATION,        
+        CallLog.Calls.CACHED_NAME,
     };
 
     static final int DATE_COLUMN_INDEX = 0;
@@ -609,13 +610,13 @@ public class CallDetailActivity extends Activity implements ProximitySensorAware
 
     /** Return the phone call details for a given call log URI. */
     private PhoneCallDetails getPhoneCallDetailsForUri(Uri callUri) {
+    	
         ContentResolver resolver = getContentResolver();
         Cursor callCursor = resolver.query(callUri, CALL_LOG_PROJECTION, null, null, null);
         try {
             if (callCursor == null || !callCursor.moveToFirst()) {
                 throw new IllegalArgumentException("Cannot find content: " + callUri);
             }
-
             // Read call log specifics.
             String number = callCursor.getString(NUMBER_COLUMN_INDEX);
             long date = callCursor.getLong(DATE_COLUMN_INDEX);
@@ -832,11 +833,8 @@ public class CallDetailActivity extends Activity implements ProximitySensorAware
     	 Uri uris;
     	   Uri uri = getIntent().getData();
            if (uri != null) {
-               // If there is a data on the intent, it takes precedence over the extra.
-//        	   System.out.println("--------00000000");
         	   uris = uri;
            }else{
-//        	   System.out.println("--------11111111");
         	   long[] ids = getIntent().getLongArrayExtra(EXTRA_CALL_LOG_IDS);
         	   uris = ContentUris.withAppendedId(Calls.CONTENT_URI_WITH_VOICEMAIL, ids[index]);
            }

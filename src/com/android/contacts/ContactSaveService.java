@@ -954,11 +954,11 @@ public class ContactSaveService extends IntentService {
 
     private void deleteContact(Intent intent) {
         Uri contactUri = intent.getParcelableExtra(EXTRA_CONTACT_URI);
+        System.out.println("delete == uri"+ contactUri);
         if (contactUri == null) {
             Log.e(TAG, "Invalid arguments for deleteContact request");
             return;
         }
-
         getContentResolver().delete(contactUri, null, null);
     }
 

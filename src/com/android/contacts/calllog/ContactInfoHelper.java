@@ -53,7 +53,6 @@ public class ContactInfoHelper {
      */
     public ContactInfo lookupNumber(String number, String countryIso) {
         final ContactInfo info;
-
         // Determine the contact info.
         if (PhoneNumberUtils.isUriNumber(number)) {
             // This "number" is really a SIP address.
@@ -67,17 +66,17 @@ public class ContactInfoHelper {
                 }
             }
             info = sipInfo;
-        } else {
+        } else {   
             // Look for a contact that has the given phone number.
             ContactInfo phoneInfo = queryContactInfoForPhoneNumber(number, countryIso);
-
             if (phoneInfo == null || phoneInfo == ContactInfo.EMPTY) {
                 // Check whether the phone number has been saved as an "Internet call" number.
                 phoneInfo = queryContactInfoForSipAddress(number);
-
                 if (phoneInfo == null || phoneInfo == ContactInfo.EMPTY) {
                     //Check contact in Calllog may we have some info there
-                    phoneInfo = queryContactInfoForPhoneNumberFromCallLog(number, countryIso);
+                  	  /** shutao   2012-11-21 */
+//                    phoneInfo = queryContactInfoForPhoneNumberFromCallLog(number, countryIso);
+                  
                 }
             }
             info = phoneInfo;
