@@ -140,11 +140,11 @@ public class DialpadFragment extends Fragment
     /** Stream type used to play the DTMF tones off call, and mapped to the volume control keys */
     private static final int DIAL_TONE_STREAM_TYPE = AudioManager.STREAM_DTMF;
     
-    /**shutao 2012-10-17*/
+    /**shutao 2012-11-22*/
     private static final int DIAL_PHONE_OWNERSHI = 0;
     private static final int DIAL_NEW_CONTACT    = 1;
-    private static final int DIAL_RECENTCALLS_ADDTOCONTACT = 2;
-    private static final int DIAL_SEND_MMS       = 3;
+//    private static final int DIAL_RECENTCALLS_ADDTOCONTACT = 2;
+    private static final int DIAL_SEND_MMS       = 2;
     
     /**
      * View (usually FrameLayout) containing mDigits field. This can be null, in which mDigits
