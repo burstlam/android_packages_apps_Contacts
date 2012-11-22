@@ -59,6 +59,7 @@ import android.content.Entity.NamedContentValues;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
+import android.media.RingtoneManager;
 import android.net.ParseException;
 import android.net.Uri;
 import android.net.WebAddress;
@@ -112,6 +113,7 @@ import android.widget.ListAdapter;
 import android.widget.ListPopupWindow;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -213,6 +215,11 @@ public class ContactDetailFragment extends Fragment implements FragmentKeyListen
     private boolean mIsUniqueEmail;
 
     private ListPopupWindow mPopup;
+    
+    /*Wang: Ringtone 2012-11-20*/
+    private String mCustomRingtone;
+    private static final int REQUEST_CODE_PICK_RINGTONE = 1;
+    private static TextView mRingtoneName;
 
     /**
      * This is to forward touch events to the list view to enable users to scroll the list view
@@ -791,6 +798,9 @@ public class ContactDetailFragment extends Fragment implements FragmentKeyListen
         flattenList(mGroupEntries);
         flattenList(mRelationEntries);
         flattenList(mNoteEntries);
+        
+        /*Wang:2012-11-19*/
+        addRingTone();
     }
 
     /**
@@ -937,6 +947,22 @@ public class ContactDetailFragment extends Fragment implements FragmentKeyListen
 
         // Clear old list because it's not needed anymore.
         entries.clear();
+    }
+    
+    /**
+     * @author Wang
+     * @date 2012-11-19
+     * */
+    private void addRingTone(){
+        String title = mContext.getResources().getString(R.string.ringtone_title);
+        mAllEntries.add(new KindTitleViewEntry(title.toUpperCase()));
+        View.OnClickListener onClickListener = new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                doPickRingtone();
+            }
+        };
+        mAllEntries.add(new RingToneViewEntry(mContext, onClickListener));
     }
 
     /**
@@ -1368,6 +1394,29 @@ public class ContactDetailFragment extends Fragment implements FragmentKeyListen
             fragmentListener.onItemClicked(intent);
         }
     }
+    
+    /**
+     * Ringtone entry
+     * @author Wang
+     * @date 2012-11-19
+     * */
+    private static class RingToneViewEntry extends ViewEntry{
+        private String mTitle;
+        private final View.OnClickListener mOnClickListener;
+
+        RingToneViewEntry(Context context, View.OnClickListener onClickListener) {
+            super(ViewAdapter.VIEW_TYPE_RINGTONE_ENTRY);
+//            mTitle = title;
+            this.mOnClickListener = onClickListener;
+        }
+        
+        @Override
+        public void click(View clickedView, Listener fragmentListener) {
+            if (mOnClickListener == null) return;
+            mOnClickListener.onClick(clickedView);
+        }
+        
+    }
 
     /**
      * Cache of the children views for a view that displays a header view entry.
@@ -1470,6 +1519,19 @@ public class ContactDetailFragment extends Fragment implements FragmentKeyListen
             secondaryActionDivider = view.findViewById(R.id.vertical_divider);
         }
     }
+    
+    /**
+     * Cache of the children views for a view that displays a RingToneView
+     * @author Wang
+     * @date 2012-11-19
+     */
+    private static class RingToneViewCache {
+        public final TextView ringtone;
+        public RingToneViewCache(View view) {
+            ringtone = (TextView) view.findViewById(R.id.ringtone_data);
+            mRingtoneName = ringtone;
+        }
+    }
 
     private final class ViewAdapter extends BaseAdapter {
 
@@ -1479,7 +1541,11 @@ public class ContactDetailFragment extends Fragment implements FragmentKeyListen
         public static final int VIEW_TYPE_NETWORK_TITLE_ENTRY = 3;
         public static final int VIEW_TYPE_ADD_CONNECTION_ENTRY = 4;
         public static final int VIEW_TYPE_SEPARATOR_ENTRY = 5;
-        private static final int VIEW_TYPE_COUNT = 6;
+        
+        /*Wang:2012-11-19*/
+        public static final int VIEW_TYPE_RINGTONE_ENTRY = 6;
+        /*Wang : 2012-11-19 +1 for count */
+        private static final int VIEW_TYPE_COUNT = 7;
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
@@ -1496,6 +1562,8 @@ public class ContactDetailFragment extends Fragment implements FragmentKeyListen
                     return getNetworkTitleEntryView(position, convertView, parent);
                 case VIEW_TYPE_ADD_CONNECTION_ENTRY:
                     return getAddConnectionEntryView(position, convertView, parent);
+                case VIEW_TYPE_RINGTONE_ENTRY:/*Wang: 2012-11-19 */
+                    return getRingToneEntryView(position, convertView, parent);
                 default:
                     throw new IllegalStateException("Invalid view type ID " +
                             getItemViewType(position));
@@ -1649,6 +1717,38 @@ public class ContactDetailFragment extends Fragment implements FragmentKeyListen
             viewCache.icon.setImageDrawable(entry.getIcon());
             viewCache.primaryActionView.setOnClickListener(entry.mOnClickListener);
 
+            return result;
+        }
+        
+        /**
+         * Get RingToneEntryView from convertView or create a RingToneEntryView object
+         * @author Wang
+         * @date 2012-11-20
+         * */
+        private View getRingToneEntryView(int position, View convertView, ViewGroup parent) {
+            final RingToneViewEntry entry = (RingToneViewEntry) getItem(position);
+            final View result;
+            final RingToneViewCache viewCache;
+            if (convertView != null) {
+                result = convertView;
+                viewCache = (RingToneViewCache) result.getTag();
+            } else {
+                result = mInflater.inflate(R.layout.shendu_contact_detail_custom_ringtone_view,
+                        parent, false);
+                viewCache = new RingToneViewCache(result);
+                result.setTag(viewCache);
+            }
+            String title = null;
+            if(mContactData != null){
+                mCustomRingtone = mContactData.getCustomRingtone();
+             }
+            if(mCustomRingtone != null){
+                title = RingtoneManager.getRingtone(mContext, Uri.parse(mCustomRingtone)).getTitle(mContext);
+            }else{
+                title = mContext.getResources().getString(R.string.default_ringtone);
+            }
+            viewCache.ringtone.setText(title);
+            viewCache.ringtone.setOnClickListener(entry.mOnClickListener);
             return result;
         }
 
@@ -2254,5 +2354,63 @@ public class ContactDetailFragment extends Fragment implements FragmentKeyListen
         public long getItemId(int position) {
             return position;
         }
+    }
+    
+    /**=======================================
+     * etting RingTone 
+     * @author Wang
+     * @date 2012-11-20
+     *  =======================================
+     * */
+    private void doPickRingtone() {
+
+        Intent intent = new Intent(RingtoneManager.ACTION_RINGTONE_PICKER);
+        // Allow user to pick 'Default'
+        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_DEFAULT, true);
+        // Show only ringtones
+        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_RINGTONE);
+        // Don't show 'Silent'
+        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_SILENT, false);
+
+        Uri ringtoneUri;
+        if (mCustomRingtone != null) {
+            ringtoneUri = Uri.parse(mCustomRingtone);
+        } else {
+            // Otherwise pick default ringtone Uri so that something is selected.
+            ringtoneUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
+        }
+
+        // Put checkmark next to the current ringtone for this contact
+        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_EXISTING_URI, ringtoneUri);
+
+        // Launch!
+        startActivityForResult(intent, REQUEST_CODE_PICK_RINGTONE);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode != Activity.RESULT_OK) {
+            return;
+        }
+
+        switch (requestCode) {
+            case REQUEST_CODE_PICK_RINGTONE: {
+                Uri pickedUri = data.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI);
+                handleRingtonePicked(pickedUri);
+                break;
+            }
+        }
+    }
+
+    private void handleRingtonePicked(Uri pickedUri) {
+        if (pickedUri == null || RingtoneManager.isDefault(pickedUri)) {
+            mCustomRingtone = null;
+        } else {
+            mCustomRingtone = pickedUri.toString();
+            if(mRingtoneName != null) mRingtoneName.setText(RingtoneManager.getRingtone(mContext, pickedUri).getTitle(mContext));
+        }
+        Intent intent = ContactSaveService.createSetRingtone(
+                mContext, mLookupUri, mCustomRingtone);
+        mContext.startService(intent);
     }
 }

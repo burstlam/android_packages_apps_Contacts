@@ -600,4 +600,8 @@
     
     <!--Wang: Sim export infor-->
     <string name="export_to_sim" product="default">"导出到 SIM 卡"</string>
+    
+    <!--Wang: Ringtone setting string-->
+     <string name="default_ringtone" >默认铃声</string>
+     <string name="ringtone_title" >铃声</string>
 </resources>

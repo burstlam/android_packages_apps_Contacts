@@ -32,16 +32,21 @@ import android.provider.ContactsContract.Data;
 import android.provider.ContactsContract.RawContacts;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.MeasureSpec;
+import android.view.ViewGroup.LayoutParams;
+import android.widget.Gallery;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 public class NameAvatarUtils {
     
-    private static int  _TEXT_SIZE = 0;
-    private static int  _PHOTO_SIZE = 0;
+    private static int  PX_TEXT_SIZE = 0;
+    private static int  PX_PHOTO_SIZE = 0;
+    private static final int SP_TEXT_SIZE = 16;
+    private static final int DP_PHOTO_SIZE = 64;
 
     /**
      * Judgment for a character is chinese or not
@@ -175,7 +180,6 @@ public class NameAvatarUtils {
      */
     public static void setAvatar(ImageView view, String chara, long contactID) {
         Bitmap bm = makeAvatarBitmap(view.getContext(), chara);
-//        Bitmap bm = makeAvatar(view.getContext(), chara).get();
         if (bm != null) {
             if(view != null) view.setImageBitmap(bm);
 //            AvatarRequest request = new AvatarRequest(contactID, bm, chara);
@@ -188,29 +192,62 @@ public class NameAvatarUtils {
      * Make a bitmap with given content
      * @author Wang
      * @date 2012-11-14
+     * @date 2012-11-16
      * */
     public static Bitmap makeAvatarBitmap(Context ctx, String content){
+//        ensureSizeParams(ctx);
+//        TextView tv = new TextView(ctx);
         TextView tv = (TextView) LayoutInflater.from(ctx).inflate(
                 R.layout.shendu_name_avatar_view, null);
+//        tv.setLayoutParams(new LayoutParams(PX_PHOTO_SIZE, PX_PHOTO_SIZE));
+//        tv.setGravity(Gravity.CENTER_VERTICAL);
+//        tv.setMinimumHeight(PX_PHOTO_SIZE);
+//        tv.setMinimumWidth(PX_PHOTO_SIZE);
         int paddingLeft = measurePadding(ctx, content);
         tv.setPadding(paddingLeft, 0, 0, 0);
+//        tv.setSingleLine(true);
+//        tv.setBackgroundResource(R.color.shendu_name_avatar_background);
+//        tv.setTextColor(ctx.getResources().getColor(R.color.shendu_name_avatar_text_color));
+//        tv.setTextSize(PX_TEXT_SIZE);
         tv.setText(content);
        return getViewBitmap(tv);
+    }
+    
+    public static int dip2px(int dipValue, float scale) {
+        return (int) (dipValue * scale + 0.5f);
+    }
+    
+    private static int sp2px(float spValue, float fontScale) {
+        return  (int) (spValue * fontScale + 0.5f);
+     }
+    /**
+     * @author Wang
+     * @date 2012-11-16
+     * */
+    private static void ensureSizeParams(Context ctx){
+        if(PX_TEXT_SIZE == 0 || PX_PHOTO_SIZE == 0){
+//            final float scale = ctx.getResources().getDisplayMetrics().density;
+//            PX_TEXT_SIZE = sp2px(SP_TEXT_SIZE, scale);
+//            Log.i("1616", "manual_text_size => "+PX_TEXT_SIZE);
+            PX_TEXT_SIZE = ctx.getResources().getDimensionPixelSize(R.dimen.shendu_name_avatar_text_size);
+//            Log.i("1616", "sys_text_size => "+sp);
+//            PX_PHOTO_SIZE = dip2px(DP_PHOTO_SIZE, scale);
+//            Log.i("1616", "manual_photo_size => "+PX_PHOTO_SIZE);
+            PX_PHOTO_SIZE = ctx.getResources().getDimensionPixelSize(R.dimen.shendu_name_avatar_size);
+//             Log.i("1616", "sys_photo_size => "+size);
+        }
     }
     /**
      * @author Wang
      * @date 2012-11-14
      * */
     private static int measurePadding(Context ctx,String str){
-        //ensure 
-        if(_TEXT_SIZE == 0 || _PHOTO_SIZE == 0){
-            _TEXT_SIZE = ctx.getResources().getDimensionPixelSize(R.dimen.shendu_name_avatar_text_size);
-            _PHOTO_SIZE = ctx.getResources().getDimensionPixelSize(R.dimen.shendu_name_avatar_size);
-        }
+        //ensure px values
+        ensureSizeParams(ctx);
         Paint p = new Paint();
-        p.setTextSize(_TEXT_SIZE);
+        p.setTextSize(PX_TEXT_SIZE);
         float font = getFontlength(p, str);
-        return (int)(_PHOTO_SIZE - font) / 2;
+        return (int)(PX_PHOTO_SIZE - font) / 2;
     }
 
     /**
