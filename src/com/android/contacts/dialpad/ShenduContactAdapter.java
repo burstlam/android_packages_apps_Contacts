@@ -317,17 +317,23 @@ public class ShenduContactAdapter extends BaseAdapter implements Filterable {
      
         contactInfo.hanziNums = numberNum;
     	 contactInfo.firstNumberIndexs = firstNumberIndexs;
-        setFirstNumberInfo(contactInfo);
+    	 try{
+    	     setFirstNumberInfo(contactInfo);
+    	 }catch(Exception e){
+    	 
+    	 }
+  
     	
     }
     
     /**shutao 2012-10-31*/
-	private void setFirstNumberInfo(Shendu_ContactItem contactInfo) {
+	private void setFirstNumberInfo(Shendu_ContactItem contactInfo) throws Exception{
 
 		if (contactInfo.name != null && !contactInfo.firstNumber.equals("")) {
 			String first = contactInfo.firstNumber;
-			for (int index = 0; index < contactInfo.hanziNums.size(); index++) {
+			for (int index = 0; index < contactInfo.firstNumber.length(); index++) {
 				String firstNum = first.substring(index, first.length());
+				System.out.println("firstNum --------------------=="+firstNum+"first"+first);
 				NodeShendu_ContactItem contactItemFirst = new NodeShendu_ContactItem();
 				contactItemFirst.number = firstNum;
 				contactItemFirst.type = mFirstNumberInfo.FIRST;
@@ -415,7 +421,11 @@ public class ShenduContactAdapter extends BaseAdapter implements Filterable {
 //			log("getStrangeCallLogs == "+r.number);
 			r.name = null;
 			r.city = PhoneLocation.getCityFromPhone(r.number);
+			try{
 			setFirstNumberInfo(r);
+			}catch(Exception e){
+				
+			}
 		}
 		cursor.close();
 
