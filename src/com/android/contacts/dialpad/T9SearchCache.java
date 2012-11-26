@@ -151,8 +151,14 @@ public class T9SearchCache implements ComponentCallbacks2 {
     private ContentObserver mContactObserver = new ContentObserver(new Handler()) {
         @Override
         public void onChange(boolean selfChange) {
-            mLoaded = false;
-            cancelLoad();
+            if (mCallbacks.isEmpty()) {
+                /* we have no listeners, just invalidate cache */
+                mLoaded = false;
+                cancelLoad();
+            } else {
+                /* transparently reload cache */
+                triggerLoad();
+            }
         }
     };
 
@@ -180,16 +186,11 @@ public class T9SearchCache implements ComponentCallbacks2 {
     }
 
     public void refresh(Callback cb) {
+        mCallbacks.add(cb);
         if (mLoaded) {
             cb.onLoadFinished();
-            return;
-        }
-
-        mCallbacks.add(cb);
-
-        if (mLoadTask == null || mLoadTask.getStatus() == AsyncTask.Status.FINISHED) {
-            mLoadTask = new LoadTask();
-            mLoadTask.execute();
+        } else {
+            triggerLoad();
         }
     }
 
@@ -197,6 +198,13 @@ public class T9SearchCache implements ComponentCallbacks2 {
         mCallbacks.remove(cb);
         if (mCallbacks.isEmpty()) {
             cancelLoad();
+        }
+    }
+
+    private void triggerLoad() {
+        if (mLoadTask == null || mLoadTask.getStatus() == AsyncTask.Status.FINISHED) {
+            mLoadTask = new LoadTask();
+            mLoadTask.execute();
         }
     }
 
