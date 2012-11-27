@@ -20,6 +20,9 @@
     android:id="@+id/dialpad"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:paddingTop="@dimen/shendu_dialpad_top"
+    android:paddingLeft="@dimen/shendu_dialpad_left"
+    android:paddingRight="@dimen/shendu_dialpad_right"
     android:layout_gravity="center_horizontal"
     android:background="@drawable/shendu_dial_bg">
 
@@ -28,15 +31,16 @@
          android:layout_weight="1">
         <com.android.contacts.dialpad.DialpadImageButton
             android:id="@+id/one" style="@style/ShenDu_DialtactsDialpadButtonStyle"
-            android:src="@drawable/dial_num_1"
+            android:background="@drawable/shendu_dial_num_selector"
             android:contentDescription="@string/description_image_button_one" />
         <com.android.contacts.dialpad.DialpadImageButton
             android:id="@+id/two" style="@style/ShenDu_DialtactsDialpadButtonStyle"
-            android:src="@drawable/dial_num_2"
+            android:background="@drawable/shendu_dial_num_selector"
             android:contentDescription="@string/description_image_button_two" />
         <com.android.contacts.dialpad.DialpadImageButton
             android:id="@+id/three" style="@style/ShenDu_DialtactsDialpadButtonStyle"
-            android:src="@drawable/dial_num_3"
+            android:background="@drawable/shendu_dial_num_selector"
+           
             android:contentDescription="@string/description_image_button_three" />
     </TableRow>
 
@@ -45,15 +49,15 @@
          android:layout_weight="1">
         <com.android.contacts.dialpad.DialpadImageButton
             android:id="@+id/four" style="@style/ShenDu_DialtactsDialpadButtonStyle"
-            android:src="@drawable/dial_num_4"
+            android:background="@drawable/shendu_dial_num_selector"
             android:contentDescription="@string/description_image_button_four" />
         <com.android.contacts.dialpad.DialpadImageButton
             android:id="@+id/five" style="@style/ShenDu_DialtactsDialpadButtonStyle"
-            android:src="@drawable/dial_num_5"
+            android:background="@drawable/shendu_dial_num_selector"
             android:contentDescription="@string/description_image_button_five" />
         <com.android.contacts.dialpad.DialpadImageButton
             android:id="@+id/six" style="@style/ShenDu_DialtactsDialpadButtonStyle"
-            android:src="@drawable/dial_num_6"
+            android:background="@drawable/shendu_dial_num_selector"
             android:contentDescription="@string/description_image_button_six" />
     </TableRow>
 
@@ -62,15 +66,15 @@
          android:layout_weight="1">
         <com.android.contacts.dialpad.DialpadImageButton
             android:id="@+id/seven" style="@style/ShenDu_DialtactsDialpadButtonStyle"
-            android:src="@drawable/dial_num_7"
+            android:background="@drawable/shendu_dial_num_selector"
             android:contentDescription="@string/description_image_button_seven" />
         <com.android.contacts.dialpad.DialpadImageButton
             android:id="@+id/eight" style="@style/ShenDu_DialtactsDialpadButtonStyle"
-            android:src="@drawable/dial_num_8"
+            android:background="@drawable/shendu_dial_num_selector"
             android:contentDescription="@string/description_image_button_eight" />
         <com.android.contacts.dialpad.DialpadImageButton
             android:id="@+id/nine" style="@style/ShenDu_DialtactsDialpadButtonStyle"
-            android:src="@drawable/dial_num_9"
+            android:background="@drawable/shendu_dial_num_selector"
             android:contentDescription="@string/description_image_button_nine" />
     </TableRow>
 
@@ -79,15 +83,15 @@
          android:layout_weight="1">
         <com.android.contacts.dialpad.DialpadImageButton
             android:id="@+id/star" style="@style/ShenDu_DialtactsDialpadButtonStyle"
-            android:src="@drawable/dial_num_star"
+            android:background="@drawable/shendu_dial_num_selector"
             android:contentDescription="@string/description_image_button_star" />
         <com.android.contacts.dialpad.DialpadImageButton
             android:id="@+id/zero" style="@style/ShenDu_DialtactsDialpadButtonStyle"
-            android:src="@drawable/dial_num_0"
+            android:background="@drawable/shendu_dial_num_selector"
             android:contentDescription="@string/description_image_button_zero" />
         <com.android.contacts.dialpad.DialpadImageButton
             android:id="@+id/pound" style="@style/ShenDu_DialtactsDialpadButtonStyle"
-            android:src="@drawable/dial_num_pound"
+            android:background="@drawable/shendu_dial_num_selector"
             android:contentDescription="@string/description_image_button_pound" />
     </TableRow>
 </com.android.contacts.widget.ShenduDialpadLayout>

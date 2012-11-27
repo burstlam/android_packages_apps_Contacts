@@ -109,7 +109,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:layout_marginBottom="54dp" >
+            android:layout_marginBottom="@dimen/shendu_dialpad_bootem_height" >
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -124,7 +124,7 @@
                 <LinearLayout
                     android:id="@+id/digits_container"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/shendu_dialpad_bottom_height"
+                    android:layout_height="wrap_content"
                     android:background="@drawable/shendu_dial_call_bg"
                     android:gravity="center" >
 
@@ -170,8 +170,8 @@
 
             <ImageButton
                 android:id="@+id/shendu_toContactsButton"
-                android:layout_width="@dimen/shendu_dialpad_bottom_t9toggle_width"
-                android:layout_height="@dimen/shendu_dialpad_bottom_height"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:background="@drawable/shendu_to_contact_button_selector"
                 android:contentDescription="@string/description_search_button"
                 android:state_enabled="false" />
@@ -179,17 +179,17 @@
             <ViewFlipper
                 android:id="@+id/shendu_call_view_flipper"
                 android:layout_width="wrap_content"
-                android:layout_height="@dimen/shendu_dialpad_bottom_height" >
+                android:layout_height="wrap_content" >
 
                 <LinearLayout
                     android:id="@+id/shendu_call_linear"
                     android:layout_width="wrap_content"
-                    android:layout_height="@dimen/shendu_dialpad_bottom_height" >
+                    android:layout_height="wrap_content" >
 
                     <Button
                         android:id="@+id/dialButton"
-                        android:layout_width="@dimen/shendu_dialpad_bootom_dialButton_width"
-                        android:layout_height="@dimen/shendu_dialpad_bottom_height"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:background="@drawable/shendu_btn_call_selector"
                         android:state_enabled="false"
@@ -212,7 +212,7 @@
                     <ToggleButton
                         android:id="@+id/t9toggle"
                         android:layout_width="wrap_content"
-                        android:layout_height="@dimen/shendu_dialpad_bottom_height"
+                        android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:background="@drawable/shendu_dial_keyboard_hide_selector"
                         android:gravity="left|center_vertical"
@@ -224,11 +224,11 @@
                 <Button
                     android:id="@+id/shendu_call_show_button"
                     android:layout_width="wrap_content"
-                    android:layout_height="@dimen/shendu_dialpad_bottom_height"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:background="@drawable/shendu_dial_keyboar_show_selector"
                     android:gravity="left|center_vertical"
-                    android:paddingLeft="96dp"
+                    android:paddingLeft="@dimen/shendu_dialpad_call_show_Left"
                     android:text="@string/shendu_call_dialer_show_text"
                     android:textColor="@android:color/white"
                     android:textSize="20sp" />
