@@ -14,6 +14,8 @@
      limitations under the License.
 -->
 <resources>
-    <integer name="contact_tile_column_count">4</integer>
-    <integer name="contact_tile_column_count_in_favorites">4</integer>
+    <!-- Wang:2012-11-28 -->
+    <integer name="contact_tile_column_count">3</integer>
+    <!-- Wang:2012-11-28 -->
+    <integer name="contact_tile_column_count_in_favorites">3</integer>
 </resources>
