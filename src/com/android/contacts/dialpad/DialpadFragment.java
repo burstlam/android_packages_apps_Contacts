@@ -2367,7 +2367,7 @@ public class DialpadFragment extends Fragment
 //           Shendu_ContactItem 
         mShenduMenuNumber =((Shendu_ContactItem)mShenduContactAdapter.getItem(info.position)).number;
         String name = ((Shendu_ContactItem)mShenduContactAdapter.getItem(info.position)).name;
-    	 menu.setHeaderTitle(name);
+    	 menu.setHeaderTitle(name == null?mShenduMenuNumber:name);
         menu.add(0, SHENDU_SEND_SMS, 0, getResources().getString(R.string.shendu_send_sms));				
 		super.onCreateContextMenu(menu, v, menuInfo);
 	}
