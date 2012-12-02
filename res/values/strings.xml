@@ -1940,5 +1940,8 @@ connection to the voicemail server is lost. [CHAR LIMIT=64] -->
         <item quantity="one">1 call</item>
         <item quantity="other">%d calls</item>
     </plurals>
-
+    
+    <!-- Direct Call -->
+    <string name="direct_call_title">Direct Call</string>
+    <string name="direct_call_summary">Picking up the phone calls the current dialled contact</string>
 </resources>
