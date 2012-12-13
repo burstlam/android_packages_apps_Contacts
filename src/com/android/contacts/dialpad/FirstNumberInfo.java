@@ -286,6 +286,7 @@ public class FirstNumberInfo {
 	
 	
 	public  void  comparatorArraylist(){
+		
 		Comparator<NodeShendu_ContactItem> comparator = new Comparator<NodeShendu_ContactItem>(){
 			@Override
 			public int compare(NodeShendu_ContactItem lhs, NodeShendu_ContactItem rhs) {
@@ -304,9 +305,7 @@ public class FirstNumberInfo {
 		Collections.sort(phoneDataArrayList7,comparator);
 		Collections.sort(phoneDataArrayList8,comparator);
 		Collections.sort(phoneDataArrayList9,comparator);
-		
-//		System.out.println("add size = " + timeArrayListAdd.size()+"list 1 = siaze = "+ timeArrayList1.size());
-		
+
 	}
 
 	

@@ -333,7 +333,6 @@ public class ShenduContactAdapter extends BaseAdapter implements Filterable {
 			String first = contactInfo.firstNumber;
 			for (int index = 0; index < contactInfo.firstNumber.length(); index++) {
 				String firstNum = first.substring(index, first.length());
-				System.out.println("firstNum --------------------=="+firstNum+"first"+first);
 				NodeShendu_ContactItem contactItemFirst = new NodeShendu_ContactItem();
 				contactItemFirst.number = firstNum;
 				contactItemFirst.type = mFirstNumberInfo.FIRST;
