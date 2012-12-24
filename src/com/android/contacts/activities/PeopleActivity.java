@@ -47,6 +47,7 @@ import com.android.contacts.list.ContactsRequest;
 import com.android.contacts.list.ContactsUnavailableFragment;
 import com.android.contacts.list.DefaultContactBrowseListFragment;
 import com.android.contacts.list.DirectoryListLoader;
+import com.android.contacts.list.FastSearchManager;
 import com.android.contacts.list.OnContactBrowserActionListener;
 import com.android.contacts.list.OnContactsUnavailableActionListener;
 import com.android.contacts.list.ProviderStatusWatcher;
@@ -102,13 +103,11 @@ import java.util.concurrent.atomic.AtomicInteger;
  * Displays a list to browse contacts. For xlarge screens, this also displays a
  * detail-pane on the right.
  */
-public class PeopleActivity extends ContactsActivity
-		implements
-			View.OnCreateContextMenuListener,
-			ActionBarAdapter.Listener,
-			DialogManager.DialogShowingViewActivity,
-			ContactListFilterController.ContactListFilterListener,
-			ProviderStatusListener {
+public class PeopleActivity extends ContactsActivity implements
+		View.OnCreateContextMenuListener, ActionBarAdapter.Listener,
+		DialogManager.DialogShowingViewActivity,
+		ContactListFilterController.ContactListFilterListener,
+		ProviderStatusListener {
 
 	private static final String TAG = "PeopleActivity";
 
@@ -198,12 +197,11 @@ public class PeopleActivity extends ContactsActivity
 	private final int mInstanceId;
 	private static final AtomicInteger sNextInstanceId = new AtomicInteger();
 
-	/*
-	 * =========================== Wang : Shendu Member variables
-	 * ==========================
-	 */
+	/** ======= Wang : Shendu Member variables ======*/
 	/** Default id of title text */
 	private static final int DEFAULT_TITLE_RES_ID = -1;
+	private FastSearchManager mFastSearchManager;
+	private OnMenuItemVisibleChangedListener mMenuVisibleChangedListener;
 
 	public PeopleActivity() {
 		mInstanceId = sNextInstanceId.getAndIncrement();
@@ -466,6 +464,12 @@ public class PeopleActivity extends ContactsActivity
 		mActionBarAdapter.initialize(savedState, mRequest);
 		/* Wang: */
 		displayTitleBarWithoutTabs(DEFAULT_TITLE_RES_ID);
+		// Wang: fast search init
+		mFastSearchManager = FastSearchManager.getInstance(PeopleActivity.this);
+		mFastSearchManager.setSearchPad(findViewById(R.id.fast_search_inputpad));
+		mFastSearchManager.bindActionBarAdapter(mActionBarAdapter);
+		mFastSearchManager.bindFragment(mAllFragment);
+		
 		invalidateOptionsMenuIfNeeded();
 	}
 
@@ -515,6 +519,8 @@ public class PeopleActivity extends ContactsActivity
 			mContactListFilterController.checkFilterValidity(true);
 			mCurrentFilterIsValid = true;
 		}
+		//Wang:
+		mFastSearchManager.onStart();
 		super.onStart();
 	}
 
@@ -575,41 +581,40 @@ public class PeopleActivity extends ContactsActivity
 			boolean searchMode = mRequest.isSearchMode();
 			final int tabToOpen;
 			switch (actionCode) {
-				case ContactsRequest.ACTION_ALL_CONTACTS :
-					filter = ContactListFilter
-							.createFilterWithType(ContactListFilter.FILTER_TYPE_ALL_ACCOUNTS);
-					tabToOpen = TabState.ALL;
-					break;
-				case ContactsRequest.ACTION_CONTACTS_WITH_PHONES :
-					filter = ContactListFilter
-							.createFilterWithType(ContactListFilter.FILTER_TYPE_WITH_PHONE_NUMBERS_ONLY);
-					tabToOpen = TabState.ALL;
-					break;
+			case ContactsRequest.ACTION_ALL_CONTACTS:
+				filter = ContactListFilter
+						.createFilterWithType(ContactListFilter.FILTER_TYPE_ALL_ACCOUNTS);
+				tabToOpen = TabState.ALL;
+				break;
+			case ContactsRequest.ACTION_CONTACTS_WITH_PHONES:
+				filter = ContactListFilter
+						.createFilterWithType(ContactListFilter.FILTER_TYPE_WITH_PHONE_NUMBERS_ONLY);
+				tabToOpen = TabState.ALL;
+				break;
 
-				case ContactsRequest.ACTION_FREQUENT :
-				case ContactsRequest.ACTION_STREQUENT :
-				case ContactsRequest.ACTION_STARRED :
-					tabToOpen = TabState.FAVORITES;
-					break;
-				case ContactsRequest.ACTION_VIEW_CONTACT :
-					// We redirect this intent to the detail activity on 1-pane,
-					// so we don't get
-					// here. It's only for 2-pane.
-					Uri currentlyLoadedContactUri = mContactDetailFragment
-							.getUri();
-					if (currentlyLoadedContactUri != null
-							&& !mRequest.getContactUri().equals(
-									currentlyLoadedContactUri)) {
-						mContactDetailsView.setMaskVisibility(true);
-					}
-					tabToOpen = TabState.ALL;
-					break;
-				case ContactsRequest.ACTION_GROUP :
-					tabToOpen = TabState.GROUPS;
-					break;
-				default :
-					tabToOpen = -1;
-					break;
+			case ContactsRequest.ACTION_FREQUENT:
+			case ContactsRequest.ACTION_STREQUENT:
+			case ContactsRequest.ACTION_STARRED:
+				tabToOpen = TabState.FAVORITES;
+				break;
+			case ContactsRequest.ACTION_VIEW_CONTACT:
+				// We redirect this intent to the detail activity on 1-pane,
+				// so we don't get
+				// here. It's only for 2-pane.
+				Uri currentlyLoadedContactUri = mContactDetailFragment.getUri();
+				if (currentlyLoadedContactUri != null
+						&& !mRequest.getContactUri().equals(
+								currentlyLoadedContactUri)) {
+					mContactDetailsView.setMaskVisibility(true);
+				}
+				tabToOpen = TabState.ALL;
+				break;
+			case ContactsRequest.ACTION_GROUP:
+				tabToOpen = TabState.GROUPS;
+				break;
+			default:
+				tabToOpen = -1;
+				break;
 			}
 			if (tabToOpen != -1) {
 				mActionBarAdapter.setCurrentTab(tabToOpen);
@@ -668,24 +673,31 @@ public class PeopleActivity extends ContactsActivity
 	 */
 	@Override
 	public void onAction(int action) {
+		Log.i("1616", "action=>"+action);
 		switch (action) {
-			case ActionBarAdapter.Listener.Action.START_SEARCH_MODE :
-				// Tell the fragments that we're in the search mode
-				configureFragments(false /* from request */);
-				updateFragmentsVisibility();
-				invalidateOptionsMenu();
-				break;
-			case ActionBarAdapter.Listener.Action.STOP_SEARCH_MODE :
-				setQueryTextToFragment("");
-				updateFragmentsVisibility();
-				invalidateOptionsMenu();
-				break;
-			case ActionBarAdapter.Listener.Action.CHANGE_SEARCH_QUERY :
-				setQueryTextToFragment(mActionBarAdapter.getQueryString());
-				break;
-			default :
-				throw new IllegalStateException(
-						"Unkonwn ActionBarAdapter action: " + action);
+		case ActionBarAdapter.Listener.Action.START_SEARCH_MODE:
+			// Tell the fragments that we're in the search mode
+			configureFragments(false /* from request */);
+			updateFragmentsVisibility();
+			invalidateOptionsMenu();
+			break;
+		case ActionBarAdapter.Listener.Action.STOP_SEARCH_MODE:
+			setQueryTextToFragment("");
+			updateFragmentsVisibility();
+			invalidateOptionsMenu();
+			break;
+		case ActionBarAdapter.Listener.Action.CHANGE_SEARCH_QUERY:
+			setQueryTextToFragment(mActionBarAdapter.getQueryString());
+			break;
+			/*Wang:*/
+		case ActionBarAdapter.Listener.Action.STOP_FAST_SEARCH_MODE:
+			onFastSearchStopped();
+			updateFragmentsVisibility();
+			invalidateOptionsMenu();
+			break;
+		default:
+			throw new IllegalStateException("Unkonwn ActionBarAdapter action: "
+					+ action);
 		}
 	}
 
@@ -722,7 +734,6 @@ public class PeopleActivity extends ContactsActivity
 			}
 			return;
 		}
-
 		// for the tablet...
 
 		// If in search mode, we use the all list + contact details to show the
@@ -731,26 +742,26 @@ public class PeopleActivity extends ContactsActivity
 			tab = TabState.ALL;
 		}
 		switch (tab) {
-			case TabState.FAVORITES :
-				mFavoritesView.setVisibility(View.VISIBLE);
-				mBrowserView.setVisibility(View.GONE);
-				mGroupDetailsView.setVisibility(View.GONE);
-				mContactDetailsView.setVisibility(View.GONE);
-				break;
-			case TabState.GROUPS :
-				mFavoritesView.setVisibility(View.GONE);
-				mBrowserView.setVisibility(View.VISIBLE);
-				mGroupDetailsView.setVisibility(View.VISIBLE);
-				mContactDetailsView.setVisibility(View.GONE);
-				mGroupsFragment
-						.setAddAccountsVisibility(!areGroupWritableAccountsAvailable());
-				break;
-			case TabState.ALL :
-				mFavoritesView.setVisibility(View.GONE);
-				mBrowserView.setVisibility(View.VISIBLE);
-				mContactDetailsView.setVisibility(View.VISIBLE);
-				mGroupDetailsView.setVisibility(View.GONE);
-				break;
+		case TabState.FAVORITES:
+			mFavoritesView.setVisibility(View.VISIBLE);
+			mBrowserView.setVisibility(View.GONE);
+			mGroupDetailsView.setVisibility(View.GONE);
+			mContactDetailsView.setVisibility(View.GONE);
+			break;
+		case TabState.GROUPS:
+			mFavoritesView.setVisibility(View.GONE);
+			mBrowserView.setVisibility(View.VISIBLE);
+			mGroupDetailsView.setVisibility(View.VISIBLE);
+			mContactDetailsView.setVisibility(View.GONE);
+			mGroupsFragment
+					.setAddAccountsVisibility(!areGroupWritableAccountsAvailable());
+			break;
+		case TabState.ALL:
+			mFavoritesView.setVisibility(View.GONE);
+			mBrowserView.setVisibility(View.VISIBLE);
+			mContactDetailsView.setVisibility(View.VISIBLE);
+			mGroupDetailsView.setVisibility(View.GONE);
+			break;
 		}
 		FragmentManager fragmentManager = getFragmentManager();
 		FragmentTransaction ft = fragmentManager.beginTransaction();
@@ -759,33 +770,33 @@ public class PeopleActivity extends ContactsActivity
 		// still have to show/
 		// hide it so its options menu will be shown/hidden.
 		switch (tab) {
-			case TabState.FAVORITES :
-				showFragment(ft, mFavoritesFragment);
-				showFragment(ft, mFrequentFragment);
-				hideFragment(ft, mAllFragment);
-				hideFragment(ft, mContactDetailLoaderFragment);
-				hideFragment(ft, mContactDetailFragment);
-				hideFragment(ft, mGroupsFragment);
-				hideFragment(ft, mGroupDetailFragment);
-				break;
-			case TabState.ALL :
-				hideFragment(ft, mFavoritesFragment);
-				hideFragment(ft, mFrequentFragment);
-				showFragment(ft, mAllFragment);
-				showFragment(ft, mContactDetailLoaderFragment);
-				showFragment(ft, mContactDetailFragment);
-				hideFragment(ft, mGroupsFragment);
-				hideFragment(ft, mGroupDetailFragment);
-				break;
-			case TabState.GROUPS :
-				hideFragment(ft, mFavoritesFragment);
-				hideFragment(ft, mFrequentFragment);
-				hideFragment(ft, mAllFragment);
-				hideFragment(ft, mContactDetailLoaderFragment);
-				hideFragment(ft, mContactDetailFragment);
-				showFragment(ft, mGroupsFragment);
-				showFragment(ft, mGroupDetailFragment);
-				break;
+		case TabState.FAVORITES:
+			showFragment(ft, mFavoritesFragment);
+			showFragment(ft, mFrequentFragment);
+			hideFragment(ft, mAllFragment);
+			hideFragment(ft, mContactDetailLoaderFragment);
+			hideFragment(ft, mContactDetailFragment);
+			hideFragment(ft, mGroupsFragment);
+			hideFragment(ft, mGroupDetailFragment);
+			break;
+		case TabState.ALL:
+			hideFragment(ft, mFavoritesFragment);
+			hideFragment(ft, mFrequentFragment);
+			showFragment(ft, mAllFragment);
+			showFragment(ft, mContactDetailLoaderFragment);
+			showFragment(ft, mContactDetailFragment);
+			hideFragment(ft, mGroupsFragment);
+			hideFragment(ft, mGroupDetailFragment);
+			break;
+		case TabState.GROUPS:
+			hideFragment(ft, mFavoritesFragment);
+			hideFragment(ft, mFrequentFragment);
+			hideFragment(ft, mAllFragment);
+			hideFragment(ft, mContactDetailLoaderFragment);
+			hideFragment(ft, mContactDetailFragment);
+			showFragment(ft, mGroupsFragment);
+			showFragment(ft, mGroupDetailFragment);
+			break;
 		}
 		if (!ft.isEmpty()) {
 			ft.commitAllowingStateLoss();
@@ -802,21 +813,19 @@ public class PeopleActivity extends ContactsActivity
 	private void showEmptyStateForTab(int tab) {
 		if (mContactsUnavailableFragment != null) {
 			switch (tab) {
-				case TabState.FAVORITES :
-					mContactsUnavailableFragment.setMessageText(
-							R.string.listTotalAllContactsZeroStarred, -1);
-					break;
-				case TabState.GROUPS :
-					mContactsUnavailableFragment.setMessageText(
-							R.string.noGroups,
-							areGroupWritableAccountsAvailable()
-									? -1
-									: R.string.noAccounts);
-					break;
-				case TabState.ALL :
-					mContactsUnavailableFragment.setMessageText(
-							R.string.noContacts, -1);
-					break;
+			case TabState.FAVORITES:
+				mContactsUnavailableFragment.setMessageText(
+						R.string.listTotalAllContactsZeroStarred, -1);
+				break;
+			case TabState.GROUPS:
+				mContactsUnavailableFragment.setMessageText(R.string.noGroups,
+						areGroupWritableAccountsAvailable() ? -1
+								: R.string.noAccounts);
+				break;
+			case TabState.ALL:
+				mContactsUnavailableFragment.setMessageText(
+						R.string.noContacts, -1);
+				break;
 			}
 		}
 	}
@@ -948,6 +957,9 @@ public class PeopleActivity extends ContactsActivity
 				if (position == TabState.FAVORITES) {
 					return mFavoritesFragment;
 				} else if (position == TabState.ALL) {
+					//Wang:
+					mFastSearchManager.bindAdapter(mAllFragment.getAdapter());
+					
 					return mAllFragment;
 				} else if (position == TabState.GROUPS) {
 					return mGroupsFragment;
@@ -1020,6 +1032,12 @@ public class PeopleActivity extends ContactsActivity
 		mAllFragment.setQueryString(query, true);
 		mAllFragment.setVisibleScrollbarEnabled(!mAllFragment.isSearchMode());
 	}
+	
+	/**Wang:*/
+	private void onFastSearchStopped(){
+		mAllFragment.onFastSearchStopped();
+		mAllFragment.setVisibleScrollbarEnabled(!mAllFragment.isSearchMode());
+	}
 
 	private void configureContactListFragmentForRequest() {
 		Uri contactUri = mRequest.getContactUri();
@@ -1052,18 +1070,18 @@ public class PeopleActivity extends ContactsActivity
 		mAllFragment.setFilter(mContactListFilterController.getFilter());
 
 		final boolean useTwoPane = PhoneCapabilityTester.isUsingTwoPanes(this);
-		mAllFragment.setVerticalScrollbarPosition(useTwoPane
-				? View.SCROLLBAR_POSITION_LEFT
-				: View.SCROLLBAR_POSITION_RIGHT);
+		mAllFragment
+				.setVerticalScrollbarPosition(useTwoPane ? View.SCROLLBAR_POSITION_LEFT
+						: View.SCROLLBAR_POSITION_RIGHT);
 		mAllFragment.setSelectionVisible(useTwoPane);
 		mAllFragment.setQuickContactEnabled(!useTwoPane);
 	}
 
 	private void configureGroupListFragment() {
 		final boolean useTwoPane = PhoneCapabilityTester.isUsingTwoPanes(this);
-		mGroupsFragment.setVerticalScrollbarPosition(useTwoPane
-				? View.SCROLLBAR_POSITION_LEFT
-				: View.SCROLLBAR_POSITION_RIGHT);
+		mGroupsFragment
+				.setVerticalScrollbarPosition(useTwoPane ? View.SCROLLBAR_POSITION_LEFT
+						: View.SCROLLBAR_POSITION_RIGHT);
 		mGroupsFragment.setSelectionVisible(useTwoPane);
 	}
 
@@ -1154,9 +1172,8 @@ public class PeopleActivity extends ContactsActivity
 		invalidateOptionsMenuIfNeeded();
 	}
 
-	private final class ContactBrowserActionListener
-			implements
-				OnContactBrowserActionListener {
+	private final class ContactBrowserActionListener implements
+			OnContactBrowserActionListener {
 		ContactBrowserActionListener() {
 		}
 
@@ -1256,9 +1273,8 @@ public class PeopleActivity extends ContactsActivity
 		}
 	}
 
-	private class ContactDetailLoaderFragmentListener
-			implements
-				ContactLoaderFragmentListener {
+	private class ContactDetailLoaderFragmentListener implements
+			ContactLoaderFragmentListener {
 		ContactDetailLoaderFragmentListener() {
 		}
 
@@ -1308,9 +1324,8 @@ public class PeopleActivity extends ContactsActivity
 		}
 	}
 
-	public class ContactDetailFragmentListener
-			implements
-				ContactDetailFragment.Listener {
+	public class ContactDetailFragmentListener implements
+			ContactDetailFragment.Listener {
 		@Override
 		public void onItemClicked(Intent intent) {
 			if (intent == null) {
@@ -1336,9 +1351,8 @@ public class PeopleActivity extends ContactsActivity
 		}
 	}
 
-	private class ContactsUnavailableFragmentListener
-			implements
-				OnContactsUnavailableActionListener {
+	private class ContactsUnavailableFragmentListener implements
+			OnContactsUnavailableActionListener {
 		ContactsUnavailableFragmentListener() {
 		}
 
@@ -1352,7 +1366,7 @@ public class PeopleActivity extends ContactsActivity
 			Intent intent = new Intent(Settings.ACTION_ADD_ACCOUNT);
 			intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
 			intent.putExtra(Settings.EXTRA_AUTHORITIES,
-					new String[]{ContactsContract.AUTHORITY});
+					new String[] { ContactsContract.AUTHORITY });
 			startActivity(intent);
 		}
 
@@ -1369,9 +1383,8 @@ public class PeopleActivity extends ContactsActivity
 		}
 	}
 
-	private final class StrequentContactListFragmentListener
-			implements
-				ContactTileListFragment.Listener {
+	private final class StrequentContactListFragmentListener implements
+			ContactTileListFragment.Listener {
 		StrequentContactListFragmentListener() {
 		}
 
@@ -1392,9 +1405,8 @@ public class PeopleActivity extends ContactsActivity
 		}
 	}
 
-	private final class GroupBrowserActionListener
-			implements
-				OnGroupBrowserActionListener {
+	private final class GroupBrowserActionListener implements
+			OnGroupBrowserActionListener {
 
 		GroupBrowserActionListener() {
 		}
@@ -1412,9 +1424,8 @@ public class PeopleActivity extends ContactsActivity
 		}
 	}
 
-	private class GroupDetailFragmentListener
-			implements
-				GroupDetailFragment.Listener {
+	private class GroupDetailFragmentListener implements
+			GroupDetailFragment.Listener {
 
 		GroupDetailFragmentListener() {
 		}
@@ -1541,6 +1552,8 @@ public class PeopleActivity extends ContactsActivity
 				.findItem(R.id.menu_contacts_filter);
 		// Wang:
 		final MenuItem toDialerMenu = menu.findItem(R.id.menu_to_dialer);
+		final MenuItem fastSearchMenu = menu.findItem(R.id.menu_fastSearch);
+		final MenuItem searchMenu = menu.findItem(R.id.menu_search);
 
 		MenuItem addGroupMenu = menu.findItem(R.id.menu_add_group);
 
@@ -1549,6 +1562,7 @@ public class PeopleActivity extends ContactsActivity
 		final MenuItem helpMenu = menu.findItem(R.id.menu_help);
 
 		final boolean isSearchMode = mActionBarAdapter.isSearchMode();
+		
 		if (isSearchMode) {
 			addContactMenu.setVisible(false);
 			addGroupMenu.setVisible(false);
@@ -1557,52 +1571,64 @@ public class PeopleActivity extends ContactsActivity
 			helpMenu.setVisible(false);
 			// Wang:
 			toDialerMenu.setVisible(false);
+			fastSearchMenu.setVisible(false);
+			searchMenu.setVisible(false);
 		} else {
 			switch (mActionBarAdapter.getCurrentTab()) {
-				case TabState.FAVORITES :
-					addContactMenu.setVisible(false);
-					addGroupMenu.setVisible(false);
-					contactsFilterMenu.setVisible(false);
-					// Wang:
-					toDialerMenu.setVisible(true);
+			case TabState.FAVORITES:
+				addContactMenu.setVisible(false);
+				addGroupMenu.setVisible(false);
+				contactsFilterMenu.setVisible(false);
+				// Wang:
+				toDialerMenu.setVisible(true);
+				fastSearchMenu.setVisible(false);
+				searchMenu.setVisible(true);
 
-					clearFrequentsMenu.setVisible(hasFrequents());
-					break;
-				case TabState.ALL :
-					addContactMenu.setVisible(true);
-					addGroupMenu.setVisible(false);
-					contactsFilterMenu.setVisible(true);
-					clearFrequentsMenu.setVisible(false);
-					// Wang:
-					toDialerMenu.setVisible(true);
-					break;
-				case TabState.GROUPS :
-					// Do not display the "new group" button if no accounts are
-					// available
-					// if (areGroupWritableAccountsAvailable()) {
-					// addGroupMenu.setVisible(true);
-					// } else {
-					// addGroupMenu.setVisible(false);
-					// }
-					/* Wang: we display the "new group" button always */
-					addGroupMenu.setVisible(true);
-					addContactMenu.setVisible(false);
-					contactsFilterMenu.setVisible(false);
-					clearFrequentsMenu.setVisible(false);
-					// Wang:
-					toDialerMenu.setVisible(true);
-					break;
+				clearFrequentsMenu.setVisible(hasFrequents());
+				break;
+			case TabState.ALL:
+				addContactMenu.setVisible(true);
+				addGroupMenu.setVisible(false);
+				contactsFilterMenu.setVisible(true);
+				clearFrequentsMenu.setVisible(false);
+				// Wang:
+				toDialerMenu.setVisible(true);
+				searchMenu.setVisible(false);
+				fastSearchMenu.setVisible(true);
+				
+				break;
+			case TabState.GROUPS:
+				// Do not display the "new group" button if no accounts are
+				// available
+				// if (areGroupWritableAccountsAvailable()) {
+				// addGroupMenu.setVisible(true);
+				// } else {
+				// addGroupMenu.setVisible(false);
+				// }
+				/* Wang: we display the "new group" button always */
+				addGroupMenu.setVisible(true);
+				addContactMenu.setVisible(false);
+				contactsFilterMenu.setVisible(false);
+				clearFrequentsMenu.setVisible(false);
+				// Wang:
+				toDialerMenu.setVisible(true);
+				fastSearchMenu.setVisible(false);
+				searchMenu.setVisible(true);
+				
+				break;
 			}
 			HelpUtils.prepareHelpMenuItem(this, helpMenu,
 					R.string.help_url_people_main);
 		}
 		final boolean showMiscOptions = !isSearchMode;
-		makeMenuItemVisible(menu, R.id.menu_search, showMiscOptions);
+		//Wang:
+//		makeMenuItemVisible(menu, R.id.menu_search, showMiscOptions);
 		makeMenuItemVisible(menu, R.id.menu_import_export, showMiscOptions);
 		makeMenuItemVisible(menu, R.id.menu_accounts, showMiscOptions);
 		makeMenuItemVisible(menu, R.id.menu_settings, showMiscOptions
 				&& !ContactsPreferenceActivity.isEmpty(this));
-
+        //Wang: 
+		if(mMenuVisibleChangedListener != null) mMenuVisibleChangedListener.onMenuItemVisibleChanged(fastSearchMenu);
 		return true;
 	}
 
@@ -1629,92 +1655,95 @@ public class PeopleActivity extends ContactsActivity
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
-			case android.R.id.home : {
-				// The home icon on the action bar is pressed
-				if (mActionBarAdapter.isUpShowing()) {
-					// "UP" icon press -- should be treated as "back".
-					onBackPressed();
-				}
-				return true;
+		case android.R.id.home: {
+			// The home icon on the action bar is pressed
+			if (mActionBarAdapter.isUpShowing()) {
+				// "UP" icon press -- should be treated as "back".
+				onBackPressed();
 			}
-			case R.id.menu_settings : {
-				final Intent intent = new Intent(this,
-						ContactsPreferenceActivity.class);
-				// as there is only one section right now, make sure it is
-				// selected
-				// on small screens, this also hides the section selector
-				// Due to b/5045558, this code unfortunately only works properly
-				// on phones
-				boolean settingsAreMultiPane = getResources()
-						.getBoolean(
-								com.android.internal.R.bool.preferences_prefer_dual_pane);
-				if (!settingsAreMultiPane) {
-					intent.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT,
-							DisplayOptionsPreferenceFragment.class.getName());
-					intent.putExtra(
-							PreferenceActivity.EXTRA_SHOW_FRAGMENT_TITLE,
-							R.string.preference_displayOptions);
-				}
+			return true;
+		}
+		case R.id.menu_settings: {
+			final Intent intent = new Intent(this,
+					ContactsPreferenceActivity.class);
+			// as there is only one section right now, make sure it is
+			// selected
+			// on small screens, this also hides the section selector
+			// Due to b/5045558, this code unfortunately only works properly
+			// on phones
+			boolean settingsAreMultiPane = getResources().getBoolean(
+					com.android.internal.R.bool.preferences_prefer_dual_pane);
+			if (!settingsAreMultiPane) {
+				intent.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT,
+						DisplayOptionsPreferenceFragment.class.getName());
+				intent.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT_TITLE,
+						R.string.preference_displayOptions);
+			}
+			startActivity(intent);
+			return true;
+		}
+		case R.id.menu_contacts_filter: {
+			AccountFilterUtil.startAccountFilterActivityForResult(this,
+					SUBACTIVITY_ACCOUNT_FILTER,
+					mContactListFilterController.getFilter());
+			return true;
+		}
+		case R.id.menu_search: {
+			onSearchRequested();
+			return true;
+		}
+		case R.id.menu_add_contact: {
+			final Intent intent = new Intent(Intent.ACTION_INSERT,
+					Contacts.CONTENT_URI);
+			// On 2-pane UI, we can let the editor activity finish itself
+			// and return
+			// to this activity to display the new contact.
+			if (PhoneCapabilityTester.isUsingTwoPanes(this)) {
+				intent.putExtra(
+						ContactEditorActivity.INTENT_KEY_FINISH_ACTIVITY_ON_SAVE_COMPLETED,
+						true);
+				startActivityForResult(intent, SUBACTIVITY_NEW_CONTACT);
+			} else {
+				// Otherwise, on 1-pane UI, we need the editor to launch the
+				// view contact
+				// intent itself.
 				startActivity(intent);
-				return true;
 			}
-			case R.id.menu_contacts_filter : {
-				AccountFilterUtil.startAccountFilterActivityForResult(this,
-						SUBACTIVITY_ACCOUNT_FILTER,
-						mContactListFilterController.getFilter());
-				return true;
-			}
-			case R.id.menu_search : {
-				onSearchRequested();
-				return true;
-			}
-			case R.id.menu_add_contact : {
-				final Intent intent = new Intent(Intent.ACTION_INSERT,
-						Contacts.CONTENT_URI);
-				// On 2-pane UI, we can let the editor activity finish itself
-				// and return
-				// to this activity to display the new contact.
-				if (PhoneCapabilityTester.isUsingTwoPanes(this)) {
-					intent.putExtra(
-							ContactEditorActivity.INTENT_KEY_FINISH_ACTIVITY_ON_SAVE_COMPLETED,
-							true);
-					startActivityForResult(intent, SUBACTIVITY_NEW_CONTACT);
-				} else {
-					// Otherwise, on 1-pane UI, we need the editor to launch the
-					// view contact
-					// intent itself.
-					startActivity(intent);
-				}
-				return true;
-			}
-			case R.id.menu_add_group : {
-				createNewGroup();
-				return true;
-			}
-			case R.id.menu_import_export : {
-				ImportExportDialogFragment.show(getFragmentManager(),
-						areContactsAvailable());
-				return true;
-			}
-			case R.id.menu_clear_frequents : {
-				ClearFrequentsDialog.show(getFragmentManager());
-				return true;
-			}
-			case R.id.menu_accounts : {
-				final Intent intent = new Intent(Settings.ACTION_SYNC_SETTINGS);
-				intent.putExtra(Settings.EXTRA_AUTHORITIES,
-						new String[]{ContactsContract.AUTHORITY});
-				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
-				startActivity(intent);
-				return true;
-			}
-			/* Wang: */
-			case R.id.menu_to_dialer : {
-				Intent intent = new Intent(this, DialtactsActivity.class);
-				startActivity(intent);
-				this.finish();
-				return true;
-			}
+			return true;
+		}
+		case R.id.menu_add_group: {
+			createNewGroup();
+			return true;
+		}
+		case R.id.menu_import_export: {
+			ImportExportDialogFragment.show(getFragmentManager(),
+					areContactsAvailable());
+			return true;
+		}
+		case R.id.menu_clear_frequents: {
+			ClearFrequentsDialog.show(getFragmentManager());
+			return true;
+		}
+		case R.id.menu_accounts: {
+			final Intent intent = new Intent(Settings.ACTION_SYNC_SETTINGS);
+			intent.putExtra(Settings.EXTRA_AUTHORITIES,
+					new String[] { ContactsContract.AUTHORITY });
+			intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+			startActivity(intent);
+			return true;
+		}
+		/* Wang: */
+		case R.id.menu_to_dialer: {
+			Intent intent = new Intent(this, DialtactsActivity.class);
+			startActivity(intent);
+			this.finish();
+			return true;
+		}
+		/*Wang: */
+		case R.id.menu_fastSearch:{
+			mFastSearchManager.toggleSearchPad();
+			return true;
+		}
 		}
 		return false;
 	}
@@ -1734,56 +1763,56 @@ public class PeopleActivity extends ContactsActivity
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		switch (requestCode) {
-			case SUBACTIVITY_ACCOUNT_FILTER : {
-				AccountFilterUtil.handleAccountFilterResult(
-						mContactListFilterController, resultCode, data);
-				break;
+		case SUBACTIVITY_ACCOUNT_FILTER: {
+			AccountFilterUtil.handleAccountFilterResult(
+					mContactListFilterController, resultCode, data);
+			break;
+		}
+
+		case SUBACTIVITY_NEW_CONTACT:
+		case SUBACTIVITY_EDIT_CONTACT: {
+			if (resultCode == RESULT_OK
+					&& PhoneCapabilityTester.isUsingTwoPanes(this)) {
+				mRequest.setActionCode(ContactsRequest.ACTION_VIEW_CONTACT);
+				mAllFragment.setSelectionRequired(true);
+				mAllFragment.setSelectedContactUri(data.getData());
+				// Suppress IME if in search mode
+				if (mActionBarAdapter != null) {
+					mActionBarAdapter.clearFocusOnSearchView();
+				}
+				// No need to change the contact filter
+				mCurrentFilterIsValid = true;
+			}
+			break;
+		}
+
+		case SUBACTIVITY_NEW_GROUP:
+		case SUBACTIVITY_EDIT_GROUP: {
+			if (resultCode == RESULT_OK
+					&& PhoneCapabilityTester.isUsingTwoPanes(this)) {
+				mRequest.setActionCode(ContactsRequest.ACTION_GROUP);
+				mGroupsFragment.setSelectedUri(data.getData());
+			}
+			break;
+		}
+
+		// TODO: Using the new startActivityWithResultFromFragment API this
+		// should not be needed
+		// anymore
+		case ContactEntryListFragment.ACTIVITY_REQUEST_CODE_PICKER:
+			if (resultCode == RESULT_OK) {
+				mAllFragment.onPickerResult(data);
 			}
 
-			case SUBACTIVITY_NEW_CONTACT :
-			case SUBACTIVITY_EDIT_CONTACT : {
-				if (resultCode == RESULT_OK
-						&& PhoneCapabilityTester.isUsingTwoPanes(this)) {
-					mRequest.setActionCode(ContactsRequest.ACTION_VIEW_CONTACT);
-					mAllFragment.setSelectionRequired(true);
-					mAllFragment.setSelectedContactUri(data.getData());
-					// Suppress IME if in search mode
-					if (mActionBarAdapter != null) {
-						mActionBarAdapter.clearFocusOnSearchView();
-					}
-					// No need to change the contact filter
-					mCurrentFilterIsValid = true;
-				}
-				break;
-			}
-
-			case SUBACTIVITY_NEW_GROUP :
-			case SUBACTIVITY_EDIT_GROUP : {
-				if (resultCode == RESULT_OK
-						&& PhoneCapabilityTester.isUsingTwoPanes(this)) {
-					mRequest.setActionCode(ContactsRequest.ACTION_GROUP);
-					mGroupsFragment.setSelectedUri(data.getData());
-				}
-				break;
-			}
-
-			// TODO: Using the new startActivityWithResultFromFragment API this
-			// should not be needed
-			// anymore
-			case ContactEntryListFragment.ACTIVITY_REQUEST_CODE_PICKER :
-				if (resultCode == RESULT_OK) {
-					mAllFragment.onPickerResult(data);
-				}
-
-				// TODO fix or remove multipicker code
-				// else if (resultCode == RESULT_CANCELED && mMode ==
-				// MODE_PICK_MULTIPLE_PHONES) {
-				// // Finish the activity if the sub activity was canceled as
-				// back key is used
-				// // to confirm user selection in MODE_PICK_MULTIPLE_PHONES.
-				// finish();
-				// }
-				// break;
+			// TODO fix or remove multipicker code
+			// else if (resultCode == RESULT_CANCELED && mMode ==
+			// MODE_PICK_MULTIPLE_PHONES) {
+			// // Finish the activity if the sub activity was canceled as
+			// back key is used
+			// // to confirm user selection in MODE_PICK_MULTIPLE_PHONES.
+			// finish();
+			// }
+			// break;
 		}
 	}
 
@@ -1798,28 +1827,28 @@ public class PeopleActivity extends ContactsActivity
 		// break;
 		// }
 
-			case KeyEvent.KEYCODE_DEL : {
-				if (deleteSelection()) {
+		case KeyEvent.KEYCODE_DEL: {
+			if (deleteSelection()) {
+				return true;
+			}
+			break;
+		}
+		default: {
+			// Bring up the search UI if the user starts typing
+			final int unicodeChar = event.getUnicodeChar();
+			if ((unicodeChar != 0)
+					// If COMBINING_ACCENT is set, it's not a unicode
+					// character.
+					&& ((unicodeChar & KeyCharacterMap.COMBINING_ACCENT) == 0)
+					&& !Character.isWhitespace(unicodeChar)) {
+				String query = new String(new int[] { unicodeChar }, 0, 1);
+				if (!mActionBarAdapter.isSearchMode()) {
+					mActionBarAdapter.setQueryString(query);
+					mActionBarAdapter.setSearchMode(true);
 					return true;
 				}
-				break;
 			}
-			default : {
-				// Bring up the search UI if the user starts typing
-				final int unicodeChar = event.getUnicodeChar();
-				if ((unicodeChar != 0)
-						// If COMBINING_ACCENT is set, it's not a unicode
-						// character.
-						&& ((unicodeChar & KeyCharacterMap.COMBINING_ACCENT) == 0)
-						&& !Character.isWhitespace(unicodeChar)) {
-					String query = new String(new int[]{unicodeChar}, 0, 1);
-					if (!mActionBarAdapter.isSearchMode()) {
-						mActionBarAdapter.setQueryString(query);
-						mActionBarAdapter.setSearchMode(true);
-						return true;
-					}
-				}
-			}
+		}
 		}
 
 		return super.onKeyDown(keyCode, event);
@@ -1928,6 +1957,7 @@ public class PeopleActivity extends ContactsActivity
 		if (textId == -1) {
 			textId = R.string.people;
 		}
+		if(mFastSearchManager != null) mFastSearchManager.hideSearchPad();
 		bar.setTitle(textId);
 	}
 
@@ -1971,8 +2001,23 @@ public class PeopleActivity extends ContactsActivity
 				GroupEditorActivity.ACTION_SAVE_COMPLETED);
 		startService(saveIntent);
 	}
+	
+	/**
+	 * Wang
+	 * */
+	public interface OnMenuItemVisibleChangedListener{
+		public void onMenuItemVisibleChanged(MenuItem item);
+	}
+	
+	/**
+	 * Wang
+	 * */
+	public void setOnMenuItemVisibleChangedListener(OnMenuItemVisibleChangedListener listener){
+		mMenuVisibleChangedListener = listener;
+	}
 
-	private static boolean debug = false;
+	private static boolean debug = true;
+
 	private static void log(String msg) {
 		if (debug)
 			Log.i("shenduPeople", msg);

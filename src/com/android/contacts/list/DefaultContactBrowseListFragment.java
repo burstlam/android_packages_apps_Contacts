@@ -253,7 +253,8 @@ public class DefaultContactBrowseListFragment extends ContactBrowseListFragment 
         }
     }
 
-    private void showEmptyUserProfile(boolean show) {
+       /*Wang:*/
+    protected void showEmptyUserProfile(boolean show) {
         // Changing visibility of just the mProfileHeader doesn't do anything unless
         // you change visibility of its children, hence the call to mCounterHeaderView
         // and mProfileTitle

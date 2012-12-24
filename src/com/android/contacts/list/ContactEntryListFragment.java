@@ -621,6 +621,35 @@ public abstract class ContactEntryListFragment<T extends ContactEntryListAdapter
             }
         }
     }
+    
+    /**Wang:*/
+    protected void changeSearchMode(boolean flag) {
+            mSearchMode = flag;
+            setSectionHeaderDisplayEnabled(!mSearchMode);
+
+            if (!flag) {
+                mDirectoryListStatus = STATUS_NOT_LOADED;
+                getLoaderManager().destroyLoader(DIRECTORY_LOADER_ID);
+            }
+
+            if (mAdapter != null) {
+                mAdapter.setPinnedPartitionHeadersEnabled(flag);
+                mAdapter.setSearchMode(flag);
+
+                mAdapter.clearPartitions();
+                if (!flag) {
+                    // If we are switching from search to regular display, remove all directory
+                    // partitions after default one, assuming they are remote directories which
+                    // should be cleaned up on exiting the search mode.
+                    mAdapter.removeDirectoriesAfterDefault();
+                }
+                mAdapter.configureDefaultPartition(false, flag);
+            }
+
+            if (mListView != null) {
+                mListView.setFastScrollEnabled(!flag);
+            }
+    }
 
     public final boolean isSearchMode() {
         return mSearchMode;
@@ -643,6 +672,34 @@ public abstract class ContactEntryListFragment<T extends ContactEntryListAdapter
                 reloadData();
             }
         }
+    }
+    
+    /**Wang:*/
+    public void setQueryStringForFastSearch(String queryString){
+    	mQueryString = "{";
+    	// Normalize the empty query.
+        if (TextUtils.isEmpty(queryString)) queryString = null;
+                  Log.i("1616", "==============>queryString="+queryString+" /mQueryString="+mQueryString);
+
+        if (!TextUtils.equals(mQueryString, queryString)) {
+        	Log.i("1616", "===========");
+            mQueryString = queryString;
+            mSearchMode = TextUtils.isEmpty(mQueryString);
+            setSearchMode(false);
+
+            if (mAdapter != null) {
+                mAdapter.setQueryString(queryString);
+                reloadData();
+            }
+        }
+        	
+//            mQueryString = queryString;
+//            changeSearchMode(!TextUtils.isEmpty(mQueryString));
+//
+//            if (mAdapter != null) {
+//                mAdapter.setQueryString(queryString);
+//                reloadData();
+//                }
     }
 
     public int getDirectorySearchMode() {

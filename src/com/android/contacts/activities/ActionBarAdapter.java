@@ -52,6 +52,8 @@ public class ActionBarAdapter implements OnQueryTextListener, OnCloseListener {
 			public static final int CHANGE_SEARCH_QUERY = 0;
 			public static final int START_SEARCH_MODE = 1;
 			public static final int STOP_SEARCH_MODE = 2;
+			//Wang:
+			public static final int STOP_FAST_SEARCH_MODE = 3;
 		}
 
 		void onAction(int action);
@@ -406,6 +408,69 @@ public class ActionBarAdapter implements OnQueryTextListener, OnCloseListener {
 			if (mSearchView != null)
 				setFocusOnSearchView();
 		}
+	}
+	
+	/**Wang:*/
+	public void changeSearchMode(boolean flag){
+			mSearchMode = flag;
+			updateForFastSearch();
+			if (mSearchView == null) {
+				return;
+			}
+			if (mSearchMode) {
+				setFocusOnSearchView();
+			} else {
+				mSearchView.setQuery(null, false);
+			}
+	}
+	
+	/**Wang:*/
+	private void updateForFastSearch(){
+		boolean isIconifiedChanging = mSearchView.isIconified() == mSearchMode;
+		if (mSearchMode) {
+			setFocusOnSearchView();
+			// Since we have the {@link SearchView} in a custom action bar, we
+			// must manually handle
+			// expanding the {@link SearchView} when a search is initiated. Note
+			// that a side effect
+			// of this method is that the {@link SearchView} query text is set
+			// to empty string.
+			if (isIconifiedChanging) {
+				mSearchView.onActionViewExpanded();
+			}
+			if (mActionBar.getNavigationMode() != ActionBar.NAVIGATION_MODE_STANDARD) {
+				mActionBar
+						.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+			}
+			if (mListener != null) {
+				mListener.onAction(Action.START_SEARCH_MODE);
+			}
+		} else {
+			final int currentNavigationMode = mActionBar.getNavigationMode();
+			if (mActionBarNavigationMode == ActionBar.NAVIGATION_MODE_TABS
+					&& currentNavigationMode != ActionBar.NAVIGATION_MODE_TABS) {
+				mTabListener.mIgnoreTabSelected = true;
+				mActionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+				mActionBar.setSelectedNavigationItem(mCurrentTab);
+				mTabListener.mIgnoreTabSelected = false;
+			} else if (mActionBarNavigationMode == ActionBar.NAVIGATION_MODE_LIST
+					&& currentNavigationMode != ActionBar.NAVIGATION_MODE_LIST) {
+				mNavigationListener.mIgnoreNavigationItemSelected = true;
+				mActionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+				mActionBar
+						.setSelectedNavigationItem(getNavigationItemPositionFromTabPosition(mCurrentTab));
+				mNavigationListener.mIgnoreNavigationItemSelected = false;
+			}
+			mActionBar.setTitle(null);
+			if (isIconifiedChanging) {
+				mSearchView.onActionViewCollapsed();
+			}
+			if (mListener != null) {
+				mListener.onAction(Action.STOP_FAST_SEARCH_MODE);
+				mListener.onSelectedTabChanged();
+			}
+		}
+		updateDisplayOptions();
 	}
 
 	public String getQueryString() {

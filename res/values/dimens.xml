@@ -274,4 +274,7 @@
     <!-- Wang: Name Avatar params -->  
     <dimen name="shendu_name_avatar_size">64dip</dimen>  <!-- Wang: 2012-11-12  -->
     <dimen name="shendu_name_avatar_text_size">32sp</dimen> <!-- Wang: 2012-11-14 -->
+
+     <!-- Wang: FastSearch params --> 
+     <dimen name="shendu_fastsearch_pad_space_padding">7dip</dimen> 
 </resources>

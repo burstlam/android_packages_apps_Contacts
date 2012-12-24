@@ -308,6 +308,12 @@ public abstract class ContactBrowseListFragment extends
         mDelaySelection = delaySelection;
         super.setQueryString(queryString, delaySelection);
     }
+    
+    /**Wang:*/
+    public void onFastSearchStopped(){
+    	mDelaySelection = true;
+    	super.setQueryStringForFastSearch(null);
+    }
 
     /**
      * Sets whether or not a contact selection must be made.

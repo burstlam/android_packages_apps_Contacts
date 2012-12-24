@@ -1885,5 +1885,33 @@
      <!--Wang: Ringtone setting string-->
      <string name="default_ringtone" >Default Ringtone</string>
      <string name="ringtone_title" >Ringtone</string>
+     
+     <!--Wang: Fast Search-->
+     <string name="fast_a" >A</string>
+     <string name="fast_b" >B</string>
+     <string name="fast_c" >C</string>
+     <string name="fast_d" >D</string>
+     <string name="fast_e" >E</string>
+     <string name="fast_f" >F</string>
+     <string name="fast_g" >G</string>
+     <string name="fast_h" >H</string>
+     <string name="fast_i" >I</string>
+     <string name="fast_j" >J</string>
+     <string name="fast_k" >K</string>
+     <string name="fast_l" >L</string>
+     <string name="fast_m" >M</string>
+     <string name="fast_n" >N</string>
+     <string name="fast_o" >O</string>
+     <string name="fast_p" >P</string>
+     <string name="fast_q" >Q</string>
+     <string name="fast_r" >R</string>
+     <string name="fast_s" >S</string>
+     <string name="fast_t" >T</string>
+     <string name="fast_u" >U</string>
+     <string name="fast_v" >V</string>
+     <string name="fast_w" >W</string>
+     <string name="fast_x" >X</string>
+     <string name="fast_y" >Y</string>
+     <string name="fast_z" >Z</string>
 
 </resources>

@@ -415,6 +415,10 @@ public abstract class ContactEntryListAdapter extends IndexerListAdapter {
         if (isSectionHeaderDisplayEnabled() && partitionIndex == getIndexedPartition()) {
             updateIndexer(cursor);
         }
+        //Wang:
+        if(mCursorChangedListener != null){
+        	mCursorChangedListener.onCurosrChanged(this, cursor);
+        }
     }
 
     public void changeCursor(Cursor cursor) {
@@ -685,5 +689,14 @@ public abstract class ContactEntryListAdapter extends IndexerListAdapter {
 
     public String getContactsCount() {
         return mContactsCount;
+    }
+    
+    /** Wang:*/
+    public interface onCursorChangedListener{
+    	  public void onCurosrChanged(ContactEntryListAdapter adapter, Cursor c);
+    }
+    private onCursorChangedListener mCursorChangedListener;
+    public void setonCursorChangedListener(onCursorChangedListener listener){
+    	mCursorChangedListener = listener;
     }
 }

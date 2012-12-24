@@ -425,4 +425,22 @@
         <item name="android:layout_weight">1</item>
         <item name="android:soundEffectsEnabled">false</item>
     </style>
+    <!-- Wang:2012-12-5 -->
+    <style name="FastSearchPadButtonStyle">
+        <item name="android:layout_width">0dip</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:background">@drawable/fastsearch_btn</item>
+        <!--<item name="android:layout_marginRight">@dimen/shendu_fastsearch_pad_space_padding</item>-->
+        <item name="android:soundEffectsEnabled">false</item>
+    </style>
+    <!-- Wang:2012-12-20 -->
+    <style name="FastSearchPadRowStyle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">0dip</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:orientation">horizontal</item>
+        <!--<item name="android:layout_marginBottom">@dimen/shendu_fastsearch_pad_space_padding</item>-->
+    </style>
+    
 </resources>
