@@ -679,10 +679,8 @@ public abstract class ContactEntryListFragment<T extends ContactEntryListAdapter
     	mQueryString = "{";
     	// Normalize the empty query.
         if (TextUtils.isEmpty(queryString)) queryString = null;
-                  Log.i("1616", "==============>queryString="+queryString+" /mQueryString="+mQueryString);
 
         if (!TextUtils.equals(mQueryString, queryString)) {
-        	Log.i("1616", "===========");
             mQueryString = queryString;
             mSearchMode = TextUtils.isEmpty(mQueryString);
             setSearchMode(false);

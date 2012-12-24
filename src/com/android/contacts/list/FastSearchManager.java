@@ -82,7 +82,7 @@ public class FastSearchManager
 	}
 
 	public static FastSearchManager getInstance(Context ctx) {
-		Log.i("1616", "FSM=>getInstance");
+		// Log.i("1616", "FSM=>getInstance");
 		if (mInstance == null) {
 			mInstance = new FastSearchManager(ctx);
 		}
@@ -96,7 +96,7 @@ public class FastSearchManager
 	}
 
 	public void bindAdapter(ContactListAdapter adp) {
-		Log.i("1616", "FSM=>bindAdapter");
+		// Log.i("1616", "FSM=>bindAdapter");
 		mListAdapter = adp;
 		if (mListAdapter != null) {
 			mListAdapter.setonCursorChangedListener(this);
@@ -345,7 +345,7 @@ public class FastSearchManager
 			}
 		}
 		index = fastKey.toString().indexOf(display);
-		Log.i("1616", "fastKey index=" + index);
+		// Log.i("1616", "fastKey index=" + index);
 		if (index != -1 && (index + length) < fastKey.length()) {
 			char c = fastKey.charAt(index + length);
 			int idx = ALPHABET.indexOf(c);
@@ -377,7 +377,7 @@ public class FastSearchManager
 		}
 	}
 	
-	private static boolean debug = true;
+	private static boolean debug = false;
 	public static void log(String msg){
 		if(debug) Log.i("1616", msg);
 	}

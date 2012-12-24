@@ -226,15 +226,8 @@ public class NameAvatarUtils {
      * */
     private static void ensureSizeParams(Context ctx){
         if(PX_TEXT_SIZE == 0 || PX_PHOTO_SIZE == 0){
-//            final float scale = ctx.getResources().getDisplayMetrics().density;
-//            PX_TEXT_SIZE = sp2px(SP_TEXT_SIZE, scale);
-//            Log.i("1616", "manual_text_size => "+PX_TEXT_SIZE);
             PX_TEXT_SIZE = ctx.getResources().getDimensionPixelSize(R.dimen.shendu_name_avatar_text_size);
-//            Log.i("1616", "sys_text_size => "+sp);
-//            PX_PHOTO_SIZE = dip2px(DP_PHOTO_SIZE, scale);
-//            Log.i("1616", "manual_photo_size => "+PX_PHOTO_SIZE);
             PX_PHOTO_SIZE = ctx.getResources().getDimensionPixelSize(R.dimen.shendu_name_avatar_size);
-//             Log.i("1616", "sys_photo_size => "+size);
         }
     }
     /**
@@ -380,49 +373,5 @@ public class NameAvatarUtils {
         FontMetrics fm = paint.getFontMetrics();   
         return fm.leading- fm.ascent;    
     }
-    // private static ConcurrentHashMap<ImageView,AvatarRequest>
-    // mPendingRequests = new ConcurrentHashMap<ImageView, AvatarRequest>();
-    // private static LoaderThread mThread = null;
-    // private static final int MSG_SAVE_AVATAR = 1;
-    //
-    // private static final void saveAvatar(ImageView view, long contactId,
-    // Bitmap bmp){
-    // AvatarRequest request = new AvatarRequest(contactId, bmp);
-    // mPendingRequests.put(view, request);
-    // ensureThread();
-    // mThread.requestLoad();
-    // }
-    //
-    // private static void ensureThread(){
-    // if(mThread == null){
-    // mThread = new LoaderThread();
-    // mThread.start();
-    // }
-    // }
-    //
-    // class LoaderThread extends HandlerThread implements Callback{
-    // private Handler mHandler ;
-    // private static final String THREAD_NAME = "avatar";
-    //
-    // public LoaderThread() {
-    // super(THREAD_NAME);
-    // }
-    //
-    // public void ensureHandler() {
-    // if (mHandler == null) {
-    // mHandler = new Handler(getLooper(), this);
-    // }
-    // }
-    // public void requestLoad(){
-    // ensureHandler();
-    // mHandler.sendEmptyMessage(MSG_SAVE_AVATAR);
-    // }
-    //
-    // @Override
-    // public boolean handleMessage(Message msg) {
-    // return false;
-    // }
-    //
-    // }
-
+   
 }

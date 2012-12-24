@@ -673,7 +673,6 @@ public class PeopleActivity extends ContactsActivity implements
 	 */
 	@Override
 	public void onAction(int action) {
-		Log.i("1616", "action=>"+action);
 		switch (action) {
 		case ActionBarAdapter.Listener.Action.START_SEARCH_MODE:
 			// Tell the fragments that we're in the search mode
