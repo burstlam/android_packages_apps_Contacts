@@ -194,7 +194,7 @@
                         android:background="@drawable/shendu_btn_call_selector"
                         android:state_enabled="false"
                         android:text="@string/call_other"
-                        android:textColor="@android:color/white"
+                        android:textColor="@color/shendu_dialpad_fragment_dial_text_color"
                         android:textSize="20sp" />
 
                     <!--
@@ -230,7 +230,7 @@
                     android:gravity="left|center_vertical"
                     android:paddingLeft="@dimen/shendu_dialpad_call_show_Left"
                     android:text="@string/shendu_call_dialer_show_text"
-                    android:textColor="@android:color/white"
+                    android:textColor="@color/shendu_dialpad_fragment_dial_text_color"
                     android:textSize="20sp" />
             </ViewFlipper>
         </LinearLayout>
