@@ -22,8 +22,10 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnLongClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.android.contacts.activities.ActionBarAdapter;
@@ -39,7 +41,7 @@ import com.android.contacts.R;
 public class FastSearchManager
 		implements
 			View.OnClickListener,
-			onCursorChangedListener, OnMenuItemVisibleChangedListener {
+			onCursorChangedListener, OnMenuItemVisibleChangedListener,OnLongClickListener {
 	private static final char[] ACCEPTED_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 			.toCharArray();
 	private Context mContext;
@@ -164,6 +166,7 @@ public class FastSearchManager
 
 		Button delete = (Button) mSearchPad.findViewById(R.id.delete);
 		delete.setOnClickListener(this);
+		delete.setOnLongClickListener(this);
 
 		// set button click listener
 		for (int id : buttonIds) {
@@ -171,7 +174,8 @@ public class FastSearchManager
 			btn.setOnClickListener(this);
 		}
 
-		Button search  = (Button) mSearchPad.findViewById(R.id.search_ex);
+		ImageButton search_ex  = (ImageButton) mSearchPad.findViewById(R.id.search_ex);
+		search_ex.setOnClickListener(this);
 	}
 
 	public void displaySearchPad() {
@@ -208,7 +212,16 @@ public class FastSearchManager
 			} else {
 				mDisplay.getText().insert(cursor, delta);
 			}
-
+			return;
+		}
+		if(id == R.id.search_ex){
+			try{
+				PeopleActivity activity = (PeopleActivity)mContext;
+				activity.onSearchRequested();
+			}catch(ClassCastException e){
+				Log.e("ShenduContacts", e.getMessage());
+			}
+			return;
 		}
 	}
 
@@ -380,6 +393,21 @@ public class FastSearchManager
 	private static boolean debug = false;
 	public static void log(String msg){
 		if(debug) Log.i("1616", msg);
+	}
+
+	@Override
+	public boolean onLongClick(View v) {
+		switch (v.getId()) {
+			case R.id.delete :
+				if(mDisplay != null && mDisplay.getText() != null){
+					mDisplay.getText().clear();
+				}
+				return true;
+
+			default :
+				break;
+		}
+		return false;
 	}
 	
 

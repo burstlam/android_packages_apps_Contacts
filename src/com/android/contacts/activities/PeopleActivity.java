@@ -1755,6 +1755,7 @@ public class PeopleActivity extends ContactsActivity implements
 
 	@Override
 	public boolean onSearchRequested() { // Search key pressed.
+//		Log.i("1616", "onSearchRequested=>orig:"+mActionBarAdapter.isSearchMode());
 		mActionBarAdapter.setSearchMode(true);
 		return true;
 	}
