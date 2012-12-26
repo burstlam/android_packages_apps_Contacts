@@ -50,7 +50,7 @@
         android:layout_width="195dip"
         android:layout_height="291dip"
         layout="@layout/shendu_fast_search_inputpad_layout"
-        android:layout_gravity="right|bottom" />
+        android:layout_gravity="right|bottom"/>
               
 
 </FrameLayout>

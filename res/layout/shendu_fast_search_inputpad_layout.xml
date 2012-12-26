@@ -6,9 +6,10 @@
     android:background="@drawable/fastsearch_pad_bg"
     android:gravity="center"
     android:paddingBottom="14dip"
-    android:paddingLeft="6dip"
-    android:paddingRight="6dip"
+    android:paddingLeft="9dip"
+    android:paddingRight="9dip"
     android:paddingTop="6dip"
+    android:visibility="gone"
 >
 
     <LinearLayout style="@style/FastSearchPadRowStyle">

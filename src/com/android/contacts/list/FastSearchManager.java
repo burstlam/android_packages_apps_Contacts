@@ -4,6 +4,7 @@ import android.R.integer;
 import android.content.AsyncQueryHandler;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.SharedPreferences.Editor;
 import android.database.Cursor;
 import android.graphics.AvoidXfermode;
 import android.net.Uri;
@@ -49,6 +50,9 @@ public class FastSearchManager
 	private ActionBarAdapter mActionBarAdapter;
 	private DefaultContactBrowseListFragment mAllFragment;
 	private ContactListAdapter mListAdapter;
+	private static final String STATE_PREFERENCE = "padStatePreference";
+	private static final String STATE_KEY = "padState";
+	private boolean mOpenState = false;
 
 	private static final int[] buttonIds = {R.id.fast_a, R.id.fast_b,
 			R.id.fast_c, R.id.fast_d, R.id.fast_e, R.id.fast_f, R.id.fast_g,
@@ -84,7 +88,6 @@ public class FastSearchManager
 	}
 
 	public static FastSearchManager getInstance(Context ctx) {
-		// Log.i("1616", "FSM=>getInstance");
 		if (mInstance == null) {
 			mInstance = new FastSearchManager(ctx);
 		}
@@ -101,7 +104,7 @@ public class FastSearchManager
 		// Log.i("1616", "FSM=>bindAdapter");
 		mListAdapter = adp;
 		if (mListAdapter != null) {
-			mListAdapter.setonCursorChangedListener(this);
+			mListAdapter.setOnCursorChangedListener(this);
 		}
 		if (mQueryHandler != null) {
 			mQueryHandler.setAdapter(adp);
@@ -125,6 +128,10 @@ public class FastSearchManager
 	}
 
 	public void onStart() {
+		boolean isOpened = detectPadSavedState(mContext);
+		Log.i("1616", "onStart=>"+isOpened);
+		mOpenState = isOpened;
+		mSearchPad.setVisibility(isOpened ? View.VISIBLE : View.GONE);
 		if (mDisplay != null) {
 			mDisplay.getText().clear();
 			resetExsits();
@@ -192,8 +199,10 @@ public class FastSearchManager
 		if(mSearchPad == null) return;
 		if(mSearchPad.getVisibility() == View.VISIBLE){
 			hideSearchPad();
+			mOpenState = false;
 		}else{
 			displaySearchPad();
+			mOpenState = true;
 		}
 	}
 
@@ -215,12 +224,7 @@ public class FastSearchManager
 			return;
 		}
 		if(id == R.id.search_ex){
-			try{
-				PeopleActivity activity = (PeopleActivity)mContext;
-				activity.onSearchRequested();
-			}catch(ClassCastException e){
-				Log.e("ShenduContacts", e.getMessage());
-			}
+			mActionBarAdapter.changeSearchMode(true);
 			return;
 		}
 	}
@@ -369,7 +373,8 @@ public class FastSearchManager
 	}
 
 	public void updateSearchPad() {
-		if (!isSearchPadVailable()) return;
+		if (mSearchPad == null) return;
+		Log.i("1616", "updateSearchPad====>");
 		int size = exsits.length;
 		for (int i = 0; i < size; i++) {
 			boolean ex = exsits[i];
@@ -381,6 +386,7 @@ public class FastSearchManager
 
 	@Override
 	public void onMenuItemVisibleChanged(MenuItem item) {
+		if(!mOpenState) return;
 		boolean visible = item.isVisible();
 		log("onMenuItemVisibleChanged =>"+visible);
 		if(visible){
@@ -410,5 +416,27 @@ public class FastSearchManager
 		return false;
 	}
 	
-
+	/**
+	 * 
+	 * @return Returns true when fast search pad is opened;
+	 * */
+	public boolean detectPadSavedState(Context ctx){
+		return ctx.getSharedPreferences(STATE_PREFERENCE, Context.MODE_PRIVATE).getBoolean(STATE_KEY, true);
+	}
+	
+	/**
+	 * 
+	 * @return Returns true if state save successfully;
+	 * */
+	private boolean updatePadSavedState(Context ctx, boolean isOpen){
+		if(ctx == null) return false;
+		Editor edit = ctx.getSharedPreferences(STATE_PREFERENCE, Context.MODE_PRIVATE).edit();
+		edit.putBoolean(STATE_KEY, isOpen);
+		return edit.commit();
+	}
+	
+	public void saveSate(){
+		updatePadSavedState(mContext,mOpenState);
+	}
+	
 }

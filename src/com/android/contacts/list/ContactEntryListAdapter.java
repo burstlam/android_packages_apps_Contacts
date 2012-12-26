@@ -696,7 +696,7 @@ public abstract class ContactEntryListAdapter extends IndexerListAdapter {
     	  public void onCurosrChanged(ContactEntryListAdapter adapter, Cursor c);
     }
     private onCursorChangedListener mCursorChangedListener;
-    public void setonCursorChangedListener(onCursorChangedListener listener){
+    public void setOnCursorChangedListener(onCursorChangedListener listener){
     	mCursorChangedListener = listener;
     }
 }
