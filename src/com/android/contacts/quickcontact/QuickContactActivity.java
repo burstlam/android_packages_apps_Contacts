@@ -206,7 +206,7 @@ public class QuickContactActivity extends Activity {
         mFloatingLayout.setOnOutsideTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                handleOutsideTouch();
+            	handleOutsideTouch();
                 return true;
             }
         });
@@ -223,8 +223,7 @@ public class QuickContactActivity extends Activity {
         };
         mOpenDetailsButton.setOnClickListener(openDetailsClickHandler);
         mOpenDetailsPushLayerButton.setOnClickListener(openDetailsClickHandler);
-        mListPager.setAdapter(new ViewPagerAdapter(getFragmentManager()));
-        mListPager.setOnPageChangeListener(new PageChangeListener());
+    
 
         final Rect sourceBounds = intent.getSourceBounds();
         if (sourceBounds != null) {
@@ -245,9 +244,20 @@ public class QuickContactActivity extends Activity {
         });
 
         mStopWatch.lap("cf"); // onCreate finished
+        
+//        mListPager.setAdapter(new ViewPagerAdapter(getFragmentManager()));
+//        mListPager.setOnPageChangeListener(new PageChangeListener());
     }
 
-    private void handleOutsideTouch() {
+    @Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+//    	mListPager.setAdapter(new ViewPagerAdapter(getFragmentManager()));
+        mListPager.setOnPageChangeListener(new PageChangeListener());
+		super.onResume();
+	}
+
+	private void handleOutsideTouch() {
         if (mFloatingLayout.isContentFullyVisible()) {
             close(true);
         }
@@ -530,9 +540,8 @@ public class QuickContactActivity extends Activity {
                 close(false);
                 return;
             }
-
             bindData(data);
-
+        	mListPager.setAdapter(new ViewPagerAdapter(getFragmentManager()));
             mStopWatch.lap("bd"); // bindData finished
 
             if (TRACE_LAUNCH) android.os.Debug.stopMethodTracing();
@@ -628,6 +637,7 @@ public class QuickContactActivity extends Activity {
 
         @Override
         public void onItemClicked(final Action action, final boolean alternate) {
+        	
             final Runnable startAppRunnable = new Runnable() {
                 @Override
                 public void run() {
