@@ -319,7 +319,6 @@ public class ContactLoaderFragment extends Fragment implements FragmentKeyListen
                 final Intent intent = new Intent(Intent.ACTION_SEND);
                 intent.setType(Contacts.CONTENT_VCARD_TYPE);
                 intent.putExtra(Intent.EXTRA_STREAM, shareUri);
-
                 // Launch chooser to share contact via
                 final CharSequence chooseTitle = mContext.getText(R.string.share_via);
                 final Intent chooseIntent = Intent.createChooser(intent, chooseTitle);

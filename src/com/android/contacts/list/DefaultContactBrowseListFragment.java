@@ -19,6 +19,7 @@ import com.android.contacts.R;
 import com.android.contacts.editor.ContactEditorFragment;
 import com.android.contacts.util.AccountFilterUtil;
 
+import android.content.ActivityNotFoundException;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.database.Cursor;
@@ -40,6 +41,7 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 /**
  * Fragment containing a contact list used for browsing (as compared to
@@ -319,8 +321,7 @@ public class DefaultContactBrowseListFragment extends ContactBrowseListFragment 
             return;
         }
         log(">>onCreateContextMenu<<");
-        log("menuInfo.position =>"+info.position);
-        String name = getAdapter().getContactDisplayName(info.position - 3);
+        String name = getAdapter().getContactDisplayName(info.position - getListView().getHeaderViewsCount());
         menu.setHeaderTitle(name);
         menu.add(0, MENU_ITEM_EDIT_CONTACT, 0, getString(R.string.shendu_context_menu_edit));
         menu.add(0, MENU_ITEM_DELETE_CONTACT, 0, getString(R.string.shendu_context_menu_delete));
@@ -339,7 +340,8 @@ public class DefaultContactBrowseListFragment extends ContactBrowseListFragment 
             Log.e(TAG, "bad menuInfo", e);
             return false;
         }
-        final Uri lookupUri  = getAdapter().getContactUri(menuInfo.position - 3);
+        final int realPosition = menuInfo.position - getListView().getHeaderViewsCount();
+        final Uri lookupUri  = getAdapter().getContactUri(realPosition);
         log("menuInfo.position =>"+menuInfo.position);
         switch (item.getItemId()) {
             case MENU_ITEM_EDIT_CONTACT:
@@ -349,15 +351,21 @@ public class DefaultContactBrowseListFragment extends ContactBrowseListFragment 
                 deleteContact(lookupUri);
                 return true;
             case MENU_ITEM_SHARE_CONTACT:
+            	   Uri contactUri = getAdapter().getContactUri(realPosition);
+            	   setSelectedContactUri(contactUri);
                 Uri shareUri = Uri.withAppendedPath(Contacts.CONTENT_VCARD_URI, getAdapter().getSelectedContactLookupKey());
-                final Intent intent = new Intent(Intent.ACTION_SEND);
+                   final Intent intent = new Intent(Intent.ACTION_SEND);
                 intent.setType(Contacts.CONTENT_VCARD_TYPE);
                 intent.putExtra(Intent.EXTRA_STREAM, shareUri);
-
+//                intent.putExtra("sms_body", "TESTTTTTTTT");
                 // Launch chooser to share contact via
                 final CharSequence chooseTitle = getContext().getText(R.string.share_via);
                 final Intent chooseIntent = Intent.createChooser(intent, chooseTitle);
-                getActivity().startActivity(chooseIntent);
+                try{
+                	getActivity().startActivity(chooseIntent);
+             } catch (ActivityNotFoundException ex) {
+                 Toast.makeText(getContext(), R.string.share_error, Toast.LENGTH_SHORT).show();
+             }
                 return true;
             default:
                 throw new IllegalArgumentException("Unknown menu option " + item.getItemId());

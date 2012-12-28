@@ -229,25 +229,13 @@ public class DefaultContactListAdapter extends ContactListAdapter {
         // Wang:
         boolean hasPhone = cursor.getInt(ContactQuery.CONTACT_HAS_PHONE_NUMBER) != 0;
         final long contactId = cursor.getLong(ContactQuery.CONTACT_ID);
-        // log(" ............. bindView=> pos =" + position + " hasPhone =" +
-        // hasPhone
-        // + "  contactId =" + contactId);
-        // log("     Name =>" + view.getNameTextView().getText() +
-        // "   cursor.pos="
-        // + cursor.getPosition());
-        // log(".......end.....");
         if (!isSearchMode() && hasPhone) {
             view.setOnCallButtonClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     int pos = (Integer) v.getTag();
                     Cursor cursor = DefaultContactListAdapter.this.getCursor(partition);
-                    // log(" id=>" + pos + " tag=>" + v.getTag());
                     if (cursor.moveToPosition(pos)) {
-                        // log("onClick :Name =>" +
-                        // view.getNameTextView().getText()
-                        // + " currentPosition=" + position + "   cursor.pos="
-                        // + cursor.getPosition());
                         doCallAction(cursor);
                     }
                 }

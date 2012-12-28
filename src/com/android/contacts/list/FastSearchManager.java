@@ -129,7 +129,6 @@ public class FastSearchManager
 
 	public void onStart() {
 		boolean isOpened = detectPadSavedState(mContext);
-		Log.i("1616", "onStart=>"+isOpened);
 		mOpenState = isOpened;
 		mSearchPad.setVisibility(isOpened ? View.VISIBLE : View.GONE);
 		if (mDisplay != null) {
@@ -374,7 +373,6 @@ public class FastSearchManager
 
 	public void updateSearchPad() {
 		if (mSearchPad == null) return;
-		Log.i("1616", "updateSearchPad====>");
 		int size = exsits.length;
 		for (int i = 0; i < size; i++) {
 			boolean ex = exsits[i];
