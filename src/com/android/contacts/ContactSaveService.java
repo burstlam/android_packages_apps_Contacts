@@ -1143,7 +1143,7 @@ public class ContactSaveService extends IntentService {
         }
     }
     
-    private static final boolean debug = true;
+    private static final boolean debug = false;
     private static final void log(String msg){
         if(debug) Log.i("shenduSave", msg);
     }

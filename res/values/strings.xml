@@ -1913,5 +1913,9 @@
      <string name="fast_x" >X</string>
      <string name="fast_y" >Y</string>
      <string name="fast_z" >Z</string>
+     
+     <!--Wang: SMS share -->
+     <string name="share_name" >Name:%1$s</string>
+     <string name="share_number" >Number:%1$s</string>
 
 </resources>

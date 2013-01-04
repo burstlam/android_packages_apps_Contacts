@@ -20,10 +20,12 @@ import com.android.contacts.editor.ContactEditorFragment;
 import com.android.contacts.util.AccountFilterUtil;
 
 import android.content.ActivityNotFoundException;
+import android.content.ContentResolver;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.provider.ContactsContract;
 import android.provider.ContactsContract.Contacts;
 import android.text.TextUtils;
 import android.util.Log;
@@ -351,13 +353,16 @@ public class DefaultContactBrowseListFragment extends ContactBrowseListFragment 
                 deleteContact(lookupUri);
                 return true;
             case MENU_ITEM_SHARE_CONTACT:
+            	   //Wang: fix sharing doesn't work
             	   Uri contactUri = getAdapter().getContactUri(realPosition);
             	   setSelectedContactUri(contactUri);
                 Uri shareUri = Uri.withAppendedPath(Contacts.CONTENT_VCARD_URI, getAdapter().getSelectedContactLookupKey());
                    final Intent intent = new Intent(Intent.ACTION_SEND);
                 intent.setType(Contacts.CONTENT_VCARD_TYPE);
                 intent.putExtra(Intent.EXTRA_STREAM, shareUri);
-//                intent.putExtra("sms_body", "TESTTTTTTTT");
+                String smsBody = buildSmsBody(lookupUri); 
+                //Wang: sms share part
+                intent.putExtra("sms_body", smsBody);
                 // Launch chooser to share contact via
                 final CharSequence chooseTitle = getContext().getText(R.string.share_via);
                 final Intent chooseIntent = Intent.createChooser(intent, chooseTitle);
@@ -371,8 +376,62 @@ public class DefaultContactBrowseListFragment extends ContactBrowseListFragment 
                 throw new IllegalArgumentException("Unknown menu option " + item.getItemId());
         }
     }
-    
-    private static final boolean debug = false;
+    //Wang:
+    private String buildSmsBody(Uri lookupUri) {
+    	String name = null;
+    	String[] phoneArray = null;
+    	ContentResolver cr = getContext().getContentResolver();
+    	Cursor contactsCursor = null;
+    	Cursor phoneCursor = null;
+    	try {
+			contactsCursor = cr.query(lookupUri, new String[]{Contacts._ID,
+					Contacts.DISPLAY_NAME}, null, null, null);
+			long contactId = -1;
+			if (contactsCursor != null && contactsCursor.moveToFirst()) {
+				name = contactsCursor.getString(contactsCursor
+						.getColumnIndex(Contacts.DISPLAY_NAME));
+				contactId = contactsCursor.getLong(contactsCursor
+						.getColumnIndex(Contacts._ID));
+			}
+		
+			if (contactId > -1) {
+				phoneCursor = cr.query(
+						ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+						null, ContactsContract.CommonDataKinds.Phone.CONTACT_ID
+								+ " = " + contactId, null, null);
+				if (phoneCursor != null && phoneCursor.moveToFirst()) {
+					phoneArray = new String[phoneCursor.getCount()];
+					int i = 0;
+					do {
+						String strPhoneNumber = phoneCursor
+								.getString(phoneCursor
+										.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+						phoneArray[i] = strPhoneNumber;
+						i++;
+					} while (phoneCursor.moveToNext());
+				}
+				StringBuilder sb = new StringBuilder();
+				sb.append(String.format(getContext().getResources().getString(R.string.share_name), name));
+				sb.append("\n");
+				for(String s : phoneArray){
+					sb.append(String.format(getContext().getResources().getString(R.string.share_number), s));
+					sb.append("\n");
+				}
+				return sb.toString();
+			}
+		}finally {
+			if(contactsCursor != null){
+				contactsCursor.close();
+			}
+			if(phoneCursor != null){
+				phoneCursor.close();
+			}
+			
+		}
+    	return null;
+	}
+
+	private static final boolean debug = false;
     private static void log(String msg){
         msg = "DefaultContactBrowseListFragment =>"+msg;
         if(debug) Log.i("shenduContactList", msg);

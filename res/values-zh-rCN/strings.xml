@@ -604,4 +604,7 @@
     <!--Wang: Ringtone setting string-->
      <string name="default_ringtone" >默认铃声</string>
      <string name="ringtone_title" >铃声</string>
+     <!--Wang: SMS share -->
+     <string name="share_name" >姓名:%1$s</string>
+     <string name="share_number" >号码:%1$s</string>
 </resources>
