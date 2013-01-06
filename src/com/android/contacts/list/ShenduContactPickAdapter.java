@@ -30,8 +30,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class ShenduContactPickAdapter extends ContactEntryListAdapter implements
-        OptionChangedListener {
+public class ShenduContactPickAdapter extends ShenduPickAdapter{
 
     protected static class ContactsQuery {
         public static final String[] PROJECTION_CONTACTS = new String[] {
@@ -54,28 +53,14 @@ public class ShenduContactPickAdapter extends ContactEntryListAdapter implements
         public static final int CONTACT_IS_USER_PROFILE = 7;
     }
 
-    private String mExcludedContactIds;
-    private final CharSequence mUnknownNameText;
-    private ConcurrentHashMap<Long, MemberWithoutRawContactId> mSelecteds = new ConcurrentHashMap<Long, MemberWithoutRawContactId>();
 
     public ShenduContactPickAdapter(Context context) {
         super(context);
-        mUnknownNameText = context.getText(android.R.string.unknownName);
-        try {
-            ShenDuContactSelectionActivity activity = (ShenDuContactSelectionActivity) context;
-            activity.setOptionChangedListener(this);
-        } catch (ClassCastException e) {
-            log("ClassCastException !!!!");
-            return ;
-        }
     }
 
     @Override
     protected void bindView(View itemView, int partition, Cursor cursor, int position) {
-        // ShenduSelectionContactListItemView item =
-        // (ShenduSelectionContactListItemView)itemView;
         ContactListItemView view = (ContactListItemView) itemView;
-        // ContactListItemView view = item.getContactListItemView();
         bindSectionHeaderAndDivider(view, position, cursor);
         bindName(view, cursor);
         bindPhoto(view, cursor);
@@ -124,7 +109,7 @@ public class ShenduContactPickAdapter extends ContactEntryListAdapter implements
      * @author Wang
      * @date 2012-9-10
      */
-    private void onSelectAll(){
+    protected void onSelectAll(){
         Cursor cursor = getCursor(0);
         if(cursor == null) return;
         cursor.moveToPosition(-1);
@@ -142,33 +127,6 @@ public class ShenduContactPickAdapter extends ContactEntryListAdapter implements
         /*Wang:should not change state because onItemClick method has changed state in activity*/
         onUpdateCountView(null);
 
-    }
-    
-    /**
-     * Deselect All Mode
-     * @author Wang
-     * @date 2012-9-10
-     */
-    private void onDeselectAll(){
-        mSelecteds.clear();
-        notifyDataSetChanged();
-        onUpdateCountView(null);
-    }
-    
-    /**
-     * Update CountView in Selection Activity.
-     * @author Wang
-     * @param state The Option state to set up. If null will not change option.
-     * @date 2012-9-10
-     */
-    private void onUpdateCountView(Option state){
-        try {
-            ShenDuContactSelectionActivity activity = (ShenDuContactSelectionActivity) mContext ;
-            activity.updateSelectedCountInSpinner(mSelecteds.size());
-            if(state != null)activity.changeOptionState(Option.Normal);
-        } catch (ClassCastException e) {
-            return;
-        }
     }
 
     @Override
@@ -206,38 +164,6 @@ public class ShenduContactPickAdapter extends ContactEntryListAdapter implements
         }
     }
 
-    /**
-     * Set the ContactId  those are in group.
-     * @author Wang
-     * @date 2012-9-4
-     */
-    public void setExcludedContactId(long[] ids) {
-        if (ids == null)
-            return;
-        int end = ids.length;
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < end; i++) {
-            sb.append(ids[i]);
-            if (i != end - 1) {
-                sb.append(",");
-            }
-        }
-        log(" =======IDs String =>" + sb.toString());
-        setExcludedContactId(sb.toString());
-    }
-
-    /**
-     * Set the ContactId  those are in group.
-     * @author Wang
-     * @date 2012-9-4
-     */
-    public void setExcludedContactId(String ids) {
-        if (ids == null || TextUtils.isEmpty(ids) || ids.equals(mExcludedContactIds)) {
-            return;
-        }
-        mExcludedContactIds = ids;
-    }
-
     @Override
     public void configureLoader(CursorLoader loader, long directoryId) {
         configureUri(loader, directoryId);
@@ -250,7 +176,7 @@ public class ShenduContactPickAdapter extends ContactEntryListAdapter implements
      * @author Wang
      * @date 2012-9-4
      */
-    private void configureSelection(CursorLoader loader) {
+    protected void configureSelection(CursorLoader loader) {
         log(">>configureSelection<<");
         if (TextUtils.isEmpty(mExcludedContactIds)) {
             return;
@@ -283,10 +209,6 @@ public class ShenduContactPickAdapter extends ContactEntryListAdapter implements
     @Override
     public String getContactDisplayName(int position) {
         return ((Cursor) getItem(position)).getString(ContactsQuery.CONTACT_DISPLAY_NAME);
-    }
-    
-    public Collection<MemberWithoutRawContactId> getNewMembers(){
-        return mSelecteds.values();
     }
 
     public static class MemberWithoutRawContactId  implements Parcelable{
@@ -349,19 +271,6 @@ public class ShenduContactPickAdapter extends ContactEntryListAdapter implements
             }  
          
         };  
-    }
-
-    @Override
-    public void onOptionChanged(Option op) {
-        switch (op) {
-            case Normal:
-                onDeselectAll();
-                break;
-
-            case SelectAll:
-                onSelectAll();
-                break;
-        }
     }
 
     private static final boolean debug = false;

@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.database.DataSetObserver;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,9 +27,13 @@ import android.widget.TextView;
 
 import com.android.contacts.ContactsActivity;
 import com.android.contacts.R;
+import com.android.contacts.list.ContactEntryListAdapter;
 import com.android.contacts.list.ContactEntryListFragment;
 import com.android.contacts.list.ShenduContactPickAdapter.MemberWithoutRawContactId;
 import com.android.contacts.list.ShenduContactPickFragment;
+import com.android.contacts.list.ShenduPhoneNumberPickAdapter.PhonePickMember;
+import com.android.contacts.list.ShenduPhoneNumberPickFragment;
+import com.android.contacts.list.ShenduPickFragment;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -97,13 +102,19 @@ public class ShenDuContactSelectionActivity extends ContactsActivity implements
     }
 
     private void configureListFragment() {
-        ShenduContactPickFragment fragment = new ShenduContactPickFragment();
+    	//Wang: 
+    	ShenduPickFragment fragment = null; 
+    	//Wang: Phone pick
+    	if(isPickMode){
+    		fragment = new ShenduContactPickFragment();
+    	}else{
+    		fragment = new ShenduPhoneNumberPickFragment();
+    	}
+       
         long[] ids = getIntent().getLongArrayExtra(EXCLUED_RAWCONTACTS_IDS_KEY);
         log(" ids ==>" + ids);
-        fragment.setupExistedContactsIds(ids);
+        fragment.setupExistedContactsIds(ids); 
         mListFragment = fragment;
-        // mListFragment.setLegacyCompatibilityMode(mRequest.isLegacyCompatibilityMode());
-        // mListFragment.setDirectoryResultLimit(DEFAULT_DIRECTORY_RESULT_LIMIT);
 
         getFragmentManager().beginTransaction()
                 .replace(R.id.list_container, mListFragment)
@@ -117,11 +128,11 @@ public class ShenDuContactSelectionActivity extends ContactsActivity implements
      * @date 2012-9-4
      */
     private void resolveIntent() {
-        if(PICK_ACTION ==getIntent().getIntExtra("from", 0)){
-            isPickMode = true;
-        }else{
-            isPickMode = false;
-        }
+//        if(PICK_ACTION ==getIntent().getIntExtra("from", 0)){
+//            isPickMode = true;
+//        }else{
+//            isPickMode = false;
+//        }
     }
 
     /**
@@ -181,7 +192,7 @@ public class ShenDuContactSelectionActivity extends ContactsActivity implements
                 if (isPickMode) {
                     data.putExtra("data", getNewMembersContactIdArray());
                 }else{
-                    data.putParcelableArrayListExtra("data", getNewMembers());
+                    data.putParcelableArrayListExtra("data", getNewPhoneMembers());//test=============================================
                 }
                 setResult(0, data);
                 this.finish();
@@ -195,20 +206,51 @@ public class ShenDuContactSelectionActivity extends ContactsActivity implements
     }
     
     /**
-     * Get New Members
+     * Get New Contact Members
      * @author Wang
-     * @date 2012-9-10
+     * @date 2013-1-5
      */
-    private ArrayList<MemberWithoutRawContactId> getNewMembers(){
+    private ArrayList<MemberWithoutRawContactId> getNewContactMembers(){
         if(mListFragment != null && mListFragment instanceof ShenduContactPickFragment){
             ShenduContactPickFragment fragment = (ShenduContactPickFragment) mListFragment;
-            Collection<MemberWithoutRawContactId> clt = fragment.getNewMembers();
+            Collection<Parcelable> clt = fragment.getNewMembers();
             ArrayList<MemberWithoutRawContactId> list = new ArrayList<MemberWithoutRawContactId>(clt.size());
-            Iterator<MemberWithoutRawContactId> it = clt.iterator();
-            while(it.hasNext()){
-                list.add(it.next());
-            }
-            return list;
+            Iterator<Parcelable> it = clt.iterator();
+              try {
+				while (it.hasNext()) {
+					list.add((MemberWithoutRawContactId) it.next());
+				}
+			} catch (ClassCastException e) {
+				log("Err!!!ClassCastException");
+				return null;
+			}
+			return list;
+        }
+        return null;
+    }
+    
+    /**
+     * Get New Phone Members
+     * @author Wang
+     * @date 2013-1-5
+     */
+    private ArrayList<PhonePickMember> getNewPhoneMembers(){
+        if(mListFragment != null && mListFragment instanceof ShenduPhoneNumberPickFragment){
+        	ShenduPhoneNumberPickFragment fragment = (ShenduPhoneNumberPickFragment) mListFragment;
+            Collection<Parcelable> clt = fragment.getNewMembers();
+            ArrayList<PhonePickMember> list = new ArrayList<PhonePickMember>(clt.size());
+            Iterator<Parcelable> it = clt.iterator();
+              try {
+				while (it.hasNext()) {
+					PhonePickMember member = (PhonePickMember) it.next();
+					log("member=>"+member.getmPhoneNum()+" /"+member.getDisplayName());
+					list.add(member);
+				}
+			} catch (ClassCastException e) {
+				log("Err!!!ClassCastException");
+				return null;
+			}
+			return list;
         }
         return null;
     }
@@ -221,15 +263,21 @@ public class ShenDuContactSelectionActivity extends ContactsActivity implements
     private long[] getNewMembersContactIdArray(){
         if(mListFragment != null && mListFragment instanceof ShenduContactPickFragment){
             ShenduContactPickFragment fragment = (ShenduContactPickFragment) mListFragment;
-            Collection<MemberWithoutRawContactId> clt = fragment.getNewMembers();
+            Collection<Parcelable> clt = fragment.getNewMembers();
             long[] array = new long[clt.size()];
-            Iterator<MemberWithoutRawContactId> it = clt.iterator();
+            Iterator<Parcelable> it = clt.iterator();
             int i = 0;
-            while(it.hasNext()){
-                array[i] = it.next().getContactId();
-                i++;
-            }
-            return array;
+            try {
+				while (it.hasNext()) {
+					array[i] = ((MemberWithoutRawContactId) it.next())
+							.getContactId();
+					i++;
+				}
+			} catch (ClassCastException e) {
+				log("Err!!!ClassCastException");
+				return null;
+			}
+			return array;
         }
         return null;
     }
