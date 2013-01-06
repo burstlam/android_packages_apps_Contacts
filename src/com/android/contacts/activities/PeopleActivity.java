@@ -574,6 +574,7 @@ public class PeopleActivity extends ContactsActivity implements
 		super.onDestroy();
 		//Wang:
 		mFastSearchManager.saveSate();
+		ContactSaveService.removeDeletedListener();
 	}
 
 	private void configureFragments(boolean fromRequest) {

@@ -26,6 +26,7 @@ import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
 /**
@@ -126,4 +127,5 @@ public abstract class ContactsActivity extends TransactionSafeActivity
     protected static void hideFragment(FragmentTransaction ft, Fragment f) {
         if ((f != null) && !f.isHidden()) ft.hide(f);
     }
+  
 }

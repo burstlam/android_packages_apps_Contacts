@@ -4,6 +4,7 @@ import android.R.integer;
 import android.content.AsyncQueryHandler;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences.Editor;
 import android.database.Cursor;
 import android.graphics.AvoidXfermode;
@@ -37,12 +38,14 @@ import com.android.contacts.list.DefaultContactBrowseListFragment;
 import com.android.contacts.list.DefaultContactListAdapter;
 import com.android.contacts.list.ContactEntryListAdapter.onCursorChangedListener;
 import com.android.contacts.util.NameAvatarUtils;
+import com.android.contacts.ContactSaveService;
+import com.android.contacts.ContactSaveService.OnDeletedListener;
 import com.android.contacts.R;
 
 public class FastSearchManager
 		implements
 			View.OnClickListener,
-			onCursorChangedListener, OnMenuItemVisibleChangedListener,OnLongClickListener {
+			onCursorChangedListener, OnMenuItemVisibleChangedListener,OnLongClickListener, OnDeletedListener {
 	private static final char[] ACCEPTED_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 			.toCharArray();
 	private Context mContext;
@@ -135,6 +138,7 @@ public class FastSearchManager
 			mDisplay.getText().clear();
 			resetExsits();
 		}
+		ContactSaveService.setOnDeletedListener(this);
 	}
 
 	private void resetExsits() {
@@ -393,11 +397,6 @@ public class FastSearchManager
 			hideSearchPad();
 		}
 	}
-	
-	private static boolean debug = false;
-	public static void log(String msg){
-		if(debug) Log.i("1616", msg);
-	}
 
 	@Override
 	public boolean onLongClick(View v) {
@@ -436,5 +435,19 @@ public class FastSearchManager
 	public void saveSate(){
 		updatePadSavedState(mContext,mOpenState);
 	}
+
+	@Override
+	public void onDeleted() {
+		// TODO update views
+		if(isSearchPadVailable() && mDisplay != null && mDisplay.getText() != null){
+			String delta = mDisplay.getText().toString();
+			startQuery(delta);
+		}
+	}
 	
+	private static boolean debug = false;
+	public static void log(String msg){
+		if(debug) Log.i("1616", msg);
+	}
+
 }

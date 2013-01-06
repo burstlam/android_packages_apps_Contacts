@@ -954,12 +954,13 @@ public class ContactSaveService extends IntentService {
 
     private void deleteContact(Intent intent) {
         Uri contactUri = intent.getParcelableExtra(EXTRA_CONTACT_URI);
-        System.out.println("delete == uri"+ contactUri);
         if (contactUri == null) {
             Log.e(TAG, "Invalid arguments for deleteContact request");
             return;
         }
         getContentResolver().delete(contactUri, null, null);
+        //Wang:2013-1-6
+         if(mDeletedListener != null) mDeletedListener.onDeleted();
     }
 
     /**
@@ -1143,6 +1144,17 @@ public class ContactSaveService extends IntentService {
         }
     }
     
+    //Wang:
+    public interface OnDeletedListener{
+    	public void onDeleted();
+    }
+    private static OnDeletedListener mDeletedListener;
+    public static void setOnDeletedListener(OnDeletedListener listener){
+    	if(mDeletedListener != listener)mDeletedListener = listener;
+    }
+    public static void removeDeletedListener(){
+    	mDeletedListener = null;
+    }
     private static final boolean debug = false;
     private static final void log(String msg){
         if(debug) Log.i("shenduSave", msg);
