@@ -37,6 +37,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract.Contacts;
+import android.telephony.MSimTelephonyManager;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -93,9 +94,23 @@ public class ImportExportDialogFragment extends DialogFragment
             }
         };
 
-        if (TelephonyManager.getDefault().hasIccCard()
+        boolean hasIccCard = false;
+
+        if (MSimTelephonyManager.getDefault().isMultiSimEnabled()) {
+            for (int i = 0; i < MSimTelephonyManager.getDefault().getPhoneCount(); i++) {
+                hasIccCard = MSimTelephonyManager.getDefault().hasIccCard(i);
+                if (hasIccCard) {
+                    break;
+                }
+            }
+        } else {
+            hasIccCard = TelephonyManager.getDefault().hasIccCard();
+        }
+
+        if (hasIccCard
                 && res.getBoolean(R.bool.config_allow_sim_import)) {
-            adapter.add(R.string.import_from_sim);
+            adapter.add(R.string.manage_sim_contacts);
+            adapter.add(R.string.export_to_sim);
         }
         if (res.getBoolean(R.bool.config_allow_import_from_sdcard)) {
             adapter.add(R.string.import_from_sdcard);
@@ -127,7 +142,7 @@ public class ImportExportDialogFragment extends DialogFragment
                 boolean dismissDialog;
                 final int resId = adapter.getItem(which);
                 switch (resId) {
-                    case R.string.import_from_sim:
+                    case R.string.manage_sim_contacts:
                     case R.string.import_from_sdcard: {
                         dismissDialog = handleImportRequest(resId);
                         break;

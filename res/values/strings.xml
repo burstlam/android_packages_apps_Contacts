@@ -778,6 +778,10 @@
     <string name="no_sdcard_message" product="default">No SD card was found.</string>
 
     <!-- Action string for selecting SIM for importing contacts -->
+    <!-- Action string for managing SIM contacts -->
+    <string name="manage_sim_contacts"> Manage SIM card contacts</string>
+
+    <!-- Action that exports all contacts to SIM -->
     <string name="import_from_sim">Import from SIM card</string>
 
     <!-- Action string for selecting (USB) storage for importing contacts [CHAR LIMIT=25] -->
