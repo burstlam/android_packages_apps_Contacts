@@ -405,6 +405,8 @@ import java.util.LinkedList;
                 synchronized (mRequests) {
                     if (!mRequests.isEmpty()) {
                         req = mRequests.removeFirst();
+                    } else {
+                        mDone = true;
                     }
                 }
 
