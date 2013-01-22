@@ -123,7 +123,7 @@ public class DialpadFragment extends Fragment
         AdapterView.OnItemClickListener, TextWatcher,
         PopupMenu.OnMenuItemClickListener,
         DialpadImageButton.OnPressedListener ,
-        OnScrollListener{
+        OnScrollListener ,ShenduContactAdapter.ContactsItemOnClickListener{
     private static final String TAG = DialpadFragment.class.getSimpleName();
 
     private static final boolean DEBUG = DialtactsActivity.DEBUG;
@@ -466,9 +466,9 @@ public class DialpadFragment extends Fragment
         mT9List = (ListView) fragmentView.findViewById(R.id.t9list);
         mT9List.setVisibility(View.GONE);
         if (mT9List!= null) {
-            mT9List.setOnItemClickListener(this);
+//            mT9List.setOnItemClickListener(this);
             mT9List.setOnScrollListener(this);
-            mT9List.setOnCreateContextMenuListener(this);
+//            mT9List.setOnCreateContextMenuListener(this);
         }
         
         /**
@@ -550,6 +550,7 @@ public class DialpadFragment extends Fragment
         mShenduContactAdapter = new ShenduContactAdapter(getActivity());
 
 		 mT9List.setAdapter(mShenduContactAdapter);
+		 mShenduContactAdapter.setContactsItemOnClickListener(this);
         mShenduContactAdapter.setSearchContactsListener(new SearchContactsListener() {
 			
 			@Override
@@ -1970,25 +1971,25 @@ public class DialpadFragment extends Fragment
      */
     @Override
     public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-        if (parent == mT9List /*|| pmT9ListToparent == */) {
-            if (parent == mT9List) {
-//                setFormattedDigits(mT9Adapter.getItem(position).number,null);
-            	   setFormattedDigits(((Shendu_ContactItem)mShenduContactAdapter.getItem(position)).number,null);
-                dialButtonPressed();
-            } else {
-                if (mT9Toggle.getTag() == null) {
-                	/**shutao 2012-10-18*/
-//                    setFormattedDigits(mT9AdapterTop.getItem(position).number,null);
-                } else {
-                    startActivity(getAddToContactIntent(mDigits.getText()));
-                    return;
-                }
-            }
-            if (dialOnTap()) {
-                dialButtonPressed();
-            }
-            return;
-        }
+//        if (parent == mT9List /*|| pmT9ListToparent == */) {
+//            if (parent == mT9List) {
+////                setFormattedDigits(mT9Adapter.getItem(position).number,null);
+//            	   setFormattedDigits(((Shendu_ContactItem)mShenduContactAdapter.getItem(position)).number,null);
+//                dialButtonPressed();
+//            } else {
+//                if (mT9Toggle.getTag() == null) {
+//                	/**shutao 2012-10-18*/
+////                    setFormattedDigits(mT9AdapterTop.getItem(position).number,null);
+//                } else {
+//                    startActivity(getAddToContactIntent(mDigits.getText()));
+//                    return;
+//                }
+//            }
+//            if (dialOnTap()) {
+//                dialButtonPressed();
+//            }
+//            return;
+//        }
         
         /**
          * shutao 2012-10-18 The unfamiliar Number menu option
@@ -2375,6 +2376,21 @@ public class DialpadFragment extends Fragment
 	private void MyLog(String msg){
 		if(DEBUG){
 			Log.d(TAG, msg);
+		}
+	}
+
+	
+	//shutao 2013-1-21
+	@Override
+	public void onItemClick(int position) {
+		// TODO Auto-generated method stub
+		// setFormattedDigits(mT9Adapter.getItem(position).number,null);
+		setFormattedDigits(((Shendu_ContactItem) mShenduContactAdapter.getItem(position)).number,
+				null);
+		dialButtonPressed();
+
+		if (dialOnTap()) {
+			dialButtonPressed();
 		}
 	}
 }

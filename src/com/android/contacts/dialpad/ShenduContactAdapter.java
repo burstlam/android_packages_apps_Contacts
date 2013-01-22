@@ -8,7 +8,12 @@ import java.util.Set;
 
 import org.w3c.dom.Text;
 
+import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.DialogInterface.OnClickListener;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Handler;
@@ -27,6 +32,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Filter;
 import android.widget.Filterable;
+import android.widget.LinearLayout;
 import android.widget.QuickContactBadge;
 import android.widget.TextView;
 import com.android.contacts.ContactPhotoManager;
@@ -60,6 +66,16 @@ public class ShenduContactAdapter extends BaseAdapter implements Filterable {
     
     private Thread createDataThead;
     
+    private ContactsItemOnClickListener mOnClickListener;
+    
+    /** shutao 2012-9-14  */
+    public interface ContactsItemOnClickListener{
+    	public void onItemClick(int position);
+    }
+    
+    public void setContactsItemOnClickListener(ContactsItemOnClickListener clickListener){
+    	this.mOnClickListener = clickListener;
+    }
 //    private NameSearchTree nameSearchTree;
     /**shutao 2012-10-30*/
     private FirstNumberInfo mFirstNumberInfo;
@@ -94,6 +110,48 @@ public class ShenduContactAdapter extends BaseAdapter implements Filterable {
     	String  constraint;
     	int count;
     }
+    //shutao 2013-1-22
+    private static final int SHENDU_SEND_SMS = 0 ;
+    private final View.OnClickListener mClickListener = new View.OnClickListener() {
+		
+		@Override
+		public void onClick(View v) {
+			// TODO Auto-generated method stub
+			mOnClickListener.onItemClick(Integer.parseInt(v.getTag(R.id.shendu_tag_position).toString()));
+		}
+	};
+    private final View.OnLongClickListener mPrimaryActionLongListener = new View.OnLongClickListener() {
+    	@Override
+		public boolean onLongClick(View v) {
+			// TODO Auto-generated method stub
+    		if(v.getTag(R.id.shendu_tag_second) == null){
+				return false;
+			}
+			final String number = v.getTag(R.id.shendu_tag_second).toString();
+			final String name = v.getTag(R.id.shendu_tag_name).toString();
+		
+			Builder sd=new AlertDialog .Builder(mContext).setTitle(name).
+			setItems(R.array.shendu_onlongmenu_list, 
+           new OnClickListener() {
+				
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					// TODO Auto-generated method stub
+					switch (which) {
+
+					case SHENDU_SEND_SMS:
+						Intent mIntent = new Intent(Intent.ACTION_SENDTO,Uri.fromParts("sms", number, null));
+			    		mContext.startActivity( mIntent );
+						break;
+
+					}
+				}
+			});
+			sd.create().show();
+			return true;
+    	}
+    };
+    
     
     /** shutao 2012-9-14  */
     public interface SearchContactsListener{
@@ -473,6 +531,7 @@ public class ShenduContactAdapter extends BaseAdapter implements Filterable {
 		TextView number;
 		TextView attribution;
 		TextView pinYin;
+		LinearLayout row_Layout;
 	}
 
 	@Override
@@ -487,11 +546,18 @@ public class ShenduContactAdapter extends BaseAdapter implements Filterable {
             holder.imPhoto = (QuickContactBadge) convertView.findViewById(R.id.rowBadge);
             holder.attribution = (TextView) convertView.findViewById(R.id.shendu_row_attribution);
             holder.pinYin = (TextView) convertView.findViewById(R.id.rowPinyin);
+            holder.row_Layout = (LinearLayout)  convertView.findViewById(R.id.row_linear);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
         Shendu_ContactItem contactItem = mInfoList.get(position);
+        holder.row_Layout.setTag(R.id.shendu_tag_second, contactItem.number);
+        holder.row_Layout.setTag(R.id.shendu_tag_name , contactItem.name );
+        holder.row_Layout.setTag(R.id.shendu_tag_position , position );
+        holder.row_Layout.setOnLongClickListener(mPrimaryActionLongListener);
+        holder.row_Layout.setOnClickListener(mClickListener);
+        
         if (contactItem.name == null) {
             holder.name.setText(contactItem.number , TextView.BufferType.SPANNABLE);
             holder.number.setVisibility(View.GONE);
