@@ -34,7 +34,8 @@
         android:paddingLeft="@dimen/dialpad_horizontal_margin"
         android:paddingRight="@dimen/dialpad_horizontal_margin" >
 
- <!--        <LinearLayout
+        <!--
+             <LinearLayout
             android:id="@+id/t9topbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -52,27 +53,73 @@
                 android:gravity="center_vertical"
                 android:overScrollMode="never"
                 android:visibility="invisible" />
-        </LinearLayout> -->
+        </LinearLayout>
+        -->
 
-        <ListView
-            android:id="@+id/newContactList"
+        <LinearLayout
+            android:id="@+id/search_list_linear"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginBottom="@dimen/shendu_dialpad_bottom_height"
-            android:background="@drawable/shendu_background_bg"
-            android:divider="@drawable/shendu_selected_bottom_divider"
-            android:scrollingCache="true"
-            android:visibility="gone" >
-        </ListView>
+            android:orientation="vertical" >
 
-        <ListView
-            android:id="@+id/t9list"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="@dimen/shendu_dialpad_bottom_height"
-            android:background="@drawable/shendu_background_bg"
-            android:divider="@drawable/shendu_selected_bottom_divider"
-            android:scrollingCache="true" />
+            <LinearLayout
+                android:id="@+id/digits_container"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/shendu_dialpad_list_height"
+                android:orientation="vertical"
+                android:visibility="gone"
+                android:gravity="center" >
+
+                <com.android.contacts.dialpad.DigitsEditText
+                    android:id="@+id/digits"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/shendu_dialpad_list_height"
+                    android:background="@android:color/transparent"
+                    android:gravity="left|center_vertical"
+                    android:nextFocusRight="@+id/overflow_menu"
+                    android:paddingLeft="5dp"
+                    android:singleLine="true"
+                    android:layout_marginLeft="@dimen/shendu_dialpad_list_marginleft"
+                    android:layout_marginRight="@dimen/shendu_dialpad_list_marginright"
+                    android:textAppearance="@style/DialtactsDigitsTextAppearance"
+                    android:textColor="@color/shendu_dialpad_input_number_color" />
+                <View 
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:layout_marginLeft="@dimen/shendu_dialpad_list_marginleft"
+                    android:layout_marginRight="@dimen/shendu_dialpad_list_marginright"
+                    android:background="@drawable/shendu_dial_number_divider"/>
+            </LinearLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" >
+
+                <ListView
+                    android:id="@+id/t9list"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginLeft="@dimen/shendu_dialpad_list_marginleft"
+                    android:layout_marginRight="@dimen/shendu_dialpad_list_marginright"
+                    android:background="@drawable/shendu_background_bg"
+                    android:divider="@drawable/shendu_selected_bottom_divider"
+                    android:scrollingCache="true" />
+
+                <ListView
+                    android:id="@+id/newContactList"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="@dimen/shendu_dialpad_list_marginleft"
+                    android:layout_marginRight="@dimen/shendu_dialpad_list_marginright"
+                    android:background="@drawable/shendu_background_bg"
+                    android:divider="@drawable/shendu_selected_bottom_divider"
+                    android:scrollingCache="true"
+                    android:visibility="gone" >
+                </ListView>
+            </FrameLayout>
+        </LinearLayout>
 
         <View
             android:layout_width="match_parent"
@@ -90,12 +137,15 @@
          (the textfield/button and the dialpad) are hidden.
         -->
 
-  <!--       <ListView
+
+        <!--
+             <ListView
             android:id="@+id/dialpadChooser"
             android:layout_width="match_parent"
             android:layout_height="1dip"
             android:layout_weight="1"
-            android:visibility="gone" /> -->
+            android:visibility="gone" />
+        -->
     </LinearLayout>
 
     <RelativeLayout
@@ -121,37 +171,6 @@
          the digits are displayed.
                 -->
 
-                <LinearLayout
-                    android:id="@+id/digits_container"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/shendu_dial_call_bg"
-                    android:gravity="center" >
-
-                    <com.android.contacts.dialpad.DigitsEditText
-                        android:id="@+id/digits"
-                        android:layout_width="0dip"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:background="@android:color/transparent"
-                        android:gravity="left|center_vertical"
-                        android:nextFocusRight="@+id/overflow_menu"
-                        android:paddingLeft="5dp"
-                        android:singleLine="true"
-                        android:textAppearance="@style/DialtactsDigitsTextAppearance"
-                        android:textColor="@android:color/white" />
-
-                    <ImageButton
-                        android:id="@+id/deleteButton"
-                        android:layout_width="56dip"
-                        android:layout_height="@dimen/shendu_dialpad_bottom_height"
-                        android:layout_gravity="center_vertical"
-                        android:background="?android:attr/selectableItemBackground"
-                        android:contentDescription="@string/description_delete_button"
-                        android:gravity="center"
-                        android:src="@drawable/shendu_dial_action_delete"
-                        android:state_enabled="false" />
-                </LinearLayout>
 
                 <!-- Keypad section -->
 
@@ -193,11 +212,11 @@
                         android:layout_gravity="center"
                         android:background="@drawable/shendu_btn_call_selector"
                         android:state_enabled="false"
-                        android:text="@string/call_other"
                         android:textColor="@color/shendu_dialpad_fragment_dial_text_color"
                         android:textSize="20sp" />
 
                     <!--
+                android:text="@string/call_other"
                  <ImageButton
                 android:id="@+id/overflow_menu"
                 android:layout_width="wrap_content"
@@ -214,11 +233,22 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:background="@drawable/shendu_dial_keyboard_hide_selector"
+                        android:background="?android:attr/selectableItemBackground"
                         android:gravity="left|center_vertical"
                         android:scaleType="centerInside"
                         android:textOff=""
-                        android:textOn="" />
+                        android:textOn=""
+                        android:visibility="gone" />
+
+                    <ImageButton
+                        android:id="@+id/deleteButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:background="@drawable/shendu_dial_keyboard_hide_selector"
+                        android:contentDescription="@string/description_delete_button"
+                        android:gravity="center"
+                        android:state_enabled="false" />
                 </LinearLayout>
 
                 <Button

@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="wrap_content" >
+    android:layout_height="@dimen/shendu_dialpad_list_height" >
 
     <LinearLayout
         android:id="@+id/row_linear"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:background="?android:attr/selectableItemBackground" >
+        android:layout_height="@dimen/shendu_dialpad_list_height"
+        android:background="@drawable/shendu_list_selector" >
 
         <QuickContactBadge
             android:id="@+id/rowBadge"
@@ -35,7 +35,7 @@
                     android:gravity="center_vertical"
                     android:maxWidth="200dp"
                     android:singleLine="true"
-                    android:textColor="@android:color/black"
+                    android:textColor="@color/shendu_call_log_name_text_color"
                     android:textSize="18sp" />
 
                 <TextView

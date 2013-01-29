@@ -40,6 +40,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:fadingEdge="none"
+            android:layout_marginLeft="@dimen/shendu_dialpad_list_marginleft"
+            android:layout_marginRight="@dimen/shendu_dialpad_list_marginright"
             android:scrollbarStyle="outsideOverlay"
             android:divider="@drawable/shendu_selected_bottom_divider"
         />

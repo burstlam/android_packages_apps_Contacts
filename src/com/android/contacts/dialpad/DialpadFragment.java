@@ -353,6 +353,7 @@ public class DialpadFragment extends Fragment
     		try{
     		    if(input.toString().equals("")){
 //    		    	MyLog("afterTextChanged == kong");
+    				mDigitsContainer.setVisibility(View.GONE);
     		    	mShenduHistoricalThreadString = "";
     		    	mShenduIsNull = true;
 //    		    	mShenduTimeHandler.removeCallbacks(mShenduRunnable);
@@ -367,6 +368,7 @@ public class DialpadFragment extends Fragment
     	         }else{
 //    	        	 MyLog("afterTextChanged == bukong"+input.toString().replaceAll(" ", ""));
     	        	 searchContacts(false);
+    	 			 mDigitsContainer.setVisibility(View.VISIBLE);
 //    	        	 mIsSearch = true;
 //    	        	 mShenduTimeHandler.postDelayed(mShenduRunnable, SEARCH_TIME_MILLIS);
 //    	        	   	if(mShenduIsNull){
@@ -776,7 +778,7 @@ public class DialpadFragment extends Fragment
             getActivity().getContentResolver().unregisterContentObserver(mContactObserver);
         }
 
-        hideT9();
+//        hideT9();
 
         // Query the last dialed number. Do it first because hitting
         // the DB is 'slow'. This call is asynchronous.
@@ -1024,28 +1026,28 @@ public class DialpadFragment extends Fragment
      * Hides the topresult layout
      * Needed to reclaim the space when T9 is off.
      */
-    private void hideT9 () {
-        if (mDigitsContainer == null) {
-            if (!isT9On()) {
-                toggleT9();
-//                mT9Top.setVisibility(View.GONE);
-            }else{
-//                mT9Top.setVisibility(View.GONE);
-            }
-        } else {
-            LinearLayout.LayoutParams digitsLayout = (LayoutParams) mDigitsContainer.getLayoutParams();
-            if (!isT9On()) {
-                toggleT9();
-                digitsLayout.weight = 0.2f;
-//                mT9Top.setVisibility(View.GONE);
-            } else {
-                digitsLayout.weight = 0.1f;
-//                mT9Top.setVisibility(View.GONE);
-            }
-            mDigitsContainer.setLayoutParams(digitsLayout);
-        }
-        return;
-    }
+//    private void hideT9 () {
+//        if (mDigitsContainer == null) {
+//            if (!isT9On()) {
+//                toggleT9();
+////                mT9Top.setVisibility(View.GONE);
+//            }else{
+////                mT9Top.setVisibility(View.GONE);
+//            }
+//        } else {
+//            LinearLayout.LayoutParams digitsLayout = (LayoutParams) mDigitsContainer.getLayoutParams();
+//            if (!isT9On()) {
+//                toggleT9();
+//                digitsLayout.weight = 0.2f;
+////                mT9Top.setVisibility(View.GONE);
+//            } else {
+//                digitsLayout.weight = 0.1f;
+////                mT9Top.setVisibility(View.GONE);
+//            }
+//            mDigitsContainer.setLayoutParams(digitsLayout);
+//        }
+//        return;
+//    }
 
     /**
      * Toggles between expanded list and dialpad
@@ -1109,7 +1111,6 @@ public class DialpadFragment extends Fragment
 //			}
 
 		} else {
-			
 			mShenduNewContactsT9List.setVisibility(View.GONE);
 			mShenduDialpadCallLogFragmentView.setVisibility(View.VISIBLE);
 			mShenduDialpadCallLogFragment.setMenuVisibility(true);
@@ -1846,11 +1847,11 @@ public class DialpadFragment extends Fragment
                 }
             }
             // Log.i(TAG, "Displaying normal Dialer UI.");
-            if (mDigitsContainer != null) {
-                mDigitsContainer.setVisibility(View.VISIBLE);
-            } else {
-                mDigits.setVisibility(View.VISIBLE);
-            }
+//            if (mDigitsContainer != null) {
+////                mDigitsContainer.setVisibility(View.VISIBLE);
+//            } else {
+//                mDigits.setVisibility(View.VISIBLE);
+//            }
             if (mDialpad != null) mDialpad.setVisibility(View.VISIBLE);
             if (mDialButtonContainer != null) mDialButtonContainer.setVisibility(View.VISIBLE);
         	/**shutao 2012-11-2*/

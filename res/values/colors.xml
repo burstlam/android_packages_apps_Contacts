@@ -106,7 +106,7 @@
     <color name="contact_detail_fragment">#ffffff</color>
     
     <!-- shendu 2012-10-15  The default background color -->
-    <color name="shendu_high_light">#F48F0C</color>
+    <color name="shendu_high_light">#ffdb9f0f</color>
     <!--shutao 2012-10-15 callDetail -->
     <color name="shendu_calldetail_list_text_color">#595959</color>
     <color name="shendu_calldetail_blue_text_color">#35B5E5</color>
@@ -116,10 +116,13 @@
      <color name="shendu_name_avatar_text_color">#FFFFFF</color>
      <!-- Wang 2012-11-8  text color for theme -->
      <color name="shendu_primary_text_color">#333333</color>
-     <color name="shendu_secondary_text_color">#777777</color>
+     <color name="shendu_secondary_text_color">#ff686a6e</color>
      <!-- Wang 2012-12-24  text color for FastSearch -->
      <color name="shendu_fastsearch_button_text_color_normal">#fff</color>
      <color name="shendu_fastsearch_button_text_color_disabled">#1a000000</color>
      <!-- shutao 2012-12-25 -->
      <color name="shendu_dialpad_fragment_dial_text_color">#FFFFFF</color>
+     <!-- shutao 2013-1-29 -->
+     <color name="shendu_dialpad_input_number_color">#ff434446</color>
+     <color name="shendu_call_log_name_text_color">#ff343537</color>
 </resources>

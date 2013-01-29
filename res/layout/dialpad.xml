@@ -15,8 +15,11 @@
 -->
 
 <!-- Dialpad in the Phone app. -->
-<com.android.contacts.widget.ShenduDialpadLayout
+<FrameLayout 
     xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+<com.android.contacts.widget.ShenduDialpadLayout
     android:id="@+id/dialpad"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -95,3 +98,9 @@
             android:contentDescription="@string/description_image_button_pound" />
     </TableRow>
 </com.android.contacts.widget.ShenduDialpadLayout>
+<ImageView 
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:src="@drawable/shendu_dial_num_bg"
+    />
+</FrameLayout>
