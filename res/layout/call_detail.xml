@@ -62,8 +62,6 @@
                 android:scaleType="centerCrop" />
         </view>
 
-     
-
        <LinearLayout
             android:id="@+id/shendu_calllog_data_linear"
             android:layout_width="match_parent"
@@ -119,7 +117,7 @@
                     android:maxWidth="150dp"
                     android:singleLine="true"
                     android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:textColor="#000000" />
+                    android:textColor="#ff434446" />
             </RelativeLayout>
 
             <View
@@ -143,7 +141,7 @@
                 android:layout_height="1dip"
                 android:layout_marginLeft="@dimen/call_log_outer_margin"
                 android:layout_marginRight="@dimen/call_log_outer_margin"
-                android:background="@android:color/holo_blue_light" />
+                 />
 
             <TextView
                 android:id="@+id/shendu_calllog_text"
@@ -162,7 +160,7 @@
                 android:layout_height="1dip"
                 android:layout_marginLeft="@dimen/call_log_outer_margin"
                 android:layout_marginRight="@dimen/call_log_outer_margin"
-                android:background="@android:color/holo_blue_light" />
+                android:background="@color/shendu_calldetail_blue_text_color" />
         </LinearLayout>
     </RelativeLayout>
 

@@ -184,7 +184,7 @@ public class GroupBrowseListAdapter extends BaseAdapter {
         if (entry.isFirstGroupInAccount()) {
             bindHeaderView(entry, viewCache);
             viewCache.accountHeader.setVisibility(View.VISIBLE);
-            viewCache.divider.setVisibility(View.GONE);
+//            viewCache.divider.setVisibility(View.GONE);
             if (position == 0) {
                 // Have the list's top padding in the first header.
                 //
@@ -197,7 +197,7 @@ public class GroupBrowseListAdapter extends BaseAdapter {
             }
         } else {
             viewCache.accountHeader.setVisibility(View.GONE);
-            viewCache.divider.setVisibility(View.VISIBLE);
+//            viewCache.divider.setVisibility(View.VISIBLE);
             viewCache.accountHeaderExtraTopPadding.setVisibility(View.GONE);
         }
 

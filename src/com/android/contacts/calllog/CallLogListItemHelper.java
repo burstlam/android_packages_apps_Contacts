@@ -66,15 +66,15 @@ import android.view.View;
         if (canPlay) {
             // Playback action takes preference.
             configurePlaySecondaryAction(views, isHighlighted);
-            views.dividerView.setVisibility(View.VISIBLE);
+//            views.dividerView.setVisibility(View.VISIBLE);
         } else if (canCall) {
             // Call is the secondary action.
             configureCallSecondaryAction(views, details);
-            views.dividerView.setVisibility(View.VISIBLE);
+//            views.dividerView.setVisibility(View.VISIBLE);
         } else {
             // No action available.
             views.secondaryActionView.setVisibility(View.GONE);
-            views.dividerView.setVisibility(View.GONE);
+//            views.dividerView.setVisibility(View.GONE);
         }
     }
 
@@ -84,7 +84,7 @@ import android.view.View;
         views.secondaryActionView.setVisibility(View.VISIBLE);
 //        views.secondaryActionView.setImageResource(R.drawable.ic_ab_dialer_holo_dark);
         /** shutao 2012-10-16*/
-        views.secondaryActionView.setImageResource(R.drawable.shendu_arrow);
+//        views.secondaryActionView.setImageResource(R.drawable.shendu_arrow);
         views.secondaryActionView.setContentDescription(getCallActionDescription(details));
     }
 

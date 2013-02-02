@@ -13,7 +13,7 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<resources>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
     <style name="DialtactsTheme"
            parent="@style/DialtactsTheme1">
         <item name="activated_background">@drawable/list_item_activated_background</item>
@@ -71,12 +71,13 @@
         <item name="android:listViewStyle">@style/ListViewStyle</item>
     </style>
 
-    <style name="CallDetailActivityTheme1" parent="@android:style/Theme.Holo.Light">
-        <item name="android:windowBackground">@drawable/shendu_background_dial_holo_dark</item>
+    <style name="CallDetailActivityTheme1" parent="@android:style/Theme.Holo.Light.DarkActionBar">
+        <item name="android:windowBackground">@drawable/shendu_background_bg</item>
         <item name="android:gravity">top</item>
-        <item name="android:actionBarStyle">@*android:style/Widget.Holo.Light.ActionBar</item>
         <item name="android:listViewStyle">@style/ListViewStyle</item>
     </style>
+    
+    
 
     <style name="CallDetailActivityTheme" parent="@style/CallDetailActivityTheme1">
         <!-- CallLog -->

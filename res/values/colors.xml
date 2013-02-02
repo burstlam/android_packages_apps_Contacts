@@ -62,7 +62,7 @@
     <color name="detail_tab_carousel_tab_label_color">#EEEEEE</color>
 
     <!-- Color of the text for buttons in the action bar  --><!-- Wang:2012-11-7-->
-    <color name="action_bar_button_text_color">#343434</color>
+    <color name="action_bar_button_text_color">#ffc7c7c7</color>
 
     <!--  Color of the status message for starred contacts in the People app -->
     <color name="people_contact_tile_status_color">#CCCCCC</color>
@@ -109,10 +109,10 @@
     <color name="shendu_high_light">#ffdb9f0f</color>
     <!--shutao 2012-10-15 callDetail -->
     <color name="shendu_calldetail_list_text_color">#595959</color>
-    <color name="shendu_calldetail_blue_text_color">#35B5E5</color>
+    <color name="shendu_calldetail_blue_text_color">#ff2990d2</color>
     <color name="shendu_group_title">#35B5E5</color>
      <!--Wang 2012-11-1 name avatar ui -->
-     <color name="shendu_name_avatar_background">#7acdf3</color>
+     <color name="shendu_name_avatar_background">#ff5daee3</color>
      <color name="shendu_name_avatar_text_color">#FFFFFF</color>
      <!-- Wang 2012-11-8  text color for theme -->
      <color name="shendu_primary_text_color">#333333</color>

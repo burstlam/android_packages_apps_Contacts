@@ -1069,16 +1069,17 @@ public class DialpadFragment extends Fragment
 			return;
 		final int length = mDigits.length();
 		if (length > 0) {
-			if(mDigits.getText().toString().equals("1")){
-				if(	mT9List.getVisibility() == View.VISIBLE){
-					mShenduDialpadCallLogFragmentView.setVisibility(View.VISIBLE);
-					mShenduDialpadCallLogFragment.setMenuVisibility(true);
-					mShenduNewContactsT9List.setVisibility(View.GONE);
-					mT9List.setVisibility(View.GONE);
-					getActivity().invalidateOptionsMenu();
-				}
-				return;
-			}
+			//shutao 2013-1-30   
+//			if(mDigits.getText().toString().equals("1")){
+//				if(	mT9List.getVisibility() == View.VISIBLE){
+//					mShenduDialpadCallLogFragmentView.setVisibility(View.VISIBLE);
+//					mShenduDialpadCallLogFragment.setMenuVisibility(true);
+//					mShenduNewContactsT9List.setVisibility(View.GONE);
+//					mT9List.setVisibility(View.GONE);
+//					getActivity().invalidateOptionsMenu();
+//				}
+//				return;
+//			}
 			/** shutao 2012-9-21*/
 //			mShenduContactAdapter.getFilter().filter(mDigits.getText().toString());
 			mShenduContactAdapter.search(mDigits.getText().toString(),isAll);

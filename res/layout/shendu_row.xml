@@ -7,7 +7,7 @@
         android:id="@+id/row_linear"
         android:layout_width="fill_parent"
         android:layout_height="@dimen/shendu_dialpad_list_height"
-        android:background="@drawable/shendu_list_selector" >
+        android:background="?android:attr/selectableItemBackground" >
 
         <QuickContactBadge
             android:id="@+id/rowBadge"

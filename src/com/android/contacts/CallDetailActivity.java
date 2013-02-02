@@ -915,26 +915,34 @@ public class CallDetailActivity extends Activity implements ProximitySensorAware
     private void configureActionBar() {
 		ActionBar actionBar = getActionBar();
 		if (actionBar != null) {
-			TextView shendu_title = new TextView(this);
-			shendu_title.setTextColor(getResources().getColor(R.color.action_bar_button_text_color));
-			shendu_title.setTextSize(17);
-			shendu_title.setText(this.getResources().getString(
+//			TextView shendu_title = new TextView(this);
+//			shendu_title.setTextColor(getResources().getColor(R.color.action_bar_button_text_color));
+//			shendu_title.setTextSize(17);
+//			shendu_title.setText(this.getResources().getString(
+//					R.string.callDetailTitle));
+
+//			actionBar.setCustomView(shendu_title, new ActionBar.LayoutParams(
+//					LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+//			ActionBar.LayoutParams shendu_tilte_lp = (ActionBar.LayoutParams) shendu_title
+//					.getLayoutParams();
+//			shendu_tilte_lp.leftMargin = 20;
+//			shendu_tilte_lp.gravity = shendu_tilte_lp.gravity
+//					& ~Gravity.HORIZONTAL_GRAVITY_MASK ;
+//			actionBar.setCustomView(shendu_title, shendu_tilte_lp);
+//			int change = ActionBar.DISPLAY_HOME_AS_UP
+//					| ActionBar.DISPLAY_SHOW_HOME;\
+			actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_TITLE,
+                    ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_TITLE
+                    | ActionBar.DISPLAY_SHOW_HOME);
+			int titleId = Resources.getSystem().getIdentifier(  
+                    "action_bar_title", "id", "android");  
+           TextView shendu_title = (TextView) findViewById(titleId);
+           shendu_title.setTextColor(getResources().getColor(R.color.action_bar_button_text_color));
+			actionBar.setTitle("   "+this.getResources().getString(
 					R.string.callDetailTitle));
-
-			actionBar.setCustomView(shendu_title, new ActionBar.LayoutParams(
-					LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-
-			ActionBar.LayoutParams shendu_tilte_lp = (ActionBar.LayoutParams) shendu_title
-					.getLayoutParams();
-			shendu_tilte_lp.rightMargin = 20;
-			shendu_tilte_lp.gravity = shendu_tilte_lp.gravity
-					& ~Gravity.HORIZONTAL_GRAVITY_MASK | Gravity.RIGHT;
-			actionBar.setCustomView(shendu_title, shendu_tilte_lp);
-			int change = ActionBar.DISPLAY_HOME_AS_UP
-					| ActionBar.DISPLAY_SHOW_HOME;
-			actionBar.setDisplayOptions(change);
-			actionBar.setDisplayOptions(change | ActionBar.DISPLAY_SHOW_CUSTOM,
-					ActionBar.DISPLAY_SHOW_CUSTOM);
+//			actionBar.setDisplayOptions(change);
+//			actionBar.setDisplayOptions(change | ActionBar.DISPLAY_SHOW_CUSTOM,
+//					ActionBar.DISPLAY_SHOW_CUSTOM);
 			actionBar.setBackgroundDrawable(getResources().getDrawable(R.drawable.ab_solid_custom_blue_inverse_holo));
 		}
 	}
