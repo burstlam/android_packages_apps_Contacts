@@ -205,7 +205,7 @@ public class CallDetailHistoryAdapter extends BaseAdapter {
 			durationView.setVisibility(View.VISIBLE);
 			durationView.setText(formatDuration(details.duration));
 		}
-		shendu_number.setText(details.formattedNumber);
+		shendu_number.setText(details.formattedNumber.toString().replace(" ", ""));
 		return result;
 	}
 

@@ -28,6 +28,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
+            android:layout_marginLeft="9.5dp"
+            android:layout_marginRight="4.5dp"
             class="com.android.contacts.calllog.CallTypeIconsView" />
         <LinearLayout 
                 android:layout_width="match_parent"
@@ -68,18 +70,22 @@
             android:id="@+id/shendu_call_detail_number"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:maxWidth="83dp"
+            android:ellipsize="middle"
+            android:maxWidth="88dp"
+            android:singleLine="true"
+            android:textSize="@dimen/shendu_call_detail_date_text_s_size"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textColor="@color/shendu_calldetail_list_text_color" />
 
         <TextView
             android:id="@+id/shendu_call_detail_attribution"
-            android:layout_width="wrap_content"
+            android:layout_width="61dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
+            android:gravity="left"
             android:ellipsize="end"
-            android:maxWidth="61dp"
+            android:singleLine="true"
+            android:textSize="@dimen/shendu_call_detail_date_text_s_size"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textColor="@color/shendu_calldetail_list_text_color" />
       <TextView
@@ -87,6 +93,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/call_log_icon_margin"
+            android:textSize="@dimen/shendu_call_detail_date_text_s_size"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textColor="@color/shendu_calldetail_list_text_color" />
 
@@ -95,6 +102,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
+            android:textSize="@dimen/shendu_call_detail_date_text_s_size"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textColor="@color/shendu_calldetail_list_text_color" />
 

@@ -88,9 +88,10 @@
 
                 <ImageView
                     android:id="@+id/contact_background"
-                    android:layout_width="64dip"
-                    android:layout_height="64dip"
+                    android:layout_width="56dip"
+                    android:layout_height="56dip"
                     android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
                     android:layout_marginLeft="@dimen/call_detail_contact_name_margin"
                     android:adjustViewBounds="true"
                     android:scaleType="centerCrop" />
@@ -151,13 +152,14 @@
                 android:layout_marginLeft="@dimen/call_detail_contact_name_margin"
                 android:layout_marginTop="@dimen/call_log_icon_margin"
                 android:text="@string/recentCallsIconLabel"
+                android:textSize="@dimen/shendu_call_detail_date_text_size"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textColor="@color/shendu_calldetail_blue_text_color" />
 
             <View
                 android:id="@+id/shendu_view_blue_separator"
                 android:layout_width="match_parent"
-                android:layout_height="1dip"
+                android:layout_height="1.5dip"
                 android:layout_marginLeft="@dimen/call_log_outer_margin"
                 android:layout_marginRight="@dimen/call_log_outer_margin"
                 android:background="@color/shendu_calldetail_blue_text_color" />
@@ -179,6 +181,7 @@
         android:layout_marginRight="@dimen/call_log_outer_margin"
         android:divider="@drawable/shendu_selected_bottom_divider"
         android:fadingEdge="none"
+        android:dividerHeight="0.5dp"
         android:scrollbarStyle="outsideOverlay" />
 
     <!--

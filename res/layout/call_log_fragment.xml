@@ -44,6 +44,7 @@
             android:layout_marginRight="@dimen/shendu_dialpad_list_marginright"
             android:scrollbarStyle="outsideOverlay"
             android:divider="@drawable/shendu_selected_bottom_divider"
+            android:dividerHeight="0.5dp"
         />
         <TextView android:id="@android:id/empty"
             android:layout_width="match_parent"

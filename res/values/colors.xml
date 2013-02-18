@@ -108,7 +108,7 @@
     <!-- shendu 2012-10-15  The default background color -->
     <color name="shendu_high_light">#ffdb9f0f</color>
     <!--shutao 2012-10-15 callDetail -->
-    <color name="shendu_calldetail_list_text_color">#595959</color>
+    <color name="shendu_calldetail_list_text_color">#ff686a6e</color>
     <color name="shendu_calldetail_blue_text_color">#ff2990d2</color>
     <color name="shendu_group_title">#35B5E5</color>
      <!--Wang 2012-11-1 name avatar ui -->

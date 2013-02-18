@@ -193,8 +193,8 @@
     <string name="callDetailTitle" msgid="5340227785196217938">"通话详情"</string>
     <string name="toast_call_detail_error" msgid="7200975244804730096">"无法读取所请求呼叫的详细信息。"</string>
     <string name="type_incoming" msgid="6502076603836088532">"来电"</string>
-    <string name="type_outgoing" msgid="343108709599392641">"外拨电话"</string>
-    <string name="type_missed" msgid="2720502601640509542">"未接电话"</string>
+    <string name="type_outgoing" msgid="343108709599392641">"外拨"</string>
+    <string name="type_missed" msgid="2720502601640509542">"未接"</string>
     <string name="type_voicemail" msgid="5153139450668549908">"语音信箱"</string>
     <string name="actionIncomingCall" msgid="6028930669817038600">"来电"</string>
     <string name="callBack" msgid="5498224409038809224">"回电"</string>
