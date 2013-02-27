@@ -68,6 +68,9 @@ public class ContactLoaderFragment extends Fragment implements FragmentKeyListen
     /** The launch code when picking a ringtone */
     private static final int REQUEST_CODE_PICK_VIBRATION = 2;
 
+    /** The launch code when picking a notification */
+    private static final int REQUEST_CODE_PICK_NOTIFICATION = 3;
+
     private final int VIB_OK = 10;
     private final int VIB_CANCEL = 11;
 
@@ -82,6 +85,7 @@ public class ContactLoaderFragment extends Fragment implements FragmentKeyListen
     private boolean mSendToVoicemailState;
     private String mCustomRingtone;
     private String mCustomVibration;
+    private String mCustomNotification;
 
     /**
      * This is a listener to the {@link ContactLoaderFragment} and will be notified when the
@@ -276,6 +280,7 @@ public class ContactLoaderFragment extends Fragment implements FragmentKeyListen
             mSendToVoicemailState = mContactData.isSendToVoicemail();
             mCustomRingtone = mContactData.getCustomRingtone();
             mCustomVibration = mContactData.getCustomVibration();
+            mCustomNotification = mContactData.getCustomNotification();
         }
 
         // Hide telephony-related settings (ringtone, send to voicemail)
@@ -292,6 +297,11 @@ public class ContactLoaderFragment extends Fragment implements FragmentKeyListen
         final MenuItem optionsVibration = menu.findItem(R.id.menu_set_vibration);
         if (optionsVibration != null) {
             optionsVibration.setVisible(mOptionsMenuOptions);
+        }
+
+        final MenuItem optionsNotification = menu.findItem(R.id.menu_set_notification);
+        if (optionsNotification != null) {
+            optionsNotification.setVisible(mOptionsMenuOptions);
         }
 
         final MenuItem editMenu = menu.findItem(R.id.menu_edit);
@@ -344,6 +354,11 @@ public class ContactLoaderFragment extends Fragment implements FragmentKeyListen
             case R.id.menu_set_vibration: {
                 if (mContactData == null) return false;
                 doPickVibration();
+                return true;
+            }
+            case R.id.menu_set_notification: {
+                if (mContactData == null) return false;
+                doPickNotification();
                 return true;
             }
             case R.id.menu_share: {
@@ -482,6 +497,31 @@ public class ContactLoaderFragment extends Fragment implements FragmentKeyListen
         newFragment.show(getFragmentManager(), "dialog");
     }
 
+    private void doPickNotification() {
+
+        Intent intent = new Intent(RingtoneManager.ACTION_RINGTONE_PICKER);
+        // Allow user to pick 'Default'
+        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_DEFAULT, true);
+        // Show only ringtones
+        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_NOTIFICATION);
+        // Don't show 'Silent'
+        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_SILENT, false);
+
+        Uri notificationUri;
+        if (mCustomNotification != null) {
+            notificationUri = Uri.parse(mCustomNotification);
+        } else {
+            // Otherwise pick default ringtone Uri so that something is selected.
+            notificationUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        }
+
+        // Put checkmark next to the current ringtone for this contact
+        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_EXISTING_URI, notificationUri);
+
+        // Launch!
+        startActivityForResult(intent, REQUEST_CODE_PICK_NOTIFICATION);
+    }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode != Activity.RESULT_OK) {
@@ -492,6 +532,11 @@ public class ContactLoaderFragment extends Fragment implements FragmentKeyListen
             case REQUEST_CODE_PICK_RINGTONE: {
                 Uri pickedUri = data.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI);
                 handleRingtonePicked(pickedUri);
+                break;
+            }
+            case REQUEST_CODE_PICK_NOTIFICATION: {
+                Uri pickedUri = data.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI);
+                handleNotificationPicked(pickedUri);
                 break;
             }
         }
@@ -516,6 +561,17 @@ public class ContactLoaderFragment extends Fragment implements FragmentKeyListen
         }
         Intent intent = ContactSaveService.createSetVibration(
                 mContext, mLookupUri, mCustomVibration);
+        mContext.startService(intent);
+    }
+
+    private void handleNotificationPicked(Uri pickedUri) {
+        if (pickedUri == null || RingtoneManager.isDefault(pickedUri)) {
+            mCustomNotification = null;
+        } else {
+            mCustomNotification = pickedUri.toString();
+        }
+        Intent intent = ContactSaveService.createSetNotification(
+                mContext, mLookupUri, mCustomNotification);
         mContext.startService(intent);
     }
 

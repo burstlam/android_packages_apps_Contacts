@@ -34,6 +34,10 @@
         android:title="@string/menu_set_ring_tone" />
 
     <item
+        android:id="@+id/menu_set_notification"
+        android:title="@string/menu_set_notification" />
+
+    <item
         android:id="@+id/menu_set_vibration"
         android:title="@string/menu_set_vib_ration" />
 
