@@ -19,6 +19,7 @@ package com.android.contacts;
 import com.android.contacts.calllog.CallTypeHelper;
 import com.android.contacts.calllog.PhoneNumberHelper;
 import com.android.contacts.test.NeededForTesting;
+import com.android.phone.location.PhoneLocation;
 
 import android.content.res.Resources;
 import android.graphics.Typeface;
@@ -106,13 +107,14 @@ public class PhoneCallDetailsHelper {
         final CharSequence labelText;
         final CharSequence displayNumber =
             mPhoneNumberHelper.getDisplayNumber(details.number, details.formattedNumber);
+        final String location = PhoneLocation.getCityFromPhone(details.number.toString());
         if (TextUtils.isEmpty(details.name)) {
             nameText = displayNumber;
-            if (TextUtils.isEmpty(details.geocode)
+            if (TextUtils.isEmpty(location)
                     || mPhoneNumberHelper.isVoicemailNumber(details.number)) {
                 numberText = mResources.getString(R.string.call_log_empty_gecode);
             } else {
-                numberText = details.geocode;
+                numberText = location;
             }
             labelText = null;
         } else {
