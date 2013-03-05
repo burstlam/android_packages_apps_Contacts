@@ -29,6 +29,7 @@
     <dimen name="shendu_dialpad_left">0.5dip</dimen>
     <dimen name="shendu_dialpad_top">2dip</dimen>
     <dimen name="shendu_dialpad_right">1dip</dimen>
+    <dimen name="dialpad_horizontal_margin">0dip</dimen>
     <!-- shutao: 2013-1-29 -->
     <dimen name="shendu_dialpad_list_marginleft">10dip</dimen>
     <dimen name="shendu_dialpad_list_marginright">10dip</dimen>
