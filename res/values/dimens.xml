@@ -281,7 +281,7 @@
      <dimen name="shendu_dialpad_list_marginleft">10dip</dimen>
      <dimen name="shendu_dialpad_list_marginright">10dip</dimen>
      <dimen name="shendu_dialpad_list_height">64dp</dimen>
-     <dimen name="shendu_dialpad_new_contacts_list_hieght">66.5dip</dimen>
+     <dimen name="shendu_dialpad_new_contacts_list_hieght">64dip</dimen>
      <dimen name="shendu_call_detail_date_text_size">16sp</dimen>
      <dimen name="shendu_call_detail_date_text_s_size">14sp</dimen>
      <dimen name="shendu_call_detail_text_size">12sp</dimen>
