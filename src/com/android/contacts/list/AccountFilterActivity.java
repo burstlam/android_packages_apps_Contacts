@@ -30,16 +30,19 @@ import android.content.AsyncTaskLoader;
 import android.content.Context;
 import android.content.Intent;
 import android.content.Loader;
+import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -71,9 +74,13 @@ public class AccountFilterActivity extends ContactsActivity
 
         mListView = (ListView) findViewById(com.android.internal.R.id.list);
         mListView.setOnItemClickListener(this);
-
         ActionBar actionBar = getActionBar();
+       
         if (actionBar != null) {
+        	int titleId = Resources.getSystem().getIdentifier(  
+                    "action_bar_title", "id", "android"); 
+            TextView shendu_title = (TextView) findViewById(titleId);
+            shendu_title.setTextColor(getResources().getColor(R.color.action_bar_button_text_color));
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
