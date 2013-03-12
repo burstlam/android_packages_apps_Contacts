@@ -47,8 +47,9 @@
 
     <include
         android:id="@+id/fast_search_inputpad"
-        android:layout_width="195dip"
-        android:layout_height="291dip"
+        android:layout_width="@dimen/fast_search_inputpad_width"
+        android:layout_height="@dimen/fast_search_inputpad_height"
+    	android:layout_marginRight="@dimen/fast_search_inputpad_margin_right"
         layout="@layout/shendu_fast_search_inputpad_layout"
         android:layout_gravity="right|bottom"/>
               

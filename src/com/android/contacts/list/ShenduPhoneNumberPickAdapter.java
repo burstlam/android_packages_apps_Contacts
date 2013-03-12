@@ -150,7 +150,7 @@ public class ShenduPhoneNumberPickAdapter extends ShenduPickAdapter{
         // entries in the group show just their data (e.g. phone number, email address).
         cursor.moveToPosition(position);
         boolean isFirstEntry = true;
-        boolean showBottomDivider = true;
+        //boolean showBottomDivider = true;
         final long currentContactId = cursor.getLong(PhoneQuery.PHONE_CONTACT_ID);
         if (cursor.moveToPrevious() && !cursor.isBeforeFirst()) {
             final long previousContactId = cursor.getLong(PhoneQuery.PHONE_CONTACT_ID);
@@ -159,7 +159,7 @@ public class ShenduPhoneNumberPickAdapter extends ShenduPickAdapter{
             }
         }
         cursor.moveToPosition(position);
-        if (cursor.moveToNext() && !cursor.isAfterLast()) {
+        /*if (cursor.moveToNext() && !cursor.isAfterLast()) {
             final long nextContactId = cursor.getLong(PhoneQuery.PHONE_CONTACT_ID);
             if (currentContactId == nextContactId) {
                 // The following entry should be in the same group, which means we don't want a
@@ -169,9 +169,10 @@ public class ShenduPhoneNumberPickAdapter extends ShenduPickAdapter{
                 showBottomDivider = false;
             }
         }
-        cursor.moveToPosition(position);
+        
+        cursor.moveToPosition(position);*/
 
-        bindSectionHeaderAndDivider(view, position);
+        bindSectionHeaderAndDivider(view, position,cursor);
         if (isFirstEntry) {
             bindName(view, cursor);
             bindPhoto(view, cursor);
@@ -182,7 +183,7 @@ public class ShenduPhoneNumberPickAdapter extends ShenduPickAdapter{
             view.removePhotoView(true, false);
         }
         bindPhoneNumber(view, cursor);
-        view.setDividerVisible(showBottomDivider);
+        //view.setDividerVisible(showBottomDivider);
         /*----------*/
         bindCheckBox(view, cursor, position);
     }
@@ -238,11 +239,44 @@ public class ShenduPhoneNumberPickAdapter extends ShenduPickAdapter{
         view.showData(cursor, PhoneQuery.PHONE_NUMBER);
     }
 
-    protected void bindSectionHeaderAndDivider(final ContactListItemView view, int position) {
+    protected void bindSectionHeaderAndDivider(final ContactListItemView view, int position, Cursor cursor) {
         if (isSectionHeaderDisplayEnabled()) {
             Placement placement = getItemPlacementInSection(position);
             view.setSectionHeader(placement.firstInSection ? placement.sectionHeader : null);
-            view.setDividerVisible(!placement.lastInSection);
+            //view.setDividerVisible(!placement.lastInSection);
+            boolean first = placement.firstInSection;
+            boolean last = placement.lastInSection;
+            if(position==cursor.getCount()-1){//add, for the last item do not display divider line
+                view.setDividerVisible(false);
+            	if(first){
+                	view.setShenduRoundedBackground(R.drawable.shendu_listview_item_overall);
+            	}else{
+                	view.setShenduRoundedBackground(R.drawable.shendu_listview_item_bottom);
+            	}
+            }else{
+                view.setDividerVisible(!placement.lastInSection);
+                if(first && last){
+                	view.setShenduRoundedBackground(R.drawable.shendu_listview_item_overall);
+                }else if(first && !last){
+                	view.setShenduRoundedBackground(R.drawable.shendu_listview_item_top);
+                }else if(!first && last){
+                	view.setShenduRoundedBackground(R.drawable.shendu_listview_item_bottom);
+                }else if(!first && !last){
+                	view.setShenduRoundedBackground(R.drawable.shendu_listview_item_middle);
+                }
+            }
+            long currentContactId = cursor.getLong(PhoneQuery.PHONE_CONTACT_ID);
+            if (cursor.moveToNext() && !cursor.isAfterLast()) {
+                final long nextContactId = cursor.getLong(PhoneQuery.PHONE_CONTACT_ID);
+                if (currentContactId == nextContactId) {
+                    // The following entry should be in the same group, which means we don't want a
+                    // divider between them.
+                    // TODO: we want a different divider than the divider between groups. Just hiding
+                    // this divider won't be enough.
+                	view.setDividerVisible(false);
+                }
+            }
+            cursor.moveToPosition(position);
         } else {
             view.setSectionHeader(null);
             view.setDividerVisible(true);

@@ -32,6 +32,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Entity;
 import android.content.DialogInterface.OnShowListener;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
@@ -518,11 +519,14 @@ public abstract class LabeledEditorView extends LinearLayout implements Editor, 
         private final LayoutInflater mInflater;
         private boolean mHasCustomSelection;
         private int mTextColor;
+        private int mTextSize;
 
         public EditTypeAdapter(Context context) {
             super(context, 0);
             mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             mTextColor = context.getResources().getColor(R.color.secondary_text_color);
+            //mTextColor = Color.BLUE;
+            mTextSize = context.getResources().getDimensionPixelSize(R.dimen.contacts_text_size);
 
             if (mType != null && mType.customColumn != null) {
 
@@ -561,8 +565,10 @@ public abstract class LabeledEditorView extends LinearLayout implements Editor, 
                 textView = (TextView) mInflater.inflate(resource, parent, false);
                 textView.setAllCaps(true);
                 textView.setGravity(Gravity.RIGHT | Gravity.CENTER_VERTICAL);
+                //textView.setGravity(Gravity.CENTER);
                 textView.setTextAppearance(mContext, android.R.style.TextAppearance_Small);
                 textView.setTextColor(mTextColor);
+                //textView.setTextSize(mTextSize);
                 textView.setEllipsize(TruncateAt.MIDDLE);
             } else {
                 textView = (TextView) convertView;

@@ -51,7 +51,7 @@ public class ExchangeAccountType extends BaseAccountType {
         try {
             addDataKindStructuredName(context);
             addDataKindDisplayName(context);
-            addDataKindPhoneticName(context);
+            //addDataKindPhoneticName(context);//do not used,remove by hhl
             addDataKindNickname(context);
             addDataKindPhone(context);
             addDataKindEmail(context);
@@ -61,7 +61,7 @@ public class ExchangeAccountType extends BaseAccountType {
             addDataKindPhoto(context);
             addDataKindNote(context);
             addDataKindEvent(context);
-            addDataKindWebsite(context);
+            //addDataKindWebsite(context);
             addDataKindGroupMembership(context);
 
             mIsInitialized = true;
@@ -80,16 +80,16 @@ public class ExchangeAccountType extends BaseAccountType {
         kind.typeOverallMax = 1;
 
         kind.fieldList = Lists.newArrayList();
-        kind.fieldList.add(new EditField(StructuredName.PREFIX, R.string.name_prefix,
-                FLAGS_PERSON_NAME).setOptional(true));
+        //kind.fieldList.add(new EditField(StructuredName.PREFIX, R.string.name_prefix,
+                //FLAGS_PERSON_NAME).setOptional(true));
         kind.fieldList.add(new EditField(StructuredName.FAMILY_NAME,
                 R.string.name_family, FLAGS_PERSON_NAME));
         kind.fieldList.add(new EditField(StructuredName.MIDDLE_NAME,
                 R.string.name_middle, FLAGS_PERSON_NAME));
         kind.fieldList.add(new EditField(StructuredName.GIVEN_NAME,
                 R.string.name_given, FLAGS_PERSON_NAME));
-        kind.fieldList.add(new EditField(StructuredName.SUFFIX,
-                R.string.name_suffix, FLAGS_PERSON_NAME));
+        //kind.fieldList.add(new EditField(StructuredName.SUFFIX,
+                //R.string.name_suffix, FLAGS_PERSON_NAME));
 
         kind.fieldList.add(new EditField(StructuredName.PHONETIC_FAMILY_NAME,
                 R.string.name_phonetic_family, FLAGS_PHONETIC));
@@ -109,8 +109,8 @@ public class ExchangeAccountType extends BaseAccountType {
         kind.typeOverallMax = 1;
 
         kind.fieldList = Lists.newArrayList();
-        kind.fieldList.add(new EditField(StructuredName.PREFIX, R.string.name_prefix,
-                FLAGS_PERSON_NAME).setOptional(true));
+        //kind.fieldList.add(new EditField(StructuredName.PREFIX, R.string.name_prefix,
+                //FLAGS_PERSON_NAME).setOptional(true));
         if (!displayOrderPrimary) {
             kind.fieldList.add(new EditField(StructuredName.FAMILY_NAME,
                     R.string.name_family, FLAGS_PERSON_NAME));
@@ -126,8 +126,8 @@ public class ExchangeAccountType extends BaseAccountType {
             kind.fieldList.add(new EditField(StructuredName.FAMILY_NAME,
                     R.string.name_family, FLAGS_PERSON_NAME));
         }
-        kind.fieldList.add(new EditField(StructuredName.SUFFIX,
-                R.string.name_suffix, FLAGS_PERSON_NAME).setOptional(true));
+        //kind.fieldList.add(new EditField(StructuredName.SUFFIX,
+                //R.string.name_suffix, FLAGS_PERSON_NAME).setOptional(true));
 
         return kind;
     }
@@ -174,7 +174,7 @@ public class ExchangeAccountType extends BaseAccountType {
         kind.typeList.add(buildPhoneType(Phone.TYPE_WORK).setSpecificMax(2));
         kind.typeList.add(buildPhoneType(Phone.TYPE_FAX_WORK).setSecondary(true)
                 .setSpecificMax(1));
-        kind.typeList.add(buildPhoneType(Phone.TYPE_FAX_HOME).setSecondary(true)
+        /*kind.typeList.add(buildPhoneType(Phone.TYPE_FAX_HOME).setSecondary(true)
                 .setSpecificMax(1));
         kind.typeList
                 .add(buildPhoneType(Phone.TYPE_PAGER).setSecondary(true).setSpecificMax(1));
@@ -185,7 +185,7 @@ public class ExchangeAccountType extends BaseAccountType {
         kind.typeList
                 .add(buildPhoneType(Phone.TYPE_RADIO).setSecondary(true).setSpecificMax(1));
         kind.typeList.add(buildPhoneType(Phone.TYPE_ASSISTANT).setSecondary(true)
-                .setSpecificMax(1));
+                .setSpecificMax(1));*/
 
         kind.fieldList = Lists.newArrayList();
         kind.fieldList.add(new EditField(Phone.NUMBER, R.string.phoneLabelsGroup, FLAGS_PHONE));

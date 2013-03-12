@@ -79,6 +79,8 @@ public class ContactTileAdapter extends BaseAdapter {
 
     private boolean mIsQuickContactEnabled = false;
     private final int mPaddingInPixels;
+    
+    private int mIsStartFirst = 1; //add
 
     /**
      * Configures the adapter to filter and display contacts using different view types.
@@ -126,7 +128,7 @@ public class ContactTileAdapter extends BaseAdapter {
         // Converting padding in dips to padding in pixels
         /* Wang: */
         mPaddingInPixels = mContext.getResources()
-                .getDimensionPixelSize(R.dimen.shendu_contacts_tiles_padding);
+                .getDimensionPixelSize(R.dimen.account_container_left_padding);
 
         bindColumnIndices();
     }
@@ -413,6 +415,13 @@ public class ContactTileAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         int itemViewType = getItemViewType(position);
 
+        if(position==0){
+        	if(itemViewType == ViewTypes.STARRED){
+            	mIsStartFirst = 2;
+        	}else{
+        		mIsStartFirst = 1;
+        	}
+        }
         if (itemViewType == ViewTypes.DIVIDER) {
             // Checking For Divider First so not to cast convertView
             return convertView == null ? getDivider() : convertView;
@@ -425,8 +434,8 @@ public class ContactTileAdapter extends BaseAdapter {
             // Creating new row if needed
             contactTileRowView = new ContactTileRow(mContext, itemViewType);
         }
-
-        contactTileRowView.configureRow(contactList, position == getCount() - 1);
+        
+        contactTileRowView.configureRow(contactList, position == getCount() - 1 ,position);
         return contactTileRowView;
     }
 
@@ -523,18 +532,18 @@ public class ContactTileAdapter extends BaseAdapter {
         /**
          * Configures the row to add {@link ContactEntry}s information to the views
          */
-        public void configureRow(ArrayList<ContactEntry> list, boolean isLastRow) {
+        public void configureRow(ArrayList<ContactEntry> list, boolean isLastRow, int position) {
             int columnCount = mItemViewType == ViewTypes.FREQUENT ? 1 : mColumnCount;
 
             // Adding tiles to row and filling in contact information
             for (int columnCounter = 0; columnCounter < columnCount; columnCounter++) {
                 ContactEntry entry =
                         columnCounter < list.size() ? list.get(columnCounter) : null;
-                addTileFromEntry(entry, columnCounter, isLastRow);
+                addTileFromEntry(entry, columnCounter, isLastRow, position);
             }
         }
 
-        private void addTileFromEntry(ContactEntry entry, int childIndex, boolean isLastRow) {
+        private void addTileFromEntry(ContactEntry entry, int childIndex, boolean isLastRow ,int position) {
             final ContactTileView contactTile;
 
             if (getChildCount() <= childIndex) {
@@ -543,14 +552,14 @@ public class ContactTileAdapter extends BaseAdapter {
                 // We override onMeasure() for STARRED and we don't care the layout param there.
                 Resources resources = mContext.getResources();
                 FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
-                        ViewGroup.LayoutParams.WRAP_CONTENT,
+                        ViewGroup.LayoutParams.MATCH_PARENT,
                         ViewGroup.LayoutParams.WRAP_CONTENT);
 
                 /* Wang: */
                  params.setMargins(
-                 resources.getDimensionPixelSize(R.dimen.shendu_contacts_tiles_padding),
+                 resources.getDimensionPixelSize(R.dimen.account_container_left_padding),
                  0,
-                 resources.getDimensionPixelSize(R.dimen.shendu_contacts_tiles_padding),
+                 resources.getDimensionPixelSize(R.dimen.account_container_left_padding),
                  0);
 
                 contactTile.setLayoutParams(params);
@@ -561,7 +570,23 @@ public class ContactTileAdapter extends BaseAdapter {
                 contactTile = (ContactTileView) getChildAt(childIndex);
             }
             contactTile.loadFromContact(entry);
-
+            //add by hhl, for rounder background
+            if(mItemViewType == ViewTypes.FREQUENT){
+            	int rounderSize = getCount()-mIsStartFirst;
+            	int rounderPosition = position-mIsStartFirst;
+            	if(rounderSize==1){
+            		contactTile.setItemParentBackground(R.drawable.shendu_listview_item_overall);
+            	}else{
+            		if(isLastRow){
+                		contactTile.setItemParentBackground(R.drawable.shendu_listview_item_bottom);
+                	}else if(rounderPosition == 0){
+                		contactTile.setItemParentBackground(R.drawable.shendu_listview_item_top);
+                	}else{
+                		contactTile.setItemParentBackground(R.drawable.shendu_listview_item_middle);
+                	}
+            	}
+            }
+            
             switch (mItemViewType) {
                 case ViewTypes.STARRED_PHONE:
                 case ViewTypes.STARRED:
@@ -573,8 +598,11 @@ public class ContactTileAdapter extends BaseAdapter {
                     // contactTile.setPadding(childIndex == 0 ? mPaddingInPixels
                     // : 0,
                     // mPaddingInPixels, mPaddingInPixels, 0);
-                    contactTile.setPadding(childIndex == 0 ? mPaddingInPixels  : 0,
-                            mPaddingInPixels, mPaddingInPixels, 0);
+                    contactTile.setPadding(
+                    		childIndex == 0 ? mPaddingInPixels  : 0,
+                            mPaddingInPixels, 
+                            mPaddingInPixels, 
+                            0);
                     break;
                 case ViewTypes.FREQUENT:
                     contactTile.setHorizontalDividerVisibility(

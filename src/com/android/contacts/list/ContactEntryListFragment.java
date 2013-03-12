@@ -780,6 +780,7 @@ public abstract class ContactEntryListFragment<T extends ContactEntryListAdapter
         mAdapter.configureDefaultPartition(false, searchMode);
         mAdapter.setPhotoLoader(mPhotoManager);
         mListView.setAdapter(mAdapter);
+        mListView.setSelector(android.R.color.transparent);
 
         if (!isSearchMode()) {
             mListView.setFocusableInTouchMode(true);

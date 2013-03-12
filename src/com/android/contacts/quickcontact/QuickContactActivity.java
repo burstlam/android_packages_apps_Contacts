@@ -105,13 +105,13 @@ public class QuickContactActivity extends Activity {
     private FloatingChildLayout mFloatingLayout;
 
     private View mPhotoContainer;
-    private ViewGroup mTrack;
-    private HorizontalScrollView mTrackScroller;
-    private View mSelectedTabRectangle;
-    private View mLineAfterTrack;
+    //private ViewGroup mTrack;
+    //private HorizontalScrollView mTrackScroller; //remove by hhl,do not used
+    //private View mSelectedTabRectangle;
+    //private View mLineAfterTrack;
 
-    private ImageButton mOpenDetailsButton;
-    private ImageButton mOpenDetailsPushLayerButton;
+    //private ImageButton mOpenDetailsButton;
+    //private ImageButton mOpenDetailsPushLayerButton;
     private ViewPager mListPager;
 
     private ContactLoader mContactLoader;
@@ -195,13 +195,13 @@ public class QuickContactActivity extends Activity {
         mStopWatch.lap("l"); // layout inflated
 
         mFloatingLayout = (FloatingChildLayout) findViewById(R.id.floating_layout);
-        mTrack = (ViewGroup) findViewById(R.id.track);
-        mTrackScroller = (HorizontalScrollView) findViewById(R.id.track_scroller);
-        mOpenDetailsButton = (ImageButton) findViewById(R.id.open_details_button);
-        mOpenDetailsPushLayerButton = (ImageButton) findViewById(R.id.open_details_push_layer);
+        //mTrack = (ViewGroup) findViewById(R.id.track);
+        //mTrackScroller = (HorizontalScrollView) findViewById(R.id.track_scroller);
+        //mOpenDetailsButton = (ImageButton) findViewById(R.id.open_details_button);
+        //mOpenDetailsPushLayerButton = (ImageButton) findViewById(R.id.open_details_push_layer);
         mListPager = (ViewPager) findViewById(R.id.item_list_pager);
-        mSelectedTabRectangle = findViewById(R.id.selected_tab_rectangle);
-        mLineAfterTrack = findViewById(R.id.line_after_track);
+        //mSelectedTabRectangle = findViewById(R.id.selected_tab_rectangle);
+        //mLineAfterTrack = findViewById(R.id.line_after_track);
 
         mFloatingLayout.setOnOutsideTouchListener(new View.OnTouchListener() {
             @Override
@@ -221,13 +221,13 @@ public class QuickContactActivity extends Activity {
                 close(false);
             }
         };
-        mOpenDetailsButton.setOnClickListener(openDetailsClickHandler);
-        mOpenDetailsPushLayerButton.setOnClickListener(openDetailsClickHandler);
+        //mOpenDetailsButton.setOnClickListener(openDetailsClickHandler);
+        //mOpenDetailsPushLayerButton.setOnClickListener(openDetailsClickHandler);
     
 
         final Rect sourceBounds = intent.getSourceBounds();
         if (sourceBounds != null) {
-            mFloatingLayout.setChildTargetScreen(sourceBounds);
+            //mFloatingLayout.setChildTargetScreen(sourceBounds);
         }
 
         // find and prepare correct header view
@@ -344,8 +344,8 @@ public class QuickContactActivity extends Activity {
         final ResolveCache cache = ResolveCache.getInstance(this);
         final Context context = this;
 
-        mOpenDetailsButton.setVisibility(isMimeExcluded(Contacts.CONTENT_ITEM_TYPE) ? View.GONE
-                : View.VISIBLE);
+        //mOpenDetailsButton.setVisibility(isMimeExcluded(Contacts.CONTENT_ITEM_TYPE) ? View.GONE
+                //: View.VISIBLE);
 
         mDefaultsMap.clear();
 
@@ -450,18 +450,18 @@ public class QuickContactActivity extends Activity {
         mStopWatch.lap("mt"); // Mime types initialized
 
         // Add buttons for each mimetype
-        mTrack.removeAllViews();
+        /*mTrack.removeAllViews();
         for (String mimeType : mSortedActionMimeTypes) {
             final View actionView = inflateAction(mimeType, cache, mTrack);
             mTrack.addView(actionView);
-        }
+        }*/
 
         mStopWatch.lap("mt"); // Buttons added
 
         final boolean hasData = !mSortedActionMimeTypes.isEmpty();
-        mTrackScroller.setVisibility(hasData ? View.VISIBLE : View.GONE);
-        mSelectedTabRectangle.setVisibility(hasData ? View.VISIBLE : View.GONE);
-        mLineAfterTrack.setVisibility(hasData ? View.VISIBLE : View.GONE);
+        //mTrackScroller.setVisibility(hasData ? View.VISIBLE : View.GONE);
+        //mSelectedTabRectangle.setVisibility(hasData ? View.VISIBLE : View.GONE);
+        //mLineAfterTrack.setVisibility(hasData ? View.VISIBLE : View.GONE);
         mListPager.setVisibility(hasData ? View.VISIBLE : View.GONE);
     }
 
@@ -506,7 +506,8 @@ public class QuickContactActivity extends Activity {
     }
 
     private CheckableImageView getActionViewAt(int position) {
-        return (CheckableImageView) mTrack.getChildAt(position);
+    	return null;
+        //return (CheckableImageView) mTrack.getChildAt(position);
     }
 
     @Override
@@ -609,18 +610,18 @@ public class QuickContactActivity extends Activity {
     private class PageChangeListener extends SimpleOnPageChangeListener {
         @Override
         public void onPageSelected(int position) {
-            final CheckableImageView actionView = getActionViewAt(position);
-            mTrackScroller.requestChildRectangleOnScreen(actionView,
-                    new Rect(0, 0, actionView.getWidth(), actionView.getHeight()), false);
+            //final CheckableImageView actionView = getActionViewAt(position);
+            //mTrackScroller.requestChildRectangleOnScreen(actionView,
+                    //new Rect(0, 0, actionView.getWidth(), actionView.getHeight()), false);
         }
 
         @Override
         public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-            final RelativeLayout.LayoutParams layoutParams =
+            /*final RelativeLayout.LayoutParams layoutParams =
                     (RelativeLayout.LayoutParams) mSelectedTabRectangle.getLayoutParams();
             final int width = mSelectedTabRectangle.getWidth();
             layoutParams.leftMargin = (int) ((position + positionOffset) * width);
-            mSelectedTabRectangle.setLayoutParams(layoutParams);
+            mSelectedTabRectangle.setLayoutParams(layoutParams);*/
         }
     }
 

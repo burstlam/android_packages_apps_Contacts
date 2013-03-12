@@ -5,27 +5,22 @@
     android:orientation="vertical"
     android:background="@drawable/fastsearch_pad_bg"
     android:gravity="center"
-    android:paddingBottom="14dip"
-    android:paddingLeft="9dip"
-    android:paddingRight="9dip"
-    android:paddingTop="6dip"
-    android:visibility="gone"
->
+    android:paddingBottom="@dimen/fast_search_inputpad_padding_bottom"
+    android:paddingLeft="@dimen/fast_search_inputpad_padding_left"
+    android:paddingRight="@dimen/fast_search_inputpad_padding_left"
+    android:paddingTop="@dimen/fast_search_inputpad_padding_left"
+    >
+    <!-- 
+    -->
 
     <LinearLayout style="@style/FastSearchPadRowStyle">
-
         <EditText
             android:id="@+id/display"
-            android:layout_width="0dip"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="3" 
+            android:textSize="@dimen/fast_search_inputpad_edittext_size"
+            android:textColor="@color/fast_search_inputpad_edittext_color"
             android:background="@drawable/shendu_fastsearch_edit_text_holo_light"/>
-
-        <Button
-            android:id="@+id/delete"
-            style="@style/FastSearchPadButtonStyle"
-            android:background="@drawable/fastsearch_delete_btn"
-            android:layout_marginLeft="5dip" />
     </LinearLayout>
 
     <LinearLayout style="@style/FastSearchPadRowStyle" >
@@ -178,12 +173,12 @@
             style="@style/FastSearchPadButtonStyle"
             android:text="@string/fast_z" />
 
-        <ImageButton
-            android:id="@+id/search_ex"
+        <Button
+            android:id="@+id/delete"
             style="@style/FastSearchPadButtonStyle"
-            android:background="@drawable/fastsearch_ex_btn_bg"
-            android:src="@drawable/fastsearch_ex_icon"
-            android:layout_weight="2" />
+            android:layout_weight="2"
+            android:background="@drawable/fastsearch_delete_btn"
+            />
     </LinearLayout>
 
 </LinearLayout>

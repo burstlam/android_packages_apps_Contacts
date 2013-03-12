@@ -2,9 +2,10 @@
 <view
     xmlns:android="http://schemas.android.com/apk/res/android"
     class="com.android.contacts.widget.FullHeightLinearLayout"
-    style="@style/ContactPickerLayout"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
     android:orientation="vertical"
-    android:layout_height="match_parent">
+    >
     <FrameLayout
         android:id="@+id/list_container"
         android:layout_width="match_parent"

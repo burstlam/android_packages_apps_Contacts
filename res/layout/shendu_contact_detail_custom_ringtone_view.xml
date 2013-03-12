@@ -2,16 +2,28 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingLeft="16dip"
-    android:paddingRight="16dip" >
-    <TextView android:id="@+id/ringtone_data"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingLeft="10dip"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:singleLine="true" 
-        android:ellipsize="end"
-        android:minHeight="@dimen/detail_min_line_item_height"
-        android:background="@*android:drawable/spinner_background_holo_light" />
+    >
+    <LinearLayout 
+        xmlns:android="http://schemas.android.com/apk/res/android"
+    	android:layout_width="match_parent"
+    	android:layout_height="@dimen/contact_detail_list_item_height"
+    	android:layout_marginLeft="@dimen/account_container_left_padding"
+    	android:layout_marginRight="@dimen/account_container_left_padding"
+    	android:padding="@dimen/account_container_left_padding"
+    	android:layout_alignParentTop="true"
+    	android:background="@drawable/shendu_listview_item_overall"
+    	>
+	    <TextView android:id="@+id/ringtone_data"
+	        android:layout_width="match_parent"
+	        android:layout_height="@dimen/contact_detail_ringtone_view_textview_height"
+	        android:paddingLeft="@dimen/account_container_left_padding"
+	        android:textAppearance="?android:attr/textAppearanceMedium"
+	        android:singleLine="true" 
+	        android:ellipsize="end"
+	        android:gravity="center_vertical"
+	        android:minHeight="@dimen/detail_min_line_item_height"
+	        android:background="@drawable/contacts_editspinner_bg" 
+	        />
+    </LinearLayout>
 
 </RelativeLayout>

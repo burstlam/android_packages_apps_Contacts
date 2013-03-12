@@ -24,6 +24,7 @@ import com.android.contacts.util.PhoneCapabilityTester;
 
 import android.app.ActionBar;
 import android.app.Dialog;
+import android.app.ActionBar.LayoutParams;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -73,11 +74,26 @@ public class GroupEditorActivity extends ContactsActivity
                     mFragment.onDoneClicked();
                 }
             });
+            
+            //add by hhl
+            View cancelMenuItem = customActionBarView.findViewById(R.id.cancel_menu_item);
+            cancelMenuItem.setVisibility(View.VISIBLE);
+            cancelMenuItem.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mFragment.revert();
+                }
+            });
+            //add for cancel and save menu dividing line
+            View cancelSaveMenuDividing = customActionBarView.findViewById(R.id.cancel_save_menu_dividing_id);
+            cancelSaveMenuDividing.setVisibility(View.VISIBLE);
             // Show the custom action bar but hide the home icon and title
             actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM,
                     ActionBar.DISPLAY_SHOW_CUSTOM | ActionBar.DISPLAY_SHOW_HOME |
                     ActionBar.DISPLAY_SHOW_TITLE);
-            actionBar.setCustomView(customActionBarView);
+            //moditify bh hhl
+            actionBar.setCustomView(customActionBarView,
+            		new ActionBar.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
         }
 
         mFragment = (GroupEditorFragment) getFragmentManager().findFragmentById(

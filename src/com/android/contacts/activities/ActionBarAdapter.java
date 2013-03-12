@@ -16,6 +16,8 @@
 
 package com.android.contacts.activities;
 
+import java.util.zip.Inflater;
+
 import com.android.contacts.R;
 import com.android.contacts.activities.ActionBarAdapter.Listener.Action;
 import com.android.contacts.list.ContactsRequest;
@@ -31,12 +33,14 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.SearchView;
 import android.widget.SearchView.OnCloseListener;
 import android.widget.SearchView.OnQueryTextListener;
@@ -74,7 +78,7 @@ public class ActionBarAdapter implements OnQueryTextListener, OnCloseListener {
 	private boolean mSearchMode;
 	private String mQueryString;
 
-	private SearchView mSearchView;
+	//private SearchView mSearchView; //remov by hhl,do not used
 
 	private final Context mContext;
 	private final SharedPreferences mPrefs;
@@ -155,7 +159,7 @@ public class ActionBarAdapter implements OnQueryTextListener, OnCloseListener {
 		}
 
 		// Set up search view.
-		View customSearchView = LayoutInflater.from(
+		/*View customSearchView = LayoutInflater.from(
 				mActionBar.getThemedContext()).inflate(
 				R.layout.custom_action_bar, null);
 		int searchViewWidth = mContext.getResources().getDimensionPixelSize(
@@ -164,9 +168,9 @@ public class ActionBarAdapter implements OnQueryTextListener, OnCloseListener {
 			searchViewWidth = LayoutParams.MATCH_PARENT;
 		}
 		LayoutParams layoutParams = new LayoutParams(searchViewWidth,
-				LayoutParams.WRAP_CONTENT);
-		mSearchView = (SearchView) customSearchView
-				.findViewById(R.id.search_view);
+				LayoutParams.WRAP_CONTENT);*/
+		//mSearchView = (SearchView) customSearchView
+				//.findViewById(R.id.search_view);
 		// Since the {@link SearchView} in this app is "click-to-expand", set
 		// the below mode on the
 		// {@link SearchView} so that the magnifying glass icon appears inside
@@ -176,23 +180,23 @@ public class ActionBarAdapter implements OnQueryTextListener, OnCloseListener {
 		// search field and already knows a search is being conducted, so the
 		// icon is redundant
 		// and can go away once the user starts typing.)
-		mSearchView.setIconifiedByDefault(true);
-		mSearchView
-				.setQueryHint(mContext.getString(R.string.hint_findContacts));
+		//mSearchView.setIconifiedByDefault(true);
+		//mSearchView
+				//.setQueryHint(mContext.getString(R.string.hint_findContacts));
 
 		// =====================================
 		// Wang: change searchview text color 2012-11-8
-		int searchSrcTextID = mSearchView.getContext().getResources()
-				.getIdentifier("android:id/search_src_text", null, null);
-		EditText searchSrcTextView = (EditText) mSearchView
-				.findViewById(searchSrcTextID);
-		searchSrcTextView.setTextColor(R.color.shendu_primary_text_color);
-		searchSrcTextView.setHintTextColor(R.color.shendu_secondary_text_color);
+		//int searchSrcTextID = mSearchView.getContext().getResources()
+				//.getIdentifier("android:id/search_src_text", null, null);
+		//EditText searchSrcTextView = (EditText) mSearchView
+				//.findViewById(searchSrcTextID);
+		//searchSrcTextView.setTextColor(R.color.shendu_primary_text_color);
+		//searchSrcTextView.setHintTextColor(R.color.shendu_secondary_text_color);
 		// =====================================
-		mSearchView.setOnQueryTextListener(this);
-		mSearchView.setOnCloseListener(this);
-		mSearchView.setQuery(mQueryString, false);
-		mActionBar.setCustomView(customSearchView, layoutParams);
+		//mSearchView.setOnQueryTextListener(this);
+		//mSearchView.setOnCloseListener(this);
+		//mSearchView.setQuery(mQueryString, false);
+		//mActionBar.setCustomView(customSearchView, layoutParams);
 
 		// Set up tabs or navigation list
 		switch (mActionBarNavigationMode) {
@@ -206,11 +210,17 @@ public class ActionBarAdapter implements OnQueryTextListener, OnCloseListener {
 	}
 
 	private void setupTabs() {
-		addTab(TabState.GROUPS, R.drawable.ic_tab_groups,
+		/*addTab(TabState.GROUPS, R.drawable.ic_tab_groups,
 				R.string.contactsGroupsLabel);
 		addTab(TabState.ALL, R.drawable.ic_tab_all, R.string.contactsAllLabel);
 		addTab(TabState.FAVORITES, R.drawable.ic_tab_starred,
-				R.string.contactsFavoritesLabel);
+				R.string.contactsFavoritesLabel);*/
+		shenduAddTab(TabState.GROUPS, R.drawable.shendu_actionbar_left_bg,
+				R.string.contactsGroupsLabel,Gravity.CENTER_VERTICAL|Gravity.LEFT);
+		shenduAddTab(TabState.ALL, R.drawable.shendu_actionbar_middle_bg, 
+				R.string.contactsAllLabel,Gravity.CENTER);
+		shenduAddTab(TabState.FAVORITES, R.drawable.shendu_actionbar_right_bg,
+				R.string.contactsFavoritesLabel,Gravity.CENTER_VERTICAL|Gravity.RIGHT);
 	}
 
 	private void setupNavigationList() {
@@ -283,6 +293,32 @@ public class ActionBarAdapter implements OnQueryTextListener, OnCloseListener {
 
 	public void setListener(Listener listener) {
 		mListener = listener;
+	}
+	
+	private void shenduAddTab(int expectedTabIndex, int icon, int description, int gravity){
+
+		final Tab tab = mActionBar.newTab();
+		tab.setTabListener(mTabListener);
+		//tab.setText(description);
+		//tab.setIcon(icon);
+		/*LayoutInflater inflater = LayoutInflater.from(mContext);
+		View linearLayout = inflater.inflate(R.layout.people_activity_actionbar,null);*/
+		TextView textView = new TextView(mContext);
+		LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+				LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT);
+		textView.setLayoutParams(layoutParams);
+		textView.setGravity(gravity);        
+		textView.setTextSize(mContext.getResources().getDimensionPixelSize(
+				R.dimen.contacts_view_actionbar_textview_size));
+		textView.setTextColor(mContext.getResources().getColor(R.color.action_bar_button_text_color));
+		textView.setBackgroundResource(icon);
+		textView.setText(description);
+		tab.setCustomView(textView);
+		mActionBar.addTab(tab);
+		if (expectedTabIndex != tab.getPosition()) {
+			throw new IllegalStateException(
+					"Tabs must be created in the right order");
+		}
 	}
 
 	private void addTab(int expectedTabIndex, int icon, int description) {
@@ -395,18 +431,18 @@ public class ActionBarAdapter implements OnQueryTextListener, OnCloseListener {
 		if (mSearchMode != flag) {
 			mSearchMode = flag;
 			update();
-			if (mSearchView == null) {
+			/*if (mSearchView == null) {
 				return;
-			}
+			}*/
 			if (mSearchMode) {
 				setFocusOnSearchView();
-			} else {
+			} /*else {
 				mSearchView.setQuery(null, false);
-			}
+			}*/
 		} else if (flag) {
 			// Everything is already set up. Still make sure the keyboard is up
-			if (mSearchView != null)
-				setFocusOnSearchView();
+			/*if (mSearchView != null)
+				setFocusOnSearchView();*/
 		}
 	}
 	
@@ -414,19 +450,19 @@ public class ActionBarAdapter implements OnQueryTextListener, OnCloseListener {
 	public void changeSearchMode(boolean flag){
 			mSearchMode = flag;
 			updateForFastSearch();
-			if (mSearchView == null) {
+			/*if (mSearchView == null) {
 				return;
-			}
+			}*/
 			if (mSearchMode) {
 				setFocusOnSearchView();
-			} else {
+			} /*else {
 				mSearchView.setQuery(null, false);
-			}
+			}*/
 	}
 	
 	/**Wang:*/
 	private void updateForFastSearch(){
-		boolean isIconifiedChanging = mSearchView.isIconified() == mSearchMode;
+		//boolean isIconifiedChanging = mSearchView.isIconified() == mSearchMode;
 		if (mSearchMode) {
 			setFocusOnSearchView();
 			// Since we have the {@link SearchView} in a custom action bar, we
@@ -435,9 +471,9 @@ public class ActionBarAdapter implements OnQueryTextListener, OnCloseListener {
 			// that a side effect
 			// of this method is that the {@link SearchView} query text is set
 			// to empty string.
-			if (isIconifiedChanging) {
+			/*if (isIconifiedChanging) {
 				mSearchView.onActionViewExpanded();
-			}
+			}*/
 			if (mActionBar.getNavigationMode() != ActionBar.NAVIGATION_MODE_STANDARD) {
 				mActionBar
 						.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
@@ -462,9 +498,9 @@ public class ActionBarAdapter implements OnQueryTextListener, OnCloseListener {
 				mNavigationListener.mIgnoreNavigationItemSelected = false;
 			}
 			mActionBar.setTitle(null);
-			if (isIconifiedChanging) {
+			/*if (isIconifiedChanging) {
 				mSearchView.onActionViewCollapsed();
-			}
+			}*/
 			if (mListener != null) {
 				mListener.onAction(Action.STOP_FAST_SEARCH_MODE);
 				mListener.onSelectedTabChanged();
@@ -479,9 +515,9 @@ public class ActionBarAdapter implements OnQueryTextListener, OnCloseListener {
 
 	public void setQueryString(String query) {
 		mQueryString = query;
-		if (mSearchView != null) {
+		/*if (mSearchView != null) {
 			mSearchView.setQuery(query, false);
-		}
+		}*/
 	}
 
 	/** @return true if the "UP" icon is showing. */
@@ -520,7 +556,7 @@ public class ActionBarAdapter implements OnQueryTextListener, OnCloseListener {
 	}
 
 	private void update() {
-		boolean isIconifiedChanging = mSearchView.isIconified() == mSearchMode;
+		//boolean isIconifiedChanging = mSearchView.isIconified() == mSearchMode;
 		if (mSearchMode) {
 			setFocusOnSearchView();
 			// Since we have the {@link SearchView} in a custom action bar, we
@@ -529,9 +565,9 @@ public class ActionBarAdapter implements OnQueryTextListener, OnCloseListener {
 			// that a side effect
 			// of this method is that the {@link SearchView} query text is set
 			// to empty string.
-			if (isIconifiedChanging) {
+			/*if (isIconifiedChanging) {
 				mSearchView.onActionViewExpanded();
-			}
+			}*/
 			if (mActionBar.getNavigationMode() != ActionBar.NAVIGATION_MODE_STANDARD) {
 				mActionBar
 						.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
@@ -572,9 +608,9 @@ public class ActionBarAdapter implements OnQueryTextListener, OnCloseListener {
 			// Since we have the {@link SearchView} in a custom action bar, we
 			// must manually handle
 			// collapsing the {@link SearchView} when search mode is exited.
-			if (isIconifiedChanging) {
+			/*if (isIconifiedChanging) {
 				mSearchView.onActionViewCollapsed();
-			}
+			}*/
 			if (mListener != null) {
 				mListener.onAction(Action.STOP_SEARCH_MODE);
 				mListener.onSelectedTabChanged();
@@ -611,14 +647,14 @@ public class ActionBarAdapter implements OnQueryTextListener, OnCloseListener {
 		// When the search is "committed" by the user, then hide the keyboard so
 		// the user can
 		// more easily browse the list of results.
-		if (mSearchView != null) {
+		/*if (mSearchView != null) {
 			InputMethodManager imm = (InputMethodManager) mContext
 					.getSystemService(Context.INPUT_METHOD_SERVICE);
 			if (imm != null) {
 				imm.hideSoftInputFromWindow(mSearchView.getWindowToken(), 0);
 			}
 			mSearchView.clearFocus();
-		}
+		}*/
 		return true;
 	}
 
@@ -640,15 +676,15 @@ public class ActionBarAdapter implements OnQueryTextListener, OnCloseListener {
 	 */
 	public void clearFocusOnSearchView() {
 		if (isSearchMode()) {
-			if (mSearchView != null) {
+			/*if (mSearchView != null) {
 				mSearchView.clearFocus();
-			}
+			}*/
 		}
 	}
 
 	public void setFocusOnSearchView() {
-		mSearchView.requestFocus();
-		mSearchView.setIconified(false); // Workaround for the
+		//mSearchView.requestFocus();
+		//mSearchView.setIconified(false); // Workaround for the
 											// "IME not popping up" issue.
 	}
 

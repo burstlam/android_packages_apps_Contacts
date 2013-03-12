@@ -60,7 +60,7 @@ public class RawContactReadOnlyEditorView extends BaseRawContactEditorView
     private ViewGroup mGeneral;
 
     private View mAccountContainer;
-    private ImageView mAccountIcon;
+    //private ImageView mAccountIcon; //do not used,remove by hhl
     private TextView mAccountTypeTextView;
     private TextView mAccountNameTextView;
 
@@ -101,7 +101,7 @@ public class RawContactReadOnlyEditorView extends BaseRawContactEditorView
         mGeneral = (ViewGroup)findViewById(R.id.sect_general);
 
         mAccountContainer = findViewById(R.id.account_container);
-        mAccountIcon = (ImageView) findViewById(R.id.account_icon);
+        //mAccountIcon = (ImageView) findViewById(R.id.account_icon);
         mAccountTypeTextView = (TextView) findViewById(R.id.account_type);
         mAccountNameTextView = (TextView) findViewById(R.id.account_name);
     }
@@ -160,7 +160,7 @@ public class RawContactReadOnlyEditorView extends BaseRawContactEditorView
 
         // TODO: Expose data set in the UI somehow?
 
-        mAccountIcon.setImageDrawable(type.getDisplayIcon(mContext));
+        //mAccountIcon.setImageDrawable(type.getDisplayIcon(mContext));
 
         mRawContactId = values.getAsLong(RawContacts._ID);
 

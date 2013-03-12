@@ -183,9 +183,9 @@ public class FastSearchManager
 			Button btn = (Button) mSearchPad.findViewById(id);
 			btn.setOnClickListener(this);
 		}
-
-		ImageButton search_ex  = (ImageButton) mSearchPad.findViewById(R.id.search_ex);
-		search_ex.setOnClickListener(this);
+		//do not used,remove by hhl
+		//ImageButton search_ex  = (ImageButton) mSearchPad.findViewById(R.id.search_ex);
+		//search_ex.setOnClickListener(this);
 	}
 
 	public void displaySearchPad() {
@@ -226,10 +226,10 @@ public class FastSearchManager
 			}
 			return;
 		}
-		if(id == R.id.search_ex){
+		/*if(id == R.id.search_ex){
 			mActionBarAdapter.changeSearchMode(true);
 			return;
-		}
+		}*/
 	}
 
 	private void delete() {

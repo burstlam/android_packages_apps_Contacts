@@ -80,8 +80,10 @@ public class TextFieldsEditorView extends LabeledEditorView {
         setDrawingCacheEnabled(true);
         setAlwaysDrawnWithCacheEnabled(true);
 
+        //mMinFieldHeight = mContext.getResources().getDimensionPixelSize(
+                //R.dimen.editor_min_line_item_height);
         mMinFieldHeight = mContext.getResources().getDimensionPixelSize(
-                R.dimen.editor_min_line_item_height);
+                        R.dimen.contacts_edittext_height);
         mFields = (ViewGroup) findViewById(R.id.editors);
         mExpansionView = (ImageView) findViewById(R.id.expansion_view);
         mExpansionViewContainer = findViewById(R.id.expansion_view_container);
@@ -187,6 +189,10 @@ public class TextFieldsEditorView extends LabeledEditorView {
         for (int index = 0; index < fieldCount; index++) {
             final EditField field = kind.fieldList.get(index);
             final EditText fieldView = new EditText(mContext);
+            fieldView.setBackgroundResource(R.drawable.contacts_edittext_bg);//add by hll
+            fieldView.setTextSize(R.dimen.favorites_item_view_title_size);
+            fieldView.setTextColor(R.color.contacts_text_color);
+           // fieldView.setTextColorHint(R.color.contacts_text_hint_color);
             fieldView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT,
                     field.isMultiLine() ? LayoutParams.WRAP_CONTENT : mMinFieldHeight));
             // Set either a minimum line requirement or a minimum height (because {@link TextView}
@@ -197,7 +203,7 @@ public class TextFieldsEditorView extends LabeledEditorView {
                 fieldView.setMinHeight(mMinFieldHeight);
             }
             fieldView.setTextAppearance(getContext(), android.R.style.TextAppearance_Medium);
-            fieldView.setGravity(Gravity.TOP);
+            fieldView.setGravity(Gravity.CENTER_VERTICAL);//moditify by hhl
             mFieldEditTexts[index] = fieldView;
             fieldView.setId(vig.getId(state, kind, entry, index));
             if (field.titleRes > 0) {

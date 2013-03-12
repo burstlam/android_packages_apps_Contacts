@@ -14,27 +14,49 @@
      limitations under the License.
 -->
 <!-- Layout of "add field" row in contact editor -->
-<!-- Wang: -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<!-- Wang: 
+    android:paddingTop="9dp"
+    
+    
+    -->
+
+<LinearLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:minHeight="48dip"
-    android:orientation="horizontal"
-    android:paddingLeft="8dip"
-    android:background="?android:attr/selectableItemBackground">
-    <ImageView 
-        android:layout_gravity="center_vertical"
-        android:src="@drawable/ic_menu_add_field_holo_light"
-        android:background="@null"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
-    <TextView
-        android:id="@+id/add_text"
-        android:layout_gravity="center_vertical"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:duplicateParentState="true"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textColor="?android:attr/textColorSecondary"
-        android:text="@string/add_new_entry_for_section" />
+    android:minHeight="32dip"
+    android:orientation="vertical"
+	android:layout_marginRight="10dp"
+    >
+    <View
+		android:layout_width="match_parent"
+		android:layout_height="@dimen/contacts_dividing_line_height"
+		android:layout_marginTop="9dp"
+		android:layout_marginBottom="9dp"
+		android:background="@drawable/contacts_dividing_line" />
+    <LinearLayout 
+    	xmlns:android="http://schemas.android.com/apk/res/android"
+    	android:layout_width="match_parent"
+    	android:layout_height="wrap_content"
+    	android:orientation="horizontal"
+    	android:paddingLeft="25dip"
+    	android:background="?android:attr/selectableItemBackground"
+    	>
+	    <ImageView 
+	        android:layout_gravity="center_vertical"
+	        android:src="@drawable/ic_menu_add_field_holo_light"
+	        android:background="@null"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"/>
+	    <TextView
+	        android:id="@+id/add_text"
+	        android:layout_gravity="center_vertical"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:duplicateParentState="true"
+	        android:textAppearance="?android:attr/textAppearanceMedium"
+	        android:textColor="?android:attr/textColorSecondary"
+	        android:text="@string/add_new_entry_for_section" />
+    </LinearLayout>
+  
 </LinearLayout>

@@ -26,6 +26,7 @@ import com.android.internal.util.Objects;
 import android.content.ContentUris;
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.net.Uri;
 import android.provider.ContactsContract.Groups;
 import android.util.Log;
@@ -33,6 +34,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 /**
@@ -179,6 +181,28 @@ public class GroupBrowseListAdapter extends BaseAdapter {
             viewCache = new GroupListItemViewCache(result);
             result.setTag(viewCache);
         }
+        
+        //add by hhl,for item bg
+        int cursorCount = getCount();
+        //LinearLayout itemLayout = (LinearLayout)result.findViewById(R.id.group_view_listview_item_linearlayout_id);
+        if(cursorCount == 1){
+        	viewCache.divider.setVisibility(View.GONE);
+        	viewCache.itemLayout.setBackgroundResource(R.drawable.shendu_listview_item_overall);
+        }else{
+        	if(position == 0){
+            	viewCache.divider.setVisibility(View.VISIBLE);
+        		//viewCache.itemLayout.setBackgroundColor(Color.BLUE);
+        		viewCache.itemLayout.setBackgroundResource(R.drawable.shendu_listview_item_top);
+        	}else if(position == (cursorCount-1)){
+        		viewCache.divider.setVisibility(View.GONE);
+        		//viewCache.itemLayout.setBackgroundColor(Color.RED);
+        		viewCache.itemLayout.setBackgroundResource(R.drawable.shendu_listview_item_bottom);
+        	}else{
+            	viewCache.divider.setVisibility(View.VISIBLE);
+        		//viewCache.itemLayout.setBackgroundColor(Color.GREEN);
+        		viewCache.itemLayout.setBackgroundResource(R.drawable.shendu_listview_item_middle);
+        	}
+        }
 
         // Add a header if this is the first group in an account and hide the divider
         if (entry.isFirstGroupInAccount()) {
@@ -240,6 +264,7 @@ public class GroupBrowseListAdapter extends BaseAdapter {
         public final View accountHeader;
         public final View accountHeaderExtraTopPadding;
         public final View divider;
+        public final LinearLayout itemLayout;//add by hhl,for item bg
         private Uri mUri;
 
         public GroupListItemViewCache(View view) {
@@ -250,6 +275,7 @@ public class GroupBrowseListAdapter extends BaseAdapter {
             accountHeader = view.findViewById(R.id.group_list_header);
             accountHeaderExtraTopPadding = view.findViewById(R.id.header_extra_top_padding);
             divider = view.findViewById(R.id.divider);
+            itemLayout = (LinearLayout)view.findViewById(R.id.group_view_listview_item_linearlayout_id); //add 
         }
 
         public void setUri(Uri uri) {

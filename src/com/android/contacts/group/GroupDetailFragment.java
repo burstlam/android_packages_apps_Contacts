@@ -436,6 +436,9 @@ public class GroupDetailFragment extends Fragment implements OnScrollListener {
                 if (mListener != null) mListener.onEditRequested(mGroupUri);
                 break;
             }
+            /*case R.id.menu_add_group_item:
+            	Intent selectMembersIntent = new Intent(mContext,ShenDuContactSelectionActivity.class);
+            	break;*/
             case R.id.menu_delete_group: {
                 GroupDeletionDialogFragment.show(getFragmentManager(), mGroupId, mGroupName,
                         mCloseActivityAfterDelete);

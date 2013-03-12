@@ -761,9 +761,9 @@ public class ContactEditorFragment extends Fragment implements
                 }
                 nameEditor.setEditorListener(listener);
 
-                final TextFieldsEditorView phoneticNameEditor =
+                /*final TextFieldsEditorView phoneticNameEditor =
                         rawContactEditor.getPhoneticNameEditor();
-                phoneticNameEditor.setEditorListener(listener);
+                phoneticNameEditor.setEditorListener(listener);*/
                 rawContactEditor.setAutoAddToDefaultGroup(mAutoAddToDefaultGroup);
 
                 if (rawContactId == mAggregationSuggestionsRawContactId) {

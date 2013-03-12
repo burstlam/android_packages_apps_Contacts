@@ -412,6 +412,7 @@
         <activity android:name=".activities.GroupDetailActivity"
             android:label=""
             android:screenOrientation="portrait"
+            android:uiOptions="splitActionBarWhenNarrow"
             android:theme="@style/ShenduActivityTheme"/>
 
         <!-- Create a new or edit an existing group -->
@@ -504,6 +505,7 @@
             android:label="@string/viewContactTitle"
             android:theme="@style/ShenduActivityTheme"
             android:screenOrientation="portrait"
+            android:uiOptions="splitActionBarWhenNarrow"
             android:parentActivityName=".activities.PeopleActivity">
 
             <intent-filter android:label="@string/viewContactDesription">
@@ -701,7 +703,7 @@
             android:label="@string/contactsList"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
-            android:theme="@style/PeopleTheme"
+            android:theme="@style/ShenduContactSelectionStyle"
             android:uiOptions="splitActionBarWhenNarrow" >
             <intent-filter>
                 <action android:name="shendu.intent.action.PICK_ACTION" />

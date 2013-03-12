@@ -19,6 +19,7 @@ import com.android.contacts.R;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.net.Uri;
 import android.provider.ContactsContract;
 import android.provider.ContactsContract.ContactCounts;
@@ -202,7 +203,7 @@ public abstract class ContactListAdapter extends ContactEntryListAdapter {
             Cursor cursor) {
         if (isSectionHeaderDisplayEnabled()) {
             Placement placement = getItemPlacementInSection(position);
-
+            
             // First position, set the contacts number string
             if (position == 0 && cursor.getInt(ContactQuery.CONTACT_IS_USER_PROFILE) == 1) {
                 view.setCountView(getContactsCount());
@@ -210,7 +211,37 @@ public abstract class ContactListAdapter extends ContactEntryListAdapter {
                 view.setCountView(null);
             }
             view.setSectionHeader(placement.sectionHeader);
-            view.setDividerVisible(!placement.lastInSection);
+            
+            //add by hhl, for rounder background
+            boolean first = placement.firstInSection;
+            boolean last = placement.lastInSection;
+            if(position==cursor.getCount()-1){
+                view.setDividerVisible(false);
+            	if(first){
+                	view.setShenduRoundedBackground(R.drawable.shendu_listview_item_overall);
+            	}else{
+                	if(position==0){
+                    	view.setShenduRoundedBackground(R.drawable.shendu_listview_item_overall);
+                	}else{
+                    	view.setShenduRoundedBackground(R.drawable.shendu_listview_item_bottom);
+                	}
+            	}
+            }else{
+                view.setDividerVisible(!placement.lastInSection);
+                if(first && last){
+                	view.setShenduRoundedBackground(R.drawable.shendu_listview_item_overall);
+                }else if(first && !last){
+                	view.setShenduRoundedBackground(R.drawable.shendu_listview_item_top);
+                }else if(!first && last){
+                	view.setShenduRoundedBackground(R.drawable.shendu_listview_item_bottom);
+                }else if(!first && !last){
+                	if(position==0){
+                    	view.setShenduRoundedBackground(R.drawable.shendu_listview_item_top);
+                	}else{
+                    	view.setShenduRoundedBackground(R.drawable.shendu_listview_item_middle);
+                	}
+                }
+            }
         } else {
             view.setSectionHeader(null);
             view.setDividerVisible(true);

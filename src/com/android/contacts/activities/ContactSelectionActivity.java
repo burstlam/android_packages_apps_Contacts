@@ -191,11 +191,15 @@ public class ContactSelectionActivity extends ContactsActivity
             mSearchView.setOnCloseListener(this);
             mSearchView.setOnQueryTextFocusChangeListener(this);
 
+            actionBar.setDisplayOptions(
+            		ActionBar.DISPLAY_SHOW_CUSTOM | ActionBar.DISPLAY_HOME_AS_UP,
+            		ActionBar.DISPLAY_SHOW_CUSTOM | ActionBar.DISPLAY_HOME_AS_UP);
             actionBar.setCustomView(searchViewContainer,
                     new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
-            actionBar.setDisplayShowCustomEnabled(true);
+            actionBar.setDisplayHomeAsUpEnabled(true); 
             actionBar.setDisplayShowHomeEnabled(true);
-            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setDisplayShowHomeEnabled(false);
+            actionBar.setDisplayShowCustomEnabled(true);
         } else {
             mSearchView = (SearchView) findViewById(R.id.search_view);
             mSearchView.setQueryHint(getString(R.string.hint_findContacts));

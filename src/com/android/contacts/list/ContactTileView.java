@@ -48,6 +48,8 @@ public abstract class ContactTileView extends FrameLayout {
     private View mPushState;
     private View mHorizontalDivider;
     protected Listener mListener;
+    
+    private View mItemParent; //add by hhl,for item background
 
     public ContactTileView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -66,6 +68,8 @@ public abstract class ContactTileView extends FrameLayout {
         mPushState = findViewById(R.id.contact_tile_push_state);
         mHorizontalDivider = findViewById(R.id.contact_tile_horizontal_divider);
 
+        mItemParent = findViewById(R.id.contact_title_frequent_item_parent_id); //add
+        
         OnClickListener listener = createClickListener();
 
         if(mPushState != null) {
@@ -160,6 +164,10 @@ public abstract class ContactTileView extends FrameLayout {
 
     public void setHorizontalDividerVisibility(int visibility) {
         if (mHorizontalDivider != null) mHorizontalDivider.setVisibility(visibility);
+    }
+    
+    public void setItemParentBackground(int resId){//add
+    	if(resId != 0) mItemParent.setBackgroundResource(resId);
     }
 
     public Uri getLookupUri() {

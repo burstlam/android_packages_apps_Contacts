@@ -1555,7 +1555,8 @@ public class PeopleActivity extends ContactsActivity implements
 		// Wang:
 		final MenuItem toDialerMenu = menu.findItem(R.id.menu_to_dialer);
 		final MenuItem fastSearchMenu = menu.findItem(R.id.menu_fastSearch);
-		final MenuItem searchMenu = menu.findItem(R.id.menu_search);
+		//do not used,remove by hhl 
+		//final MenuItem searchMenu = menu.findItem(R.id.menu_search);
 
 		MenuItem addGroupMenu = menu.findItem(R.id.menu_add_group);
 
@@ -1574,7 +1575,7 @@ public class PeopleActivity extends ContactsActivity implements
 			// Wang:
 			toDialerMenu.setVisible(false);
 			fastSearchMenu.setVisible(false);
-			searchMenu.setVisible(false);
+			//searchMenu.setVisible(false);
 		} else {
 			switch (mActionBarAdapter.getCurrentTab()) {
 			case TabState.FAVORITES:
@@ -1584,7 +1585,7 @@ public class PeopleActivity extends ContactsActivity implements
 				// Wang:
 				toDialerMenu.setVisible(true);
 				fastSearchMenu.setVisible(false);
-				searchMenu.setVisible(true);
+				//searchMenu.setVisible(true);
 
 				clearFrequentsMenu.setVisible(hasFrequents());
 				break;
@@ -1595,7 +1596,7 @@ public class PeopleActivity extends ContactsActivity implements
 				clearFrequentsMenu.setVisible(false);
 				// Wang:
 				toDialerMenu.setVisible(true);
-				searchMenu.setVisible(false);
+				//searchMenu.setVisible(false);
 				fastSearchMenu.setVisible(true);
 				
 				break;
@@ -1615,7 +1616,7 @@ public class PeopleActivity extends ContactsActivity implements
 				// Wang:
 				toDialerMenu.setVisible(true);
 				fastSearchMenu.setVisible(false);
-				searchMenu.setVisible(true);
+				//searchMenu.setVisible(true);
 				
 				break;
 			}
@@ -1690,10 +1691,11 @@ public class PeopleActivity extends ContactsActivity implements
 					mContactListFilterController.getFilter());
 			return true;
 		}
-		case R.id.menu_search: {
+		//do not used,remove by hhl 
+		/*case R.id.menu_search: {
 			onSearchRequested();
 			return true;
-		}
+		}*/
 		case R.id.menu_add_contact: {
 			final Intent intent = new Intent(Intent.ACTION_INSERT,
 					Contacts.CONTENT_URI);

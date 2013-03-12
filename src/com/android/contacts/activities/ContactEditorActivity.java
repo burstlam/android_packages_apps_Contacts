@@ -27,6 +27,7 @@ import com.android.contacts.model.AccountWithDataSet;
 import com.android.contacts.util.DialogManager;
 
 import android.app.ActionBar;
+import android.app.ActionBar.LayoutParams;
 import android.app.Dialog;
 import android.content.ContentValues;
 import android.content.Context;
@@ -115,12 +116,17 @@ public class ContactEditorActivity extends ContactsActivity
                     mFragment.revert();
                 }
             });
+             //add for cancel and save menu dividing line
+            View cancelSaveMenuDividing = customActionBarView.findViewById(R.id.cancel_save_menu_dividing_id);
+            cancelSaveMenuDividing.setVisibility(View.VISIBLE);
             
             // Show the custom action bar but hide the home icon and title
             actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM,
                     ActionBar.DISPLAY_SHOW_CUSTOM | ActionBar.DISPLAY_SHOW_HOME |
                     ActionBar.DISPLAY_SHOW_TITLE);
-            actionBar.setCustomView(customActionBarView);
+            //moditify by hhl
+            actionBar.setCustomView(customActionBarView,
+            		new ActionBar.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
         }
 
         mFragment = (ContactEditorFragment) getFragmentManager().findFragmentById(

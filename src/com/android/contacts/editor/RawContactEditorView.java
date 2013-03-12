@@ -66,12 +66,12 @@ public class RawContactEditorView extends BaseRawContactEditorView {
     private LayoutInflater mInflater;
 
     private StructuredNameEditorView mName;
-    private PhoneticNameEditorView mPhoneticName;
+    //private PhoneticNameEditorView mPhoneticName; //do not used,remove by hhl
     private GroupMembershipView mGroupMembershipView;
 
     private ViewGroup mFields;
 
-    private ImageView mAccountIcon;
+    //private ImageView mAccountIcon; //do not used,remove by hhl
     private TextView mAccountTypeTextView;
     private TextView mAccountNameTextView;
 
@@ -106,9 +106,9 @@ public class RawContactEditorView extends BaseRawContactEditorView {
             mName.setEnabled(enabled);
         }
 
-        if (mPhoneticName != null) {
+        /*if (mPhoneticName != null) {
             mPhoneticName.setEnabled(enabled);
-        }
+        }*/
 
         if (mFields != null) {
             int count = mFields.getChildCount();
@@ -133,12 +133,12 @@ public class RawContactEditorView extends BaseRawContactEditorView {
         mName = (StructuredNameEditorView)findViewById(R.id.edit_name);
         mName.setDeletable(false);
 
-        mPhoneticName = (PhoneticNameEditorView)findViewById(R.id.edit_phonetic_name);
-        mPhoneticName.setDeletable(false);
+        //mPhoneticName = (PhoneticNameEditorView)findViewById(R.id.edit_phonetic_name);
+        //mPhoneticName.setDeletable(false);
 
         mFields = (ViewGroup)findViewById(R.id.sect_fields);
 
-        mAccountIcon = (ImageView) findViewById(R.id.account_icon);
+        //mAccountIcon = (ImageView) findViewById(R.id.account_icon);
         mAccountTypeTextView = (TextView) findViewById(R.id.account_type);
         mAccountNameTextView = (TextView) findViewById(R.id.account_name);
 
@@ -206,7 +206,7 @@ public class RawContactEditorView extends BaseRawContactEditorView {
             mAccountTypeTextView.setText(
                     mContext.getString(R.string.account_type_format, accountType));
         }
-        mAccountIcon.setImageDrawable(type.getDisplayIcon(mContext));
+        //mAccountIcon.setImageDrawable(type.getDisplayIcon(mContext));
 
         // Show photo editor when supported
         EntityModifier.ensureKindExists(state, type, Photo.CONTENT_ITEM_TYPE);
@@ -214,12 +214,12 @@ public class RawContactEditorView extends BaseRawContactEditorView {
         getPhotoEditor().setEnabled(isEnabled());
         mName.setEnabled(isEnabled());
 
-        mPhoneticName.setEnabled(isEnabled());
+        //mPhoneticName.setEnabled(isEnabled());
 
         // Show and hide the appropriate views
         mFields.setVisibility(View.VISIBLE);
         mName.setVisibility(View.VISIBLE);
-        mPhoneticName.setVisibility(View.VISIBLE);
+        //mPhoneticName.setVisibility(View.VISIBLE);
 
         mGroupMembershipKind = type.getKindForMimetype(GroupMembership.CONTENT_ITEM_TYPE);
         if (mGroupMembershipKind != null) {
@@ -241,9 +241,9 @@ public class RawContactEditorView extends BaseRawContactEditorView {
                 mName.setValues(
                         type.getKindForMimetype(DataKind.PSEUDO_MIME_TYPE_DISPLAY_NAME),
                         primary, state, false, vig);
-                mPhoneticName.setValues(
+                /*mPhoneticName.setValues(
                         type.getKindForMimetype(DataKind.PSEUDO_MIME_TYPE_PHONETIC_NAME),
-                        primary, state, false, vig);
+                        primary, state, false, vig);*/
             } else if (Photo.CONTENT_ITEM_TYPE.equals(mimeType)) {
                 // Handle special case editor for photos
                 final ValuesDelta primary = state.getPrimaryEntry(mimeType);
@@ -254,20 +254,23 @@ public class RawContactEditorView extends BaseRawContactEditorView {
                 }
             } else if (Organization.CONTENT_ITEM_TYPE.equals(mimeType)) {
                 // Create the organization section
+                //final KindSectionView section = (KindSectionView) mInflater.inflate(
+                        //R.layout.item_kind_section, mFields, false);
                 final KindSectionView section = (KindSectionView) mInflater.inflate(
-                        R.layout.item_kind_section, mFields, false);
+                        R.layout.item_kind_organization, null, false);
                 section.setTitleVisible(false);
                 section.setEnabled(isEnabled());
                 section.setState(kind, state, false, vig);
 
                 // If there is organization info for the contact already, display it
-                if (!section.isEmpty()) {
+                /*if (!section.isEmpty()) {
                     mFields.addView(section);
-                } else {
+                } else {*/
                     // Otherwise provide the user with an "add organization" button that shows the
                     // EditText fields only when clicked
-                    final View organizationView = mInflater.inflate(
-                            R.layout.organization_editor_view_switcher, mFields, false);
+                    /*final View organizationView = mInflater.inflate(
+                            R.layout.organization_editor_view_switcher, mFields, false);*/
+                    final View organizationView = findViewById(R.id.edit_organization_id);
                     final View addOrganizationButton = organizationView.findViewById(
                             R.id.add_organization_button);
                     final ViewGroup organizationSectionViewContainer =
@@ -286,8 +289,8 @@ public class RawContactEditorView extends BaseRawContactEditorView {
                         }
                     });
 
-                    mFields.addView(organizationView);
-                }
+                    //mFields.addView(organizationView);
+                //}
             } else {
                 // Otherwise use generic section-based editors
                 if (kind.fieldList == null) continue;
@@ -402,18 +405,19 @@ public class RawContactEditorView extends BaseRawContactEditorView {
     }
 
     public TextFieldsEditorView getPhoneticNameEditor() {
-        return mPhoneticName;
+        //return mPhoneticName; //do not used,remove by hhl
+    	return null;
     }
 
     private void updatePhoneticNameVisibility() {
         boolean showByDefault =
                 getContext().getResources().getBoolean(R.bool.config_editor_include_phonetic_name);
 
-        if (showByDefault || mPhoneticName.hasData() || mPhoneticNameAdded) {
+        /*if (showByDefault || mPhoneticName.hasData() || mPhoneticNameAdded) {
             mPhoneticName.setVisibility(View.VISIBLE);
         } else {
             mPhoneticName.setVisibility(View.GONE);
-        }
+        }*/
     }
 
     @Override
@@ -447,10 +451,10 @@ public class RawContactEditorView extends BaseRawContactEditorView {
                     continue;
                 }
 
-                if (DataKind.PSEUDO_MIME_TYPE_PHONETIC_NAME.equals(kind.mimeType)
+                /*if (DataKind.PSEUDO_MIME_TYPE_PHONETIC_NAME.equals(kind.mimeType)
                         && mPhoneticName.getVisibility() == View.VISIBLE) {
                     continue;
-                }
+                }*/
 
                 fields.add(sectionView);
             }

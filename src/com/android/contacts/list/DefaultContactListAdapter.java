@@ -227,7 +227,7 @@ public class DefaultContactListAdapter extends ContactListAdapter {
             view.setSnippet(null);
         }
         // Wang:
-        boolean hasPhone = cursor.getInt(ContactQuery.CONTACT_HAS_PHONE_NUMBER) != 0;
+        /*boolean hasPhone = cursor.getInt(ContactQuery.CONTACT_HAS_PHONE_NUMBER) != 0;
         final long contactId = cursor.getLong(ContactQuery.CONTACT_ID);
         if (!isSearchMode() && hasPhone) {
             view.setOnCallButtonClickListener(new View.OnClickListener() {
@@ -243,7 +243,8 @@ public class DefaultContactListAdapter extends ContactListAdapter {
             view.showCallButton(position, position);
         } else {
             view.hideCallButton();
-        }
+        }*/
+        view.hideCallButton();
 
     }
 

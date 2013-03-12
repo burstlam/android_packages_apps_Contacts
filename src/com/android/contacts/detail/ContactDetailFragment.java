@@ -779,9 +779,9 @@ public class ContactDetailFragment extends Fragment implements FragmentKeyListen
      */
     private void setupFlattenedList() {
         // All contacts should have a header view (even if there is no data for the contact).
-        mAllEntries.add(new HeaderViewEntry());
+        //mAllEntries.add(new HeaderViewEntry()); //moditify by hhl
 
-        addPhoneticName();
+        //addPhoneticName(); //moditify by hhl
 
         flattenList(mPhoneEntries);
         flattenList(mSmsEntries);
@@ -1494,7 +1494,7 @@ public class ContactDetailFragment extends Fragment implements FragmentKeyListen
         public final View actionsViewContainer;
         public final View primaryActionView;
         public final View secondaryActionViewContainer;
-        public final View secondaryActionDivider;
+        //public final View secondaryActionDivider;
         public final View primaryIndicator;
 
         public DetailViewCache(View view,
@@ -1516,7 +1516,7 @@ public class ContactDetailFragment extends Fragment implements FragmentKeyListen
             secondaryActionButton = (ImageView) view.findViewById(
                     R.id.secondary_action_button);
 
-            secondaryActionDivider = view.findViewById(R.id.vertical_divider);
+            //secondaryActionDivider = view.findViewById(R.id.vertical_divider);
         }
     }
     
@@ -1549,20 +1549,39 @@ public class ContactDetailFragment extends Fragment implements FragmentKeyListen
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            switch (getItemViewType(position)) {
+        	int caseSwitch = getItemViewType(position);
+            switch (caseSwitch) {
                 case VIEW_TYPE_HEADER_ENTRY:
                     return getHeaderEntryView(convertView, parent);
-                case VIEW_TYPE_SEPARATOR_ENTRY:
+                case VIEW_TYPE_SEPARATOR_ENTRY://5,line
                     return getSeparatorEntryView(position, convertView, parent);
-                case VIEW_TYPE_KIND_TITLE_ENTRY:
+                case VIEW_TYPE_KIND_TITLE_ENTRY://2,title
                     return getKindTitleEntryView(position, convertView, parent);
-                case VIEW_TYPE_DETAIL_ENTRY:
-                    return getDetailEntryView(position, convertView, parent);
+                case VIEW_TYPE_DETAIL_ENTRY://0,number,name,icon
+                	View resultView = getDetailEntryView(position, convertView, parent);
+                	View itemView = resultView.findViewById(R.id.actions_view_container);
+                	//add by hhl,for item background
+                	int topCaseSwitch = getItemViewType(position-1);
+                	int bottomCaseSwitch = getItemViewType(position+1);
+                	if(topCaseSwitch == VIEW_TYPE_KIND_TITLE_ENTRY 
+                			&& bottomCaseSwitch == VIEW_TYPE_KIND_TITLE_ENTRY){
+                		itemView.setBackgroundResource(R.drawable.shendu_listview_item_overall);
+                	}else if(topCaseSwitch == VIEW_TYPE_SEPARATOR_ENTRY 
+                			&& bottomCaseSwitch == VIEW_TYPE_SEPARATOR_ENTRY){
+                		itemView.setBackgroundResource(R.drawable.shendu_listview_item_middle);
+                	}else if(topCaseSwitch == VIEW_TYPE_SEPARATOR_ENTRY 
+                			&& bottomCaseSwitch == VIEW_TYPE_KIND_TITLE_ENTRY){
+                		itemView.setBackgroundResource(R.drawable.shendu_listview_item_bottom);
+                	}else if(topCaseSwitch == VIEW_TYPE_KIND_TITLE_ENTRY 
+                			&& bottomCaseSwitch == VIEW_TYPE_SEPARATOR_ENTRY){
+                		itemView.setBackgroundResource(R.drawable.shendu_listview_item_top);
+                	}
+                    return resultView;
                 case VIEW_TYPE_NETWORK_TITLE_ENTRY:
                     return getNetworkTitleEntryView(position, convertView, parent);
                 case VIEW_TYPE_ADD_CONNECTION_ENTRY:
                     return getAddConnectionEntryView(position, convertView, parent);
-                case VIEW_TYPE_RINGTONE_ENTRY:/*Wang: 2012-11-19 */
+                case VIEW_TYPE_RINGTONE_ENTRY:/*Wang: 2012-11-19 */ //ring
                     return getRingToneEntryView(position, convertView, parent);
                 default:
                     throw new IllegalStateException("Invalid view type ID " +
@@ -1571,6 +1590,7 @@ public class ContactDetailFragment extends Fragment implements FragmentKeyListen
         }
 
         private View getHeaderEntryView(View convertView, ViewGroup parent) {
+
             final int desiredLayoutResourceId = mContactHasSocialUpdates ?
                     R.layout.detail_header_contact_with_updates :
                     R.layout.detail_header_contact_without_updates;
@@ -1652,9 +1672,9 @@ public class ContactDetailFragment extends Fragment implements FragmentKeyListen
             final View result = (convertView != null) ? convertView :
                     mInflater.inflate(R.layout.contact_detail_separator_entry_view, parent, false);
 
-            result.setPadding(entry.isInSubSection() ? mViewEntryDimensions.getWidePaddingLeft() :
+            /*result.setPadding(entry.isInSubSection() ? mViewEntryDimensions.getWidePaddingLeft() :
                     mViewEntryDimensions.getPaddingLeft(), 0,
-                    mViewEntryDimensions.getPaddingRight(), 0);
+                    mViewEntryDimensions.getPaddingRight(), 0);*/
 
             return result;
         }
@@ -1832,14 +1852,14 @@ public class ContactDetailFragment extends Fragment implements FragmentKeyListen
                 secondaryActionView.setContentDescription(secondaryActionDescription);
                 secondaryActionViewContainer.setTag(entry);
                 secondaryActionViewContainer.setVisibility(View.VISIBLE);
-                views.secondaryActionDivider.setVisibility(View.VISIBLE);
+                //views.secondaryActionDivider.setVisibility(View.VISIBLE);
             } else {
                 secondaryActionViewContainer.setVisibility(View.GONE);
-                views.secondaryActionDivider.setVisibility(View.GONE);
+                //views.secondaryActionDivider.setVisibility(View.GONE);
             }
 
             // Right and left padding should not have "pressed" effect.
-            view.setPadding(
+            /*view.setPadding(
                     entry.isInSubSection()
                             ? mViewEntryDimensions.getWidePaddingLeft()
                             : mViewEntryDimensions.getPaddingLeft(),
@@ -1855,7 +1875,7 @@ public class ContactDetailFragment extends Fragment implements FragmentKeyListen
                     secondaryActionViewContainer.getPaddingLeft(),
                     mViewEntryDimensions.getPaddingTop(),
                     secondaryActionViewContainer.getPaddingRight(),
-                    mViewEntryDimensions.getPaddingBottom());
+                    mViewEntryDimensions.getPaddingBottom());*/
         }
 
         private void setMaxLines(TextView textView, int maxLines) {

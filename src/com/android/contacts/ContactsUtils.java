@@ -74,16 +74,16 @@ public class ContactsUtils {
         switch (protocol) {
             case Im.PROTOCOL_GOOGLE_TALK:
                 return ProviderNames.GTALK;
-            case Im.PROTOCOL_AIM:
-                return ProviderNames.AIM;
+            //case Im.PROTOCOL_AIM://do not used,remove by hhl
+                //return ProviderNames.AIM;
             case Im.PROTOCOL_MSN:
                 return ProviderNames.MSN;
             case Im.PROTOCOL_YAHOO:
                 return ProviderNames.YAHOO;
-            case Im.PROTOCOL_ICQ:
-                return ProviderNames.ICQ;
-            case Im.PROTOCOL_JABBER:
-                return ProviderNames.JABBER;
+            //case Im.PROTOCOL_ICQ:
+                //return ProviderNames.ICQ;
+            //case Im.PROTOCOL_JABBER:
+                //return ProviderNames.JABBER;
             case Im.PROTOCOL_SKYPE:
                 return ProviderNames.SKYPE;
             case Im.PROTOCOL_QQ:

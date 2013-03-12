@@ -42,7 +42,7 @@ public class PhotoEditorView extends LinearLayout implements Editor {
 
     private ValuesDelta mEntry;
     private EditorListener mListener;
-    private View mTriangleAffordance;
+    //private View mTriangleAffordance; //do not used,remove by hhl
 
     private boolean mHasSetPhoto = false;
     private boolean mReadOnly;
@@ -71,7 +71,7 @@ public class PhotoEditorView extends LinearLayout implements Editor {
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        mTriangleAffordance = findViewById(R.id.photo_triangle_affordance);
+        //mTriangleAffordance = findViewById(R.id.photo_triangle_affordance);
         mPhotoImageView = (ImageView) findViewById(R.id.photo);
         mFrameView = findViewById(R.id.frame);
         mFrameView.setOnClickListener(new OnClickListener() {
@@ -178,7 +178,7 @@ public class PhotoEditorView extends LinearLayout implements Editor {
         mListener = listener;
 
         final boolean isPushable = listener != null;
-        mTriangleAffordance.setVisibility(isPushable ? View.VISIBLE : View.INVISIBLE);
+        //mTriangleAffordance.setVisibility(isPushable ? View.VISIBLE : View.INVISIBLE);
         mFrameView.setVisibility(isPushable ? View.VISIBLE : View.INVISIBLE);
     }
 

@@ -110,17 +110,31 @@ public class QuickContactListFragment extends Fragment {
                         R.id.actions_view_container);
                 final ImageView alternateActionButton = (ImageView) resultView.findViewById(
                         R.id.secondary_action_button);
-                final View alternateActionDivider = resultView.findViewById(R.id.vertical_divider);
-                final ImageView presenceIconView =
-                        (ImageView) resultView.findViewById(R.id.presence_icon);
-
+                //final View alternateActionDivider = resultView.findViewById(R.id.vertical_divider);
+                //final ImageView presenceIconView =
+                        //(ImageView) resultView.findViewById(R.id.presence_icon);
+                
+                //add by hhl,for item background
+                int itemCount = getCount();
+                if(itemCount == 1){
+                	actionsContainer.setBackgroundResource(R.drawable.shendu_listview_item_overall);
+                }else{
+                	if(position == 0){
+                    	actionsContainer.setBackgroundResource(R.drawable.shendu_listview_item_top);
+                	}else if(position == (itemCount-1)){
+                    	actionsContainer.setBackgroundResource(R.drawable.shendu_listview_item_bottom);
+                	}else{
+                    	actionsContainer.setBackgroundResource(R.drawable.shendu_listview_item_middle);
+                	}
+                }
+                
                 actionsContainer.setOnClickListener(mPrimaryActionClickListener);
                 actionsContainer.setTag(action);
                 alternateActionButton.setOnClickListener(mSecondaryActionClickListener);
                 alternateActionButton.setTag(action);
 
                 final boolean hasAlternateAction = action.getAlternateIntent() != null;
-                alternateActionDivider.setVisibility(hasAlternateAction ? View.VISIBLE : View.GONE);
+                //alternateActionDivider.setVisibility(hasAlternateAction ? View.VISIBLE : View.GONE);
                 alternateActionButton.setImageDrawable(action.getAlternateIcon());
                 alternateActionButton.setContentDescription(action.getAlternateIconDescription());
                 alternateActionButton.setVisibility(hasAlternateAction ? View.VISIBLE : View.GONE);
@@ -145,14 +159,14 @@ public class QuickContactListFragment extends Fragment {
                         text2.setVisibility(View.VISIBLE);
                     }
                 }
-                final Drawable presenceIcon = ContactPresenceIconUtil.getPresenceIcon(
+                /*final Drawable presenceIcon = ContactPresenceIconUtil.getPresenceIcon(
                         getActivity(), action.getPresence());
                 if (presenceIcon != null) {
                     presenceIconView.setImageDrawable(presenceIcon);
                     presenceIconView.setVisibility(View.VISIBLE);
                 } else {
                     presenceIconView.setVisibility(View.GONE);
-                }
+                }*/
                 return resultView;
             }
         });

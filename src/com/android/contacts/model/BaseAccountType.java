@@ -154,16 +154,17 @@ public abstract class BaseAccountType extends AccountType {
         kind.fieldList = Lists.newArrayList();
         kind.fieldList.add(new EditField(StructuredName.DISPLAY_NAME,
                 R.string.full_name, FLAGS_PERSON_NAME));
-        kind.fieldList.add(new EditField(StructuredName.PREFIX, R.string.name_prefix,
-                FLAGS_PERSON_NAME).setLongForm(true));
+		//do not used,remove by hhl
+        //kind.fieldList.add(new EditField(StructuredName.PREFIX, R.string.name_prefix,
+                //FLAGS_PERSON_NAME).setLongForm(true));
         kind.fieldList.add(new EditField(StructuredName.FAMILY_NAME, R.string.name_family,
                 FLAGS_PERSON_NAME).setLongForm(true));
         kind.fieldList.add(new EditField(StructuredName.MIDDLE_NAME, R.string.name_middle,
                 FLAGS_PERSON_NAME).setLongForm(true));
         kind.fieldList.add(new EditField(StructuredName.GIVEN_NAME, R.string.name_given,
                 FLAGS_PERSON_NAME).setLongForm(true));
-        kind.fieldList.add(new EditField(StructuredName.SUFFIX, R.string.name_suffix,
-                FLAGS_PERSON_NAME).setLongForm(true));
+        //kind.fieldList.add(new EditField(StructuredName.SUFFIX, R.string.name_suffix,
+                //FLAGS_PERSON_NAME).setLongForm(true));
         kind.fieldList.add(new EditField(StructuredName.PHONETIC_FAMILY_NAME,
                 R.string.name_phonetic_family, FLAGS_PHONETIC));
         kind.fieldList.add(new EditField(StructuredName.PHONETIC_MIDDLE_NAME,
@@ -189,27 +190,27 @@ public abstract class BaseAccountType extends AccountType {
                 context.getResources().getBoolean(R.bool.config_editor_field_order_primary);
 
         if (!displayOrderPrimary) {
-            kind.fieldList.add(new EditField(StructuredName.PREFIX, R.string.name_prefix,
-                    FLAGS_PERSON_NAME).setLongForm(true));
+            //kind.fieldList.add(new EditField(StructuredName.PREFIX, R.string.name_prefix,
+                    //FLAGS_PERSON_NAME).setLongForm(true));
             kind.fieldList.add(new EditField(StructuredName.FAMILY_NAME, R.string.name_family,
                     FLAGS_PERSON_NAME).setLongForm(true));
             kind.fieldList.add(new EditField(StructuredName.MIDDLE_NAME, R.string.name_middle,
                     FLAGS_PERSON_NAME).setLongForm(true));
             kind.fieldList.add(new EditField(StructuredName.GIVEN_NAME, R.string.name_given,
                     FLAGS_PERSON_NAME).setLongForm(true));
-            kind.fieldList.add(new EditField(StructuredName.SUFFIX, R.string.name_suffix,
-                    FLAGS_PERSON_NAME).setLongForm(true));
+            //kind.fieldList.add(new EditField(StructuredName.SUFFIX, R.string.name_suffix,
+                    //FLAGS_PERSON_NAME).setLongForm(true));
         } else {
-            kind.fieldList.add(new EditField(StructuredName.PREFIX, R.string.name_prefix,
-                    FLAGS_PERSON_NAME).setLongForm(true));
+            //kind.fieldList.add(new EditField(StructuredName.PREFIX, R.string.name_prefix,
+                    //FLAGS_PERSON_NAME).setLongForm(true));
             kind.fieldList.add(new EditField(StructuredName.GIVEN_NAME, R.string.name_given,
                     FLAGS_PERSON_NAME).setLongForm(true));
             kind.fieldList.add(new EditField(StructuredName.MIDDLE_NAME, R.string.name_middle,
                     FLAGS_PERSON_NAME).setLongForm(true));
             kind.fieldList.add(new EditField(StructuredName.FAMILY_NAME, R.string.name_family,
                     FLAGS_PERSON_NAME).setLongForm(true));
-            kind.fieldList.add(new EditField(StructuredName.SUFFIX, R.string.name_suffix,
-                    FLAGS_PERSON_NAME).setLongForm(true));
+            //kind.fieldList.add(new EditField(StructuredName.SUFFIX, R.string.name_suffix,
+                    //FLAGS_PERSON_NAME).setLongForm(true));
         }
 
         return kind;
@@ -265,12 +266,12 @@ public abstract class BaseAccountType extends AccountType {
         kind.typeList.add(buildPhoneType(Phone.TYPE_HOME));
         kind.typeList.add(buildPhoneType(Phone.TYPE_WORK));
         kind.typeList.add(buildPhoneType(Phone.TYPE_FAX_WORK).setSecondary(true));
-        kind.typeList.add(buildPhoneType(Phone.TYPE_FAX_HOME).setSecondary(true));
-        kind.typeList.add(buildPhoneType(Phone.TYPE_PAGER).setSecondary(true));
-        kind.typeList.add(buildPhoneType(Phone.TYPE_OTHER));
+        //kind.typeList.add(buildPhoneType(Phone.TYPE_FAX_HOME).setSecondary(true));
+        //kind.typeList.add(buildPhoneType(Phone.TYPE_PAGER).setSecondary(true));
+        //kind.typeList.add(buildPhoneType(Phone.TYPE_OTHER));
         kind.typeList.add(
                 buildPhoneType(Phone.TYPE_CUSTOM).setSecondary(true).setCustomColumn(Phone.LABEL));
-        kind.typeList.add(buildPhoneType(Phone.TYPE_CALLBACK).setSecondary(true));
+        /*kind.typeList.add(buildPhoneType(Phone.TYPE_CALLBACK).setSecondary(true));
         kind.typeList.add(buildPhoneType(Phone.TYPE_CAR).setSecondary(true));
         kind.typeList.add(buildPhoneType(Phone.TYPE_COMPANY_MAIN).setSecondary(true));
         kind.typeList.add(buildPhoneType(Phone.TYPE_ISDN).setSecondary(true));
@@ -282,7 +283,7 @@ public abstract class BaseAccountType extends AccountType {
         kind.typeList.add(buildPhoneType(Phone.TYPE_WORK_MOBILE).setSecondary(true));
         kind.typeList.add(buildPhoneType(Phone.TYPE_WORK_PAGER).setSecondary(true));
         kind.typeList.add(buildPhoneType(Phone.TYPE_ASSISTANT).setSecondary(true));
-        kind.typeList.add(buildPhoneType(Phone.TYPE_MMS).setSecondary(true));
+        kind.typeList.add(buildPhoneType(Phone.TYPE_MMS).setSecondary(true));*/
 
         kind.fieldList = Lists.newArrayList();
         kind.fieldList.add(new EditField(Phone.NUMBER, R.string.phoneLabelsGroup, FLAGS_PHONE));
@@ -299,8 +300,8 @@ public abstract class BaseAccountType extends AccountType {
         kind.typeList = Lists.newArrayList();
         kind.typeList.add(buildEmailType(Email.TYPE_HOME));
         kind.typeList.add(buildEmailType(Email.TYPE_WORK));
-        kind.typeList.add(buildEmailType(Email.TYPE_OTHER));
-        kind.typeList.add(buildEmailType(Email.TYPE_MOBILE));
+        //kind.typeList.add(buildEmailType(Email.TYPE_OTHER));
+        //kind.typeList.add(buildEmailType(Email.TYPE_MOBILE));
         kind.typeList.add(
                 buildEmailType(Email.TYPE_CUSTOM).setSecondary(true).setCustomColumn(Email.LABEL));
 
@@ -347,14 +348,14 @@ public abstract class BaseAccountType extends AccountType {
 
         kind.typeColumn = Im.PROTOCOL;
         kind.typeList = Lists.newArrayList();
-        kind.typeList.add(buildImType(Im.PROTOCOL_AIM));
+        //kind.typeList.add(buildImType(Im.PROTOCOL_AIM));
         kind.typeList.add(buildImType(Im.PROTOCOL_MSN));
         kind.typeList.add(buildImType(Im.PROTOCOL_YAHOO));
         kind.typeList.add(buildImType(Im.PROTOCOL_SKYPE));
         kind.typeList.add(buildImType(Im.PROTOCOL_QQ));
         kind.typeList.add(buildImType(Im.PROTOCOL_GOOGLE_TALK));
-        kind.typeList.add(buildImType(Im.PROTOCOL_ICQ));
-        kind.typeList.add(buildImType(Im.PROTOCOL_JABBER));
+        //kind.typeList.add(buildImType(Im.PROTOCOL_ICQ));
+        //kind.typeList.add(buildImType(Im.PROTOCOL_JABBER));
         kind.typeList.add(buildImType(Im.PROTOCOL_CUSTOM).setSecondary(true).setCustomColumn(
                 Im.CUSTOM_PROTOCOL));
 
@@ -550,7 +551,7 @@ public abstract class BaseAccountType extends AccountType {
                 case Phone.TYPE_MOBILE: return R.string.call_mobile;
                 case Phone.TYPE_WORK: return R.string.call_work;
                 case Phone.TYPE_FAX_WORK: return R.string.call_fax_work;
-                case Phone.TYPE_FAX_HOME: return R.string.call_fax_home;
+                /*case Phone.TYPE_FAX_HOME: return R.string.call_fax_home;
                 case Phone.TYPE_PAGER: return R.string.call_pager;
                 case Phone.TYPE_OTHER: return R.string.call_other;
                 case Phone.TYPE_CALLBACK: return R.string.call_callback;
@@ -565,7 +566,7 @@ public abstract class BaseAccountType extends AccountType {
                 case Phone.TYPE_WORK_MOBILE: return R.string.call_work_mobile;
                 case Phone.TYPE_WORK_PAGER: return R.string.call_work_pager;
                 case Phone.TYPE_ASSISTANT: return R.string.call_assistant;
-                case Phone.TYPE_MMS: return R.string.call_mms;
+                case Phone.TYPE_MMS: return R.string.call_mms;*/
                 default: return R.string.call_custom;
             }
         }
@@ -585,7 +586,7 @@ public abstract class BaseAccountType extends AccountType {
                 case Phone.TYPE_MOBILE: return R.string.sms_mobile;
                 case Phone.TYPE_WORK: return R.string.sms_work;
                 case Phone.TYPE_FAX_WORK: return R.string.sms_fax_work;
-                case Phone.TYPE_FAX_HOME: return R.string.sms_fax_home;
+                /*case Phone.TYPE_FAX_HOME: return R.string.sms_fax_home;
                 case Phone.TYPE_PAGER: return R.string.sms_pager;
                 case Phone.TYPE_OTHER: return R.string.sms_other;
                 case Phone.TYPE_CALLBACK: return R.string.sms_callback;
@@ -600,7 +601,7 @@ public abstract class BaseAccountType extends AccountType {
                 case Phone.TYPE_WORK_MOBILE: return R.string.sms_work_mobile;
                 case Phone.TYPE_WORK_PAGER: return R.string.sms_work_pager;
                 case Phone.TYPE_ASSISTANT: return R.string.sms_assistant;
-                case Phone.TYPE_MMS: return R.string.sms_mms;
+                case Phone.TYPE_MMS: return R.string.sms_mms;*/
                 default: return R.string.sms_custom;
             }
         }
@@ -613,8 +614,8 @@ public abstract class BaseAccountType extends AccountType {
             switch (type) {
                 case Email.TYPE_HOME: return R.string.email_home;
                 case Email.TYPE_WORK: return R.string.email_work;
-                case Email.TYPE_OTHER: return R.string.email_other;
-                case Email.TYPE_MOBILE: return R.string.email_mobile;
+                /*case Email.TYPE_OTHER: return R.string.email_other;
+                case Email.TYPE_MOBILE: return R.string.email_mobile;*/
                 default: return R.string.email_custom;
             }
         }
@@ -662,15 +663,15 @@ public abstract class BaseAccountType extends AccountType {
         protected int getTypeLabelResource(Integer type) {
             if (type == null) return R.string.chat;
             switch (type) {
-                case Im.PROTOCOL_AIM: return R.string.chat_aim;
+                //case Im.PROTOCOL_AIM: return R.string.chat_aim;
                 case Im.PROTOCOL_MSN: return R.string.chat_msn;
                 case Im.PROTOCOL_YAHOO: return R.string.chat_yahoo;
                 case Im.PROTOCOL_SKYPE: return R.string.chat_skype;
                 case Im.PROTOCOL_QQ: return R.string.chat_qq;
                 case Im.PROTOCOL_GOOGLE_TALK: return R.string.chat_gtalk;
-                case Im.PROTOCOL_ICQ: return R.string.chat_icq;
-                case Im.PROTOCOL_JABBER: return R.string.chat_jabber;
-                case Im.PROTOCOL_NETMEETING: return R.string.chat;
+                //case Im.PROTOCOL_ICQ: return R.string.chat_icq;
+                //case Im.PROTOCOL_JABBER: return R.string.chat_jabber;
+                //case Im.PROTOCOL_NETMEETING: return R.string.chat;
                 default: return R.string.chat;
             }
         }
@@ -960,22 +961,22 @@ public abstract class BaseAccountType extends AccountType {
 
             ks.fieldList.add(new EditField(StructuredName.DISPLAY_NAME, R.string.full_name,
                     FLAGS_PERSON_NAME));
-            ks.fieldList.add(new EditField(StructuredName.PREFIX, R.string.name_prefix,
-                    FLAGS_PERSON_NAME).setLongForm(true));
+            //ks.fieldList.add(new EditField(StructuredName.PREFIX, R.string.name_prefix,
+                    //FLAGS_PERSON_NAME).setLongForm(true));
             ks.fieldList.add(new EditField(StructuredName.FAMILY_NAME, R.string.name_family,
                     FLAGS_PERSON_NAME).setLongForm(true));
             ks.fieldList.add(new EditField(StructuredName.MIDDLE_NAME, R.string.name_middle,
                     FLAGS_PERSON_NAME).setLongForm(true));
             ks.fieldList.add(new EditField(StructuredName.GIVEN_NAME, R.string.name_given,
                     FLAGS_PERSON_NAME).setLongForm(true));
-            ks.fieldList.add(new EditField(StructuredName.SUFFIX, R.string.name_suffix,
-                    FLAGS_PERSON_NAME).setLongForm(true));
-            ks.fieldList.add(new EditField(StructuredName.PHONETIC_FAMILY_NAME,
+            //ks.fieldList.add(new EditField(StructuredName.SUFFIX, R.string.name_suffix,
+                    //FLAGS_PERSON_NAME).setLongForm(true));
+            /*ks.fieldList.add(new EditField(StructuredName.PHONETIC_FAMILY_NAME,
                     R.string.name_phonetic_family, FLAGS_PHONETIC));
             ks.fieldList.add(new EditField(StructuredName.PHONETIC_MIDDLE_NAME,
                     R.string.name_phonetic_middle, FLAGS_PHONETIC));
             ks.fieldList.add(new EditField(StructuredName.PHONETIC_GIVEN_NAME,
-                    R.string.name_phonetic_given, FLAGS_PHONETIC));
+                    R.string.name_phonetic_given, FLAGS_PHONETIC));*/
 
             // Display name
             final DataKind kd = newDataKind(context, parser, attrs, true,
@@ -990,47 +991,47 @@ public abstract class BaseAccountType extends AccountType {
                     R.string.full_name, FLAGS_PERSON_NAME).setShortForm(true));
 
             if (!displayOrderPrimary) {
-                kd.fieldList.add(new EditField(StructuredName.PREFIX, R.string.name_prefix,
-                        FLAGS_PERSON_NAME).setLongForm(true));
+                //kd.fieldList.add(new EditField(StructuredName.PREFIX, R.string.name_prefix,
+                        //FLAGS_PERSON_NAME).setLongForm(true));
                 kd.fieldList.add(new EditField(StructuredName.FAMILY_NAME, R.string.name_family,
                         FLAGS_PERSON_NAME).setLongForm(true));
                 kd.fieldList.add(new EditField(StructuredName.MIDDLE_NAME, R.string.name_middle,
                         FLAGS_PERSON_NAME).setLongForm(true));
                 kd.fieldList.add(new EditField(StructuredName.GIVEN_NAME, R.string.name_given,
                         FLAGS_PERSON_NAME).setLongForm(true));
-                kd.fieldList.add(new EditField(StructuredName.SUFFIX, R.string.name_suffix,
-                        FLAGS_PERSON_NAME).setLongForm(true));
+                //kd.fieldList.add(new EditField(StructuredName.SUFFIX, R.string.name_suffix,
+                        //FLAGS_PERSON_NAME).setLongForm(true));
             } else {
-                kd.fieldList.add(new EditField(StructuredName.PREFIX, R.string.name_prefix,
-                        FLAGS_PERSON_NAME).setLongForm(true));
+                //kd.fieldList.add(new EditField(StructuredName.PREFIX, R.string.name_prefix,
+                        //FLAGS_PERSON_NAME).setLongForm(true));
                 kd.fieldList.add(new EditField(StructuredName.GIVEN_NAME, R.string.name_given,
                         FLAGS_PERSON_NAME).setLongForm(true));
                 kd.fieldList.add(new EditField(StructuredName.MIDDLE_NAME, R.string.name_middle,
                         FLAGS_PERSON_NAME).setLongForm(true));
                 kd.fieldList.add(new EditField(StructuredName.FAMILY_NAME, R.string.name_family,
                         FLAGS_PERSON_NAME).setLongForm(true));
-                kd.fieldList.add(new EditField(StructuredName.SUFFIX, R.string.name_suffix,
-                        FLAGS_PERSON_NAME).setLongForm(true));
+                //kd.fieldList.add(new EditField(StructuredName.SUFFIX, R.string.name_suffix,
+                        //FLAGS_PERSON_NAME).setLongForm(true));
             }
 
             // Phonetic name
-            final DataKind kp = newDataKind(context, parser, attrs, true,
+            /*final DataKind kp = newDataKind(context, parser, attrs, true,
                     DataKind.PSEUDO_MIME_TYPE_PHONETIC_NAME, null,
                     R.string.name_phonetic, Weight.NONE, R.layout.phonetic_name_editor_view,
                     new SimpleInflater(R.string.nameLabelsGroup),
                     new SimpleInflater(Nickname.NAME));
             kp.typeOverallMax = 1;
-            kinds.add(kp);
+            kinds.add(kp);*/
 
             // We may want to change the order depending on displayOrderPrimary too.
-            kp.fieldList.add(new EditField(DataKind.PSEUDO_COLUMN_PHONETIC_NAME,
+            /*kp.fieldList.add(new EditField(DataKind.PSEUDO_COLUMN_PHONETIC_NAME,
                     R.string.name_phonetic, FLAGS_PHONETIC).setShortForm(true));
             kp.fieldList.add(new EditField(StructuredName.PHONETIC_FAMILY_NAME,
                     R.string.name_phonetic_family, FLAGS_PHONETIC).setLongForm(true));
             kp.fieldList.add(new EditField(StructuredName.PHONETIC_MIDDLE_NAME,
                     R.string.name_phonetic_middle, FLAGS_PHONETIC).setLongForm(true));
             kp.fieldList.add(new EditField(StructuredName.PHONETIC_GIVEN_NAME,
-                    R.string.name_phonetic_given, FLAGS_PHONETIC).setLongForm(true));
+                    R.string.name_phonetic_given, FLAGS_PHONETIC).setLongForm(true));*/
             return kinds;
         }
     }
@@ -1097,7 +1098,7 @@ public abstract class BaseAccountType extends AccountType {
             if ("mobile".equals(type)) return build(Phone.TYPE_MOBILE, false);
             if ("work".equals(type)) return build(Phone.TYPE_WORK, false);
             if ("fax_work".equals(type)) return build(Phone.TYPE_FAX_WORK, true);
-            if ("fax_home".equals(type)) return build(Phone.TYPE_FAX_HOME, true);
+            /*if ("fax_home".equals(type)) return build(Phone.TYPE_FAX_HOME, true);
             if ("pager".equals(type)) return build(Phone.TYPE_PAGER, true);
             if ("other".equals(type)) return build(Phone.TYPE_OTHER, false);
             if ("callback".equals(type)) return build(Phone.TYPE_CALLBACK, true);
@@ -1114,7 +1115,7 @@ public abstract class BaseAccountType extends AccountType {
 
             // Note "assistant" used to be a custom column for the fallback type, but not anymore.
             if ("assistant".equals(type)) return build(Phone.TYPE_ASSISTANT, true);
-            if ("mms".equals(type)) return build(Phone.TYPE_MMS, true);
+            if ("mms".equals(type)) return build(Phone.TYPE_MMS, true);*/
             if ("custom".equals(type)) {
                 return build(Phone.TYPE_CUSTOM, true).setCustomColumn(Phone.LABEL);
             }
@@ -1146,8 +1147,8 @@ public abstract class BaseAccountType extends AccountType {
             // EditType is mutable, so we need to create a new instance every time.
             if ("home".equals(type)) return buildEmailType(Email.TYPE_HOME);
             if ("work".equals(type)) return buildEmailType(Email.TYPE_WORK);
-            if ("other".equals(type)) return buildEmailType(Email.TYPE_OTHER);
-            if ("mobile".equals(type)) return buildEmailType(Email.TYPE_MOBILE);
+            //if ("other".equals(type)) return buildEmailType(Email.TYPE_OTHER);
+            //if ("mobile".equals(type)) return buildEmailType(Email.TYPE_MOBILE);
             if ("custom".equals(type)) {
                 return buildEmailType(Email.TYPE_CUSTOM)
                         .setSecondary(true).setCustomColumn(Email.LABEL);
@@ -1252,14 +1253,14 @@ public abstract class BaseAccountType extends AccountType {
 
         @Override
         protected EditType buildEditTypeForTypeTag(AttributeSet attrs, String type) {
-            if ("aim".equals(type)) return buildImType(Im.PROTOCOL_AIM);
+            //if ("aim".equals(type)) return buildImType(Im.PROTOCOL_AIM);
             if ("msn".equals(type)) return buildImType(Im.PROTOCOL_MSN);
             if ("yahoo".equals(type)) return buildImType(Im.PROTOCOL_YAHOO);
             if ("skype".equals(type)) return buildImType(Im.PROTOCOL_SKYPE);
             if ("qq".equals(type)) return buildImType(Im.PROTOCOL_QQ);
             if ("google_talk".equals(type)) return buildImType(Im.PROTOCOL_GOOGLE_TALK);
-            if ("icq".equals(type)) return buildImType(Im.PROTOCOL_ICQ);
-            if ("jabber".equals(type)) return buildImType(Im.PROTOCOL_JABBER);
+            //if ("icq".equals(type)) return buildImType(Im.PROTOCOL_ICQ);
+            //if ("jabber".equals(type)) return buildImType(Im.PROTOCOL_JABBER);
             if ("custom".equals(type)) {
                 return buildImType(Im.PROTOCOL_CUSTOM).setSecondary(true)
                         .setCustomColumn(Im.CUSTOM_PROTOCOL);

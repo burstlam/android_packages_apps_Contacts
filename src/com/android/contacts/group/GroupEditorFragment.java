@@ -210,6 +210,8 @@ public class GroupEditorFragment extends Fragment implements SelectAccountDialog
     /* Wang: */
     private static final String EXCLUED_RAWCONTACTS_IDS_KEY = "exclued_ids";
 
+    private View mAddMemberParent; //add by hhl,for set bg
+    
     public GroupEditorFragment() {
     }
 
@@ -397,7 +399,7 @@ public class GroupEditorFragment extends Fragment implements SelectAccountDialog
         final AccountType accountType = getAccountType();
         final boolean editable = isGroupMembershipEditable();
         boolean isNewEditor = false;
-        mMemberListAdapter.setIsGroupMembershipEditable(editable);
+        //mMemberListAdapter.setIsGroupMembershipEditable(editable);
 
         // Since this method can be called multiple time, remove old editor if the editor type
         // is different from the new one and mark the editor with a tag so it can be found for
@@ -427,13 +429,33 @@ public class GroupEditorFragment extends Fragment implements SelectAccountDialog
         mAutoCompleteTextView = (AutoCompleteTextView) editorView.findViewById(
                 R.id.add_member_field);
 
+        /* Wang: shendu UI */
+        //configureAddNewMembersView(editorView);
+        
+        mMemberListAdapter.setIsGroupMembershipEditable(editable);
         mListView = (ListView) editorView.findViewById(android.R.id.list);
+        mAddMemberParent = LayoutInflater.from(mContext).inflate(R.layout.group_editor_view_foot_view,null);
+        mListView.addFooterView(mAddMemberParent);
         mListView.setAdapter(mMemberListAdapter);
+
+        mAddMemberParent.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // TODO Launch to Shendu Selection Activity
+                Intent selectMembersIntent = new Intent(mContext,
+                        ShenDuContactSelectionActivity.class);
+                if (mListToDisplay != null) {
+                    long[] existedIds = convertToContactIdArray(mListToDisplay);
+                    selectMembersIntent.putExtra(EXCLUED_RAWCONTACTS_IDS_KEY, existedIds);
+                }
+                startActivityForResult(selectMembersIntent, 0);
+            }
+        });
 
         // Setup the account header, only when exists.
         if (editorView.findViewById(R.id.account_header) != null) {
             CharSequence accountTypeDisplayLabel = accountType.getDisplayLabel(mContext);
-            ImageView accountIcon = (ImageView) editorView.findViewById(R.id.account_icon);
+            //ImageView accountIcon = (ImageView) editorView.findViewById(R.id.account_icon); //do not used,remove by hhl
             TextView accountTypeTextView = (TextView) editorView.findViewById(R.id.account_type);
             TextView accountNameTextView = (TextView) editorView.findViewById(R.id.account_name);
             if (!TextUtils.isEmpty(mAccountName)) {
@@ -441,7 +463,7 @@ public class GroupEditorFragment extends Fragment implements SelectAccountDialog
                         mContext.getString(R.string.from_account_format, mAccountName));
             }
             accountTypeTextView.setText(accountTypeDisplayLabel);
-            accountIcon.setImageDrawable(accountType.getDisplayIcon(mContext));
+            //accountIcon.setImageDrawable(accountType.getDisplayIcon(mContext));
         }
 
         // Setup the autocomplete adapter (for contacts to suggest to add to the group) based on the
@@ -483,9 +505,6 @@ public class GroupEditorFragment extends Fragment implements SelectAccountDialog
             mRootView.addView(editorView);
         }
 
-        /* Wang: shendu UI */
-        configureAddNewMembersView(editorView);
-
         mStatus = Status.EDITING;
     }
 
@@ -504,7 +523,7 @@ public class GroupEditorFragment extends Fragment implements SelectAccountDialog
         final AccountType accountType = getAccountType();
         final boolean editable = true;
         boolean isNewEditor = false;
-        mMemberListAdapter.setIsGroupMembershipEditable(editable);
+        //mMemberListAdapter.setIsGroupMembershipEditable(editable);
 
         // Since this method can be called multiple time, remove old editor if
         // the editor type
@@ -535,13 +554,34 @@ public class GroupEditorFragment extends Fragment implements SelectAccountDialog
         mAutoCompleteTextView = (AutoCompleteTextView) editorView.findViewById(
                 R.id.add_member_field);
 
+        /* Wang: shendu UI */
+        //configureAddNewMembersView(editorView);
+
+        mAddMemberParent = LayoutInflater.from(mContext).inflate(R.layout.group_editor_view_foot_view,null);
+        mMemberListAdapter.setIsGroupMembershipEditable(editable);
         mListView = (ListView) editorView.findViewById(android.R.id.list);
+        mListView.addFooterView(mAddMemberParent,null,false);
         mListView.setAdapter(mMemberListAdapter);
 
+        mAddMemberParent.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // TODO Launch to Shendu Selection Activity
+                Intent selectMembersIntent = new Intent(mContext,
+                        ShenDuContactSelectionActivity.class);
+                if (mListToDisplay != null) {
+                    long[] existedIds = convertToContactIdArray(mListToDisplay);
+                    selectMembersIntent.putExtra(EXCLUED_RAWCONTACTS_IDS_KEY, existedIds);
+                }
+                startActivityForResult(selectMembersIntent, 0);
+            }
+        });
+        
         // Setup the account header, only when exists.
         if (editorView.findViewById(R.id.account_header) != null) {
             CharSequence accountTypeDisplayLabel = accountType.getDisplayLabel(mContext);
-            ImageView accountIcon = (ImageView) editorView.findViewById(R.id.account_icon);
+            //do not used,remove by hhl
+            //ImageView accountIcon = (ImageView) editorView.findViewById(R.id.account_icon);
             TextView accountTypeTextView = (TextView) editorView.findViewById(R.id.account_type);
             TextView accountNameTextView = (TextView) editorView.findViewById(R.id.account_name);
             if (!TextUtils.isEmpty(mAccountName)) {
@@ -549,7 +589,7 @@ public class GroupEditorFragment extends Fragment implements SelectAccountDialog
                         mContext.getString(R.string.from_account_format, mAccountName));
             }
             accountTypeTextView.setText(accountTypeDisplayLabel);
-            accountIcon.setImageDrawable(accountType.getDisplayIcon(mContext));
+            //accountIcon.setImageDrawable(accountType.getDisplayIcon(mContext));
         }
 
         // Setup the autocomplete adapter (for contacts to suggest to add to the
@@ -596,9 +636,6 @@ public class GroupEditorFragment extends Fragment implements SelectAccountDialog
             mRootView.addView(editorView);
         }
 
-        /* Wang: shendu UI */
-        configureAddNewMembersView(editorView);
-
         mStatus = Status.EDITING;
     }
 
@@ -611,10 +648,13 @@ public class GroupEditorFragment extends Fragment implements SelectAccountDialog
      * @date 2012-9-4
      */
     private void configureAddNewMembersView(View editorView) {
-        View addNewMembers = editorView.findViewById(R.id.add_member_view);
-        log("addNewMembers =>"+addNewMembers);
-        addNewMembers.setOnClickListener(new OnClickListener() {
-
+    	/*
+    	if(mListToDisplay!=null){
+    	}*/
+    	//mAddMemberParent = editorView.findViewById(R.id.add_member_view);
+        //View addNewMembers = editorView.findViewById(R.id.add_member_view);
+        //log("addNewMembers =>"+addNewMembers);
+    	/*mAddMemberParent.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 // TODO Launch to Shendu Selection Activity
@@ -626,7 +666,7 @@ public class GroupEditorFragment extends Fragment implements SelectAccountDialog
                 }
                 startActivityForResult(selectMembersIntent, 0);
             }
-        });
+        });*/
     }
 
     @Override
@@ -705,7 +745,8 @@ public class GroupEditorFragment extends Fragment implements SelectAccountDialog
         return false;
     }
 
-    private boolean revert() {
+    //moditify by hhl
+    public boolean revert() {
         if (!hasNameChange() && !hasMembershipChange()) {
             doRevertAction();
         } else {
@@ -1376,6 +1417,14 @@ public class GroupEditorFragment extends Fragment implements SelectAccountDialog
             } else {
                 result = convertView;
             }
+
+          //add by hhl,for item bg
+            if(position == 0){
+            	result.setBackgroundResource(R.drawable.shendu_listview_item_top);
+            }else{
+            	result.setBackgroundResource(R.drawable.shendu_listview_item_middle);
+            }
+            
             final Member member = getItem(position);
 
             QuickContactBadge badge = (QuickContactBadge) result.findViewById(R.id.badge);
@@ -1402,7 +1451,17 @@ public class GroupEditorFragment extends Fragment implements SelectAccountDialog
 
         @Override
         public int getCount() {
-            return mListToDisplay.size();
+        	//for rounder background
+        	int listSize = mListToDisplay.size();
+        	if(mAddMemberParent!=null){
+        		if(listSize>0){
+        			mAddMemberParent.setBackgroundResource(R.drawable.shendu_listview_item_bottom);
+        		}else{
+        			mAddMemberParent.setBackgroundResource(R.drawable.shendu_listview_item_overall);
+        		}
+        	}
+            return listSize;
+        	//return mListToDisplay.size();
         }
 
         @Override

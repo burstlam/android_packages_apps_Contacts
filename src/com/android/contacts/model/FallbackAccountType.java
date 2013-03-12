@@ -38,7 +38,7 @@ public class FallbackAccountType extends BaseAccountType {
         try {
             addDataKindStructuredName(context);
             addDataKindDisplayName(context);
-            addDataKindPhoneticName(context);
+            //addDataKindPhoneticName(context);
             addDataKindNickname(context);
             addDataKindPhone(context);
             addDataKindEmail(context);
@@ -47,8 +47,8 @@ public class FallbackAccountType extends BaseAccountType {
             addDataKindOrganization(context);
             addDataKindPhoto(context);
             addDataKindNote(context);
-            addDataKindWebsite(context);
-            addDataKindSipAddress(context);
+            //addDataKindWebsite(context);
+            //addDataKindSipAddress(context);
             
             //Wang:
             addDataKindGroupMembership(context);

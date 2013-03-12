@@ -13,10 +13,13 @@ import android.provider.ContactsContract.Contacts;
 import android.provider.ContactsContract.Directory;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.contacts.activities.ShenDuContactSelectionActivity;
@@ -29,6 +32,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.concurrent.ConcurrentHashMap;
+
+import com.android.contacts.R;
 
 public class ShenduContactPickAdapter extends ShenduPickAdapter{
 
@@ -149,14 +154,40 @@ public class ShenduContactPickAdapter extends ShenduPickAdapter{
             photoId = cursor.getLong(ContactsQuery.CONTACT_PHOTO_ID);
         }
         /*Wang: 2012-11-15*/
-        getPhotoLoader().loadThumbnail(view.getPhotoView(), photoId,false, view.getNameTextView().getText().toString(), -1);
+        getPhotoLoader().loadThumbnail(view.getPhotoView(),photoId,false, 
+        		view.getNameTextView().getText().toString(), -1);
     }
 
     private void bindSectionHeaderAndDivider(ContactListItemView view, int position, Cursor cursor) {
         if (isSectionHeaderDisplayEnabled()) {
             Placement placement = getItemPlacementInSection(position);
             view.setSectionHeader(placement.firstInSection ? placement.sectionHeader : null);
-            view.setDividerVisible(true);
+            //view.setDividerVisible(true);
+            
+            boolean first = placement.firstInSection;
+            boolean last = placement.lastInSection;
+            
+            //add by hhl, for rounder background
+            if(position==cursor.getCount()-1){
+                view.setDividerVisible(false);
+            	if(first){
+                	view.setShenduRoundedBackground(R.drawable.shendu_listview_item_overall);
+            	}else{
+                	view.setShenduRoundedBackground(R.drawable.shendu_listview_item_bottom);
+            	}
+            }else{
+                view.setDividerVisible(!placement.lastInSection);
+                if(first && last){
+                	view.setShenduRoundedBackground(R.drawable.shendu_listview_item_overall);
+                }else if(first && !last){
+                	view.setShenduRoundedBackground(R.drawable.shendu_listview_item_top);
+                }else if(!first && last){
+                	view.setShenduRoundedBackground(R.drawable.shendu_listview_item_bottom);
+                }else if(!first && !last){
+                	view.setShenduRoundedBackground(R.drawable.shendu_listview_item_middle);
+                }
+            }
+            
         } else {
             view.setSectionHeader(null);
             view.setDividerVisible(true);

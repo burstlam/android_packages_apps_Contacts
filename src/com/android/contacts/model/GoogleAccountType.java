@@ -47,7 +47,7 @@ public class GoogleAccountType extends BaseAccountType {
         try {
             addDataKindStructuredName(context);
             addDataKindDisplayName(context);
-            addDataKindPhoneticName(context);
+            //addDataKindPhoneticName(context);//do not used,remove by hhl
             addDataKindNickname(context);
             addDataKindPhone(context);
             addDataKindEmail(context);
@@ -56,8 +56,8 @@ public class GoogleAccountType extends BaseAccountType {
             addDataKindOrganization(context);
             addDataKindPhoto(context);
             addDataKindNote(context);
-            addDataKindWebsite(context);
-            addDataKindSipAddress(context);
+            //addDataKindWebsite(context);
+            //addDataKindSipAddress(context);
             addDataKindGroupMembership(context);
             addDataKindRelation(context);
             addDataKindEvent(context);
@@ -84,9 +84,9 @@ public class GoogleAccountType extends BaseAccountType {
         kind.typeList.add(buildPhoneType(Phone.TYPE_HOME));
         kind.typeList.add(buildPhoneType(Phone.TYPE_MAIN));
         kind.typeList.add(buildPhoneType(Phone.TYPE_FAX_WORK).setSecondary(true));
-        kind.typeList.add(buildPhoneType(Phone.TYPE_FAX_HOME).setSecondary(true));
+        /*kind.typeList.add(buildPhoneType(Phone.TYPE_FAX_HOME).setSecondary(true));
         kind.typeList.add(buildPhoneType(Phone.TYPE_PAGER).setSecondary(true));
-        kind.typeList.add(buildPhoneType(Phone.TYPE_OTHER));
+        kind.typeList.add(buildPhoneType(Phone.TYPE_OTHER));*/
         kind.typeList.add(buildPhoneType(Phone.TYPE_CUSTOM).setSecondary(true)
                 .setCustomColumn(Phone.LABEL));
 
@@ -104,7 +104,7 @@ public class GoogleAccountType extends BaseAccountType {
         kind.typeList = Lists.newArrayList();
         kind.typeList.add(buildEmailType(Email.TYPE_HOME));
         kind.typeList.add(buildEmailType(Email.TYPE_WORK));
-        kind.typeList.add(buildEmailType(Email.TYPE_OTHER));
+        //kind.typeList.add(buildEmailType(Email.TYPE_OTHER));
         kind.typeList.add(buildEmailType(Email.TYPE_CUSTOM).setSecondary(true).setCustomColumn(
                 Email.LABEL));
 

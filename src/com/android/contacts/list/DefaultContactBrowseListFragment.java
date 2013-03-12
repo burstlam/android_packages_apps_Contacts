@@ -19,6 +19,7 @@ import com.android.contacts.R;
 import com.android.contacts.editor.ContactEditorFragment;
 import com.android.contacts.util.AccountFilterUtil;
 
+import android.app.ActionBar.LayoutParams;
 import android.content.ActivityNotFoundException;
 import android.content.ContentResolver;
 import android.content.CursorLoader;
@@ -31,6 +32,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -41,6 +43,7 @@ import android.view.accessibility.AccessibilityEvent;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -55,7 +58,7 @@ public class DefaultContactBrowseListFragment extends ContactBrowseListFragment 
     private static final int REQUEST_CODE_ACCOUNT_FILTER = 1;
 
     private TextView mCounterHeaderView;
-    private View mSearchHeaderView;
+    //private View mSearchHeaderView; //do not used ,remove by hhl
     private View mAccountFilterHeader;
     private FrameLayout mProfileHeaderContainer;
     private View mProfileHeader;
@@ -63,7 +66,7 @@ public class DefaultContactBrowseListFragment extends ContactBrowseListFragment 
     private FrameLayout mMessageContainer;
     private TextView mProfileTitle;
     private View mSearchProgress;
-    private TextView mSearchProgressText;
+    //private TextView mSearchProgressText;
 
     private class FilterHeaderClickListener implements OnClickListener {
         @Override
@@ -120,16 +123,16 @@ public class DefaultContactBrowseListFragment extends ContactBrowseListFragment 
 
         // Putting the header view inside a container will allow us to make
         // it invisible later. See checkHeaderViewVisibility()
-        FrameLayout headerContainer = new FrameLayout(inflater.getContext());
-        mSearchHeaderView = inflater.inflate(R.layout.search_header, null, false);
-        headerContainer.addView(mSearchHeaderView);
-        getListView().addHeaderView(headerContainer, null, false);
+        /*FrameLayout headerContainer = new FrameLayout(inflater.getContext());
+        //mSearchHeaderView = inflater.inflate(R.layout.search_header, null, false);
+        //headerContainer.addView(mSearchHeaderView);
+        getListView().addHeaderView(headerContainer, null, false);*/
         /*Wang:*/
         getListView().setOnCreateContextMenuListener(this);
         checkHeaderViewVisibility();
 
         mSearchProgress = getView().findViewById(R.id.search_progress);
-        mSearchProgressText = (TextView) mSearchHeaderView.findViewById(R.id.totalContactsText);
+        //mSearchProgressText = (TextView) mSearchHeaderView.findViewById(R.id.totalContactsText);
     }
 
     @Override
@@ -151,9 +154,9 @@ public class DefaultContactBrowseListFragment extends ContactBrowseListFragment 
         updateFilterHeaderView();
 
         // Hide the search header by default. See showCount().
-        if (mSearchHeaderView != null) {
+        /*if (mSearchHeaderView != null) {
             mSearchHeaderView.setVisibility(View.GONE);
-        }
+        }*/
     }
 
     @Override
@@ -221,17 +224,17 @@ public class DefaultContactBrowseListFragment extends ContactBrowseListFragment 
 
             // In search mode we only display the header if there is nothing found
             if (TextUtils.isEmpty(getQueryString()) || !adapter.areAllPartitionsEmpty()) {
-                mSearchHeaderView.setVisibility(View.GONE);
+                //mSearchHeaderView.setVisibility(View.GONE);
                 showSearchProgress(false);
             } else {
-                mSearchHeaderView.setVisibility(View.VISIBLE);
+                //mSearchHeaderView.setVisibility(View.VISIBLE);
                 if (adapter.isLoading()) {
-                    mSearchProgressText.setText(R.string.search_results_searching);
+                    //mSearchProgressText.setText(R.string.search_results_searching);
                     showSearchProgress(true);
                 } else {
-                    mSearchProgressText.setText(R.string.listFoundAllContactsZero);
+                    /*mSearchProgressText.setText(R.string.listFoundAllContactsZero);
                     mSearchProgressText.sendAccessibilityEvent(
-                            AccessibilityEvent.TYPE_VIEW_SELECTED);
+                            AccessibilityEvent.TYPE_VIEW_SELECTED);*/
                     showSearchProgress(false);
                 }
             }
@@ -279,6 +282,7 @@ public class DefaultContactBrowseListFragment extends ContactBrowseListFragment 
     private void addEmptyUserProfileHeader(LayoutInflater inflater) {
 
         ListView list = getListView();
+        //LayoutParams layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
         // Put a header with the "ME" name and a view for the number of contacts
         // The view is embedded in a frame view since you cannot change the visibility of a
         // view in a ListView without having a parent view.
@@ -287,12 +291,27 @@ public class DefaultContactBrowseListFragment extends ContactBrowseListFragment 
         mCounterHeaderView = (TextView) mProfileHeader.findViewById(R.id.contacts_count);
         mProfileTitle = (TextView) mProfileHeader.findViewById(R.id.profile_title);
         mProfileTitle.setAllCaps(true);
+        //mProfileHeaderContainer.addView(mProfileHeader,layoutParams);
         mProfileHeaderContainer.addView(mProfileHeader);
         list.addHeaderView(mProfileHeaderContainer, null, false);
 
         // Add a selectable view with a message inviting the user to create a local profile
         mMessageContainer = new FrameLayout(inflater.getContext());
-        mProfileMessage = (Button)inflater.inflate(R.layout.user_profile_button, null, false);
+        //mProfileMessage = (Button)inflater.inflate(R.layout.user_profile_button, null, false);
+        //add for hhl
+        mProfileMessage = new Button(inflater.getContext());
+		LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+				LayoutParams.MATCH_PARENT,
+				getResources().getDimensionPixelSize(R.dimen.contacts_view_person_data_height));
+		mProfileMessage.setLayoutParams(layoutParams);
+		mProfileMessage.setTextSize(getResources().getDimensionPixelSize(
+				R.dimen.contacts_view_actionbar_textview_size));
+		//mProfileMessage.setTextColor(getResources().getColor(R.color.contacts_view_header_name_color));
+		mProfileMessage.setGravity(Gravity.CENTER_VERTICAL|Gravity.LEFT);
+        mProfileMessage.setText(R.string.profile_display_name);
+        mProfileMessage.setBackgroundResource(R.drawable.shendu_listview_item_overall);
+		mProfileMessage.setPadding(getResources().getDimensionPixelSize(
+				R.dimen.account_container_left_padding), 0, 0, 0);
         mMessageContainer.addView(mProfileMessage);
         list.addHeaderView(mMessageContainer, null, true);
 
