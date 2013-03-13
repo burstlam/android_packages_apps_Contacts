@@ -82,6 +82,7 @@ public class AccountFilterActivity extends ContactsActivity
             TextView shendu_title = (TextView) findViewById(titleId);
             shendu_title.setTextColor(getResources().getColor(R.color.action_bar_button_text_color));
             actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setDisplayHomeAsUpEnabled(false);
         }
 
         mCurrentFilter = getIntent().getParcelableExtra(KEY_EXTRA_CURRENT_FILTER);
