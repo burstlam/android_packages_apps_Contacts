@@ -191,7 +191,7 @@ public class TextFieldsEditorView extends LabeledEditorView {
             final EditText fieldView = new EditText(mContext);
             fieldView.setBackgroundResource(R.drawable.contacts_edittext_bg);//add by hll
             fieldView.setTextSize(R.dimen.favorites_item_view_title_size);
-            fieldView.setTextColor(R.color.contacts_text_color);
+            fieldView.setTextColor(R.color.secondary_text_color);
            // fieldView.setTextColorHint(R.color.contacts_text_hint_color);
             fieldView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT,
                     field.isMultiLine() ? LayoutParams.WRAP_CONTENT : mMinFieldHeight));

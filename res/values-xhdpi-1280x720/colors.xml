@@ -15,7 +15,6 @@
 -->
 <resources>
     <color name="action_bar_button_text_color">#ffc6c6c6</color>
-    <color name="contacts_text_color">#ff3c3d3f</color>
     <color name="contacts_text_hint_color">#ff9e9e9e</color>
     <color name="secondary_text_color">#ff3c3d3f</color>
     <color name="shendu_name_avatar_text_color">#ffe1f2fa</color>
@@ -27,8 +26,5 @@
     <color name="contacts_view_header_count_color">#ff8c8f94</color>
     <color name="group_view_name_color">#ff343537</color>
     <color name="group_view_count_color">#ff5d5d5d</color>
-    <color name="group_item_view_name_color">#ffc6c6c6</color>
-    <color name="group_item_view_count_color">#ff5d5d5d</color>
     <color name="contacts_dividing_line_color">#7fffffff</color>
-    <color name="favorites_item_view_title_color">#ff5d5d5d</color>
 </resources>

@@ -39,7 +39,7 @@
         android:paddingRight="16dip"
         android:gravity="center_vertical"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textColor="@color/contacts_text_color"
+        android:textColor="@color/secondary_text_color"
         android:textSize="@dimen/favorites_item_view_title_size"
         android:text="@string/add_organization"/>
 

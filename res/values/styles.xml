@@ -59,9 +59,9 @@
         <item name="favorites_padding_bottom">?android:attr/actionBarSize</item>
     </style>
 
+	<!-- <item name="android:textColorSecondary">@color/dialtacts_secondary_text_color</item>-->
+	<!--Wang:2012-11-8-->
     <style name="DialtactsTheme1" parent="@android:style/Theme.Holo.Light.DarkActionBar">
-       <!-- <item name="android:textColorSecondary">@color/dialtacts_secondary_text_color</item>-->
-       <!--Wang:2012-11-8-->
         <item name="android:textColorPrimary">@color/primary_text_color</item>
         <item name="android:textColorSecondary">@color/secondary_text_color</item>
         <item name="android:windowActionBarOverlay">true</item>
@@ -107,13 +107,17 @@
         <item name="android:background">@drawable/ab_solid_custom_blue_inverse_holo</item>
         <item name="android:backgroundStacked">@drawable/ab_solid_custom_blue_inverse_holo</item>
     </style>
-    <!-- By Wang 2012-11-7-->
-    <style name="ShenduActivityTheme" parent="@android:style/Theme.Holo.Light">
-        <item name="android:actionBarStyle">@style/ShenduActivityTheme.ActionBarStyle</item>
+    <!-- By Wang 2012-11-7
         <item name="android:actionBarItemBackground">@drawable/action_bar_item_background</item>
+        <item name="android:textColorSecondary">@color/secondary_text_color</item>
+    -->
+    <style name="ShenduActivityTheme" parent="@android:style/Theme.Holo.Light">
+        <item name="android:homeAsUpIndicator">@*android:drawable/ic_ab_back_holo_dark</item>
+        <item name="android:windowBackground">@drawable/shendu_background_bg</item>
+        <item name="android:actionBarStyle">@style/ShenduActivityTheme.ActionBarStyle</item>
         <item name="android:actionBarWidgetTheme">@style/ContactsActionBarTheme</item>
         <item name="android:textColorPrimary">@color/primary_text_color</item>
-        <item name="android:textColorSecondary">@color/secondary_text_color</item>
+        <item name="android:textColorSecondary">@color/group_view_count_color</item>
         <item name="android:listViewStyle">@style/ListViewStyle</item>
     </style>
 
@@ -123,8 +127,11 @@
         <item name="android:backgroundStacked">@drawable/ab_solid_custom_blue_inverse_holo</item>
     </style>
 
-    <style name="ShenduActivityTheme.ActionBar.TitleTextStyle" parent="@android:style/TextAppearance.Holo.Widget.ActionBar.Title">
+    <!-- modirify  
         <item name="android:textColor">@color/primary_text_color</item>
+    -->
+    <style name="ShenduActivityTheme.ActionBar.TitleTextStyle" parent="@android:style/TextAppearance.Holo.Widget.ActionBar.Title">
+        <item name="android:textColor">@color/action_bar_button_text_color</item>
     </style>
     <!--<style name="ShenduActivityTheme" parent="@android:style/Theme.Holo.Light.ActionBar">
         <item name="android:actionBarStyle">@style/ContactsActionBarStyle</item>
@@ -135,10 +142,14 @@
         <item name="android:listViewStyle">@style/ListViewStyle</item>
     </style>-->
 
-    <style name="EditorActivityTheme" parent="@android:style/Theme.Holo.Light.DarkActionBar">
-        <item name="android:actionBarStyle">@style/ContactsActionBarStyle</item>
+	<!-- moditify
         <item name="android:actionBarItemBackground">@drawable/action_bar_item_background</item>
+	-->
+    <style name="EditorActivityTheme" parent="@android:style/Theme.Holo.Light.DarkActionBar">
+        <item name="android:windowBackground">@drawable/shendu_background_bg</item>
+        <item name="android:actionBarStyle">@style/ContactsActionBarStyle</item>
         <item name="android:actionBarWidgetTheme">@style/ContactsActionBarTheme</item>
+        <item name="android:actionBarItemBackground">@drawable/action_bar_item_background</item>
         <item name="android:windowContentOverlay">@null</item>
         <item name="android:textColorPrimary">@color/primary_text_color</item>
         <item name="android:textColorSecondary">@color/secondary_text_color</item>
@@ -169,51 +180,72 @@
         <item name="android:listViewStyle">@style/ListViewStyle</item>
     </style>
 
-    <style name="PeopleTheme1" parent="@android:style/Theme.Holo.Light">
+    <!--  moditify
         <item name="android:actionBarStyle">@style/ContactsActionBarStyle</item>
         <item name="android:actionBarItemBackground">@drawable/action_bar_item_background</item>
         <item name="android:actionBarWidgetTheme">@style/ContactsActionBarTheme</item>
+        <item name="android:actionBarDivider">@drawable/shendu_tab_divider</item>
+        <item name="android:listViewStyle">@style/ListViewStyle</item>
+    -->
+    <style name="PeopleTheme1" parent="@android:style/Theme.Holo.Light">
+        <item name="android:windowBackground">@drawable/shendu_background_bg</item>
+        <item name="android:actionBarStyle">@style/PeopleActivityActionBarStyle</item>
+        <item name="android:actionBarWidgetTheme">@null</item>
         <item name="android:actionBarTabStyle">@style/ContactsActionBarTabView</item>
         <!--Wang:2012-11-7-->
         <item name="android:actionBarTabTextStyle">@style/ContactsActionBarTabTextStyle</item>
-        <item name="android:actionBarDivider">@drawable/shendu_tab_divider</item>
+        <item name="android:actionBarDivider">@null</item>
         <item name="android:textColorPrimary">@color/primary_text_color</item>
         <item name="android:textColorSecondary">@color/secondary_text_color</item>
-        <item name="android:listViewStyle">@style/ListViewStyle</item>
+        <item name="android:listViewStyle">@null</item>
     </style>
 
+    <!--  moditify
+        <item name="list_item_divider">?android:attr/listDivider</item>
+        <item name="list_item_padding_top">8dip</item>
+        <item name="list_item_padding_bottom">8dip</item>
+        <item name="list_item_padding_left">0dip</item>
+        <item name="list_item_photo_size">@dimen/contact_browser_list_item_photo_size</item>
+        <item name="list_item_header_text_color">@color/people_app_theme_color</item>
+        <item name="list_item_header_text_size">14sp</item>
+        <item name="list_item_data_width_weight">5</item>
+        <item name="list_item_label_width_weight">3</item>
+        <item name="list_item_header_text_indent">8dip</item>
+        <item name="contact_browser_list_padding_left">16dip</item>
+        <item name="list_item_text_indent">@dimen/contact_browser_list_item_text_indent</item>
+    -->
     <style name="PeopleTheme" parent="@style/PeopleTheme1">
         <item name="list_item_height">?android:attr/listPreferredItemHeight</item>
         <item name="activated_background">@drawable/list_item_activated_background</item>
         <item name="section_header_background">@drawable/list_title_holo</item>
         <item name="list_section_header_height">24dip</item>
-        <item name="list_item_divider">?android:attr/listDivider</item>
-        <item name="list_item_padding_top">8dip</item>
+        <item name="list_item_divider">@drawable/contacts_dividing_line</item>
+        <item name="list_item_padding_top">10dip</item>
         <item name="list_item_padding_right">0dip</item>
-        <item name="list_item_padding_bottom">8dip</item>
-        <item name="list_item_padding_left">0dip</item>
+        <item name="list_item_padding_bottom">10dip</item>
+        <item name="list_item_padding_left">10dip</item>
         <item name="list_item_gap_between_image_and_text">8dip</item>
         <item name="list_item_gap_between_label_and_data">5dip</item>
         <item name="list_item_call_button_padding">14dip</item>
         <item name="list_item_vertical_divider_margin">5dip</item>
         <item name="list_item_presence_icon_margin">4dip</item>
         <item name="list_item_presence_icon_size">16dip</item>
-        <item name="list_item_photo_size">@dimen/contact_browser_list_item_photo_size</item>
+        <item name="list_item_photo_size">@dimen/contacts_view_photo_height</item>
         <item name="list_item_profile_photo_size">70dip</item>
         <item name="list_item_prefix_highlight_color">@color/people_app_theme_color</item>
-        <item name="list_item_header_text_color">@color/people_app_theme_color</item>
-        <item name="list_item_header_text_size">14sp</item>
+        <item name="list_item_header_text_color">@color/contacts_view_header_name_color</item>
+        <item name="list_item_header_text_size">19sp</item>
         <item name="list_item_header_height">32dip</item>
         <item name="list_item_header_underline_height">1dip</item>
         <item name="list_item_header_underline_color">@color/people_app_theme_color</item>
-        <item name="list_item_data_width_weight">5</item>
-        <item name="list_item_label_width_weight">3</item>
+        <item name="list_item_data_width_weight">7</item>
+        <item name="list_item_label_width_weight">1</item>
         <item name="list_item_contacts_count_text_color">@color/contact_count_text_color</item>
-        <item name="list_item_header_text_indent">8dip</item>
-        <item name="contact_browser_list_padding_left">16dip</item>
+        <item name="list_item_header_text_indent">0dip</item>
+        <item name="contact_browser_list_padding_left">10dip</item>
         <item name="contact_browser_list_padding_right">0dip</item>
         <item name="contact_browser_background">@android:color/transparent</item>
-        <item name="list_item_text_indent">@dimen/contact_browser_list_item_text_indent</item>
+        <item name="list_item_text_indent">0dp</item>
         <item name="list_item_contacts_count_text_size">12sp</item>
         <!-- Favorites -->
         <item name="favorites_padding_bottom">0dip</item>
@@ -227,10 +259,16 @@
         <item name="android:displayOptions"></item>
     </style>
 
-    <!--Wang: 2012-11-7-->
-    <style name="ContactsActionBarTabTextStyle">
-         <item name="android:textColor">@color/action_bar_button_text_color</item>
+    <!--Wang: 2012-11-7
          <item name="android:textSize">15sp</item>
+    -->
+    <style name="ContactsActionBarTabTextStyle">
+		<item name="android:textColor">@color/action_bar_button_text_color</item>
+		<item name="android:textSize">21sp</item>
+        <item name="android:gravity">center_vertical|center_horizontal</item>
+        <item name="android:layout_gravity">fill</item>
+		<item name="android:layout_height">match_parent</item>
+		<item name="android:layout_width">match_parent</item>
     </style>
 
     <style name="ContactsActionBarDropDownStyle" parent="@android:style/Widget.Holo.Light.Spinner">
@@ -244,8 +282,17 @@
         <item name="android:dropDownListViewStyle">@style/ListViewDropdownStyle</item>
     </style>
 
-    <style name="ContactsActionBarTabView" parent="@android:style/Widget.Holo.ActionBar.TabView">
+    <!-- moditify
         <item name="android:background">@drawable/action_bar_tab</item>
+    -->
+    <style name="ContactsActionBarTabView" parent="@android:style/Widget.Holo.ActionBar.TabView">
+        <item name="android:background">@null</item>
+        <item name="android:gravity">fill</item>
+        <item name="android:layout_gravity">fill</item>
+        <item name="android:paddingLeft">0dip</item>
+        <item name="android:paddingRight">0dip</item>
+		<item name="android:layout_height">match_parent</item>
+		<item name="android:layout_width">match_parent</item>
     </style>
 
     <style name="ListViewDropdownStyle" parent="@android:style/Widget.ListView.DropDown">
@@ -256,7 +303,11 @@
         <item name="android:overScrollMode">always</item>
     </style>
 
-    <style name="ContactPickerTheme" parent="@style/PeopleTheme" />
+    <!--  moditify
+    -->
+    <style name="ContactPickerTheme" parent="@style/PeopleTheme" >
+        <item name="android:actionBarStyle">@style/ContactsActionBarStyle</item>
+    </style>
 
     <style name="ContactPickerLayout" parent="ContactPickerTheme">
         <item name="android:layout_width">match_parent</item>
@@ -393,15 +444,19 @@
          This is similar to ?android:attr/listSeparatorTextView but uses different
          background and text color. See also android:style/Widget.Holo.TextView.ListSeparator
          (which is private, so we cannot specify it as a parent style).  -->
+     <!--  moditify
+        <item name="android:background">@drawable/list_section_divider_holo_custom</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/people_app_theme_color</item>
+     -->    
     <style name="ContactListSeparatorTextViewStyle">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <!-- See comments for @dimen/list_section_divider_min_height -->
         <item name="android:minHeight">@dimen/list_section_divider_min_height</item>
-        <item name="android:background">@drawable/list_section_divider_holo_custom</item>
         <item name="android:textAppearance">?android:attr/textAppearanceSmall</item>
-        <item name="android:textStyle">bold</item>
-        <item name="android:textColor">@color/people_app_theme_color</item>
+        <item name="android:textSize">@dimen/favorites_item_view_title_size</item>
+        <item name="android:textColor">@color/secondary_text_color</item>
         <item name="android:gravity">center_vertical</item>
         <item name="android:paddingLeft">8dip</item>
         <item name="android:ellipsize">end</item>
@@ -426,13 +481,17 @@
         <item name="android:layout_weight">1</item>
         <item name="android:soundEffectsEnabled">false</item>
     </style>
-    <!-- Wang:2012-12-5 -->
+    <!-- Wang:2012-12-5 
+        <item name="android:textColor">@color/fastsearchpad_button_text_color</item>
+        <item name="android:textColor">#ffbcbec3</item>
+    -->
     <style name="FastSearchPadButtonStyle">
         <item name="android:layout_width">0dip</item>
         <item name="android:layout_height">match_parent</item>
         <item name="android:layout_weight">1</item>
         <item name="android:background">@drawable/fastsearch_btn</item>
         <item name="android:textColor">@color/fastsearchpad_button_text_color</item>
+        <item name="android:textSize">@dimen/fast_search_inputpad_edittext_size</item>
         <item name="android:soundEffectsEnabled">false</item>
     </style>
     <!-- Wang:2012-12-20 -->
@@ -441,6 +500,18 @@
         <item name="android:layout_height">0dip</item>
         <item name="android:layout_weight">1</item>
         <item name="android:orientation">horizontal</item>
+    </style>
+    
+    <!-- add by hhl -->
+        
+    <style name="PeopleActivityActionBarStyle" parent="@android:style/Widget.Holo.ActionBar">
+        <item name="android:backgroundStacked">@drawable/new_style_actionbar_bg</item>
+        <item name="android:backgroundSplit">@*android:drawable/ab_bottom_solid_inverse_holo</item>
+        <item name="android:displayOptions"></item>
+    </style>
+    
+    <style name="ShenduContactSelectionStyle" parent="@style/PeopleTheme">
+        <item name="android:actionBarStyle">@style/ContactsActionBarStyle</item>
     </style>
     
 </resources>

@@ -304,8 +304,8 @@ public class DefaultContactBrowseListFragment extends ContactBrowseListFragment 
 				LayoutParams.MATCH_PARENT,
 				getResources().getDimensionPixelSize(R.dimen.contacts_view_person_data_height));
 		mProfileMessage.setLayoutParams(layoutParams);
-		mProfileMessage.setTextSize(getResources().getDimensionPixelSize(
-				R.dimen.contacts_view_actionbar_textview_size));
+		/*mProfileMessage.setTextSize(getResources().getDimensionPixelSize(
+				R.dimen.contacts_view_actionbar_textview_size));*/
 		//mProfileMessage.setTextColor(getResources().getColor(R.color.contacts_view_header_name_color));
 		mProfileMessage.setGravity(Gravity.CENTER_VERTICAL|Gravity.LEFT);
         mProfileMessage.setText(R.string.profile_display_name);

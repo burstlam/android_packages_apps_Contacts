@@ -62,7 +62,7 @@
     <color name="detail_tab_carousel_tab_label_color">#EEEEEE</color>
 
     <!-- Color of the text for buttons in the action bar  --><!-- Wang:2012-11-7-->
-    <color name="action_bar_button_text_color">#ffc7c7c7</color>
+    <color name="action_bar_button_text_color">#ffe6e8ec</color>
 
     <!--  Color of the status message for starred contacts in the People app -->
     <color name="people_contact_tile_status_color">#CCCCCC</color>
@@ -117,12 +117,28 @@
      <!-- Wang 2012-11-8  text color for theme -->
      <color name="shendu_primary_text_color">#333333</color>
      <color name="shendu_secondary_text_color">#ff686a6e</color>
-     <!-- Wang 2012-12-24  text color for FastSearch -->
-     <color name="shendu_fastsearch_button_text_color_normal">#fff</color>
+     <!-- Wang 2012-12-24  text color for FastSearch 
+    	<color name="shendu_fastsearch_button_text_color_normal">#fff</color>
+     -->
+     <color name="shendu_fastsearch_button_text_color_normal">#ff8e9096</color>
      <color name="shendu_fastsearch_button_text_color_disabled">#1a000000</color>
      <!-- shutao 2012-12-25 -->
      <color name="shendu_dialpad_fragment_dial_text_color">#FFFFFF</color>
      <!-- shutao 2013-1-29 -->
      <color name="shendu_dialpad_input_number_color">#ff434446</color>
      <color name="shendu_call_log_name_text_color">#ff343537</color>
+     
+	<!-- add by hhl
+		<color name="secondary_text_color">#ff3c3d3f</color>
+	-->
+	<color name="contacts_text_hint_color">#ff9e9e9e</color>
+	<color name="fast_search_inputpad_edittext_color">#ff3197d8</color>    
+	<color name="contacts_view_box_name_color">#ff6d6f73</color>
+	<color name="contacts_view_box_number_color">#ff3d3e40</color>    
+	<color name="contacts_view_header_name_color">#ff585858</color>
+	<color name="contacts_view_header_count_color">#ff8c8f94</color>    
+	<color name="group_view_name_color">#ff343537</color>
+	<color name="group_view_count_color">#ff5d5d5d</color>
+	<color name="contacts_dividing_line_color">#7fffffff</color>
+	
 </resources>

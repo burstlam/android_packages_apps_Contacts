@@ -137,7 +137,7 @@
     <dimen name="list_section_height">25dip</dimen>
 
     <!-- Account title left padding -->
-    <dimen name="account_container_left_padding">16dip</dimen>
+    <dimen name="account_container_left_padding">8dip</dimen>
 
     <!-- Left padding for a group member list item -->
     <dimen name="group_member_item_left_padding">4dip</dimen>
@@ -286,4 +286,48 @@
      <dimen name="shendu_call_detail_date_text_s_size">14sp</dimen>
      <dimen name="shendu_call_detail_text_size">12sp</dimen>
      
+	<!-- hhl:20130221 -->
+    <dimen name="contacts_edit_photo_height">68dip</dimen>
+    <dimen name="contacts_edit_photo_width">76dip</dimen>
+    <dimen name="contacts_edittext_height">43dip</dimen>
+    <dimen name="contacts_edittext_one_width">287dip</dimen>
+    <dimen name="contacts_edittext_other_width">200dip</dimen>
+    <dimen name="contacts_editspinner_one_width">288dip</dimen>
+    <dimen name="contacts_padding_left">20dp</dimen>
+    <dimen name="contacts_padding_middle">8dp</dimen>
+    <dimen name="fast_search_inputpad_height">362dp</dimen>
+    <dimen name="fast_search_inputpad_width">190dp</dimen>
+    <dimen name="fast_search_inputpad_margin_right">4dp</dimen>
+    <dimen name="fast_search_inputpad_padding_left">3dp</dimen>
+    <dimen name="fast_search_inputpad_padding_bottom">7dp</dimen>
+    <dimen name="contacts_view_photo_height">44dp</dimen>
+    <dimen name="contacts_view_person_data_height">64dp</dimen>
+    <dimen name="contacts_view_header_setting_data_height">69dp</dimen>
+    <dimen name="group_editor_actionbar_dividing_height">43dp</dimen>
+    <dimen name="new_actionbar_size">55dp</dimen>
+    <dimen name="contacts_detail_actionbar_padding">15dp</dimen>
+    <dimen name="contact_detail_list_item_height">61dp</dimen>
+	<dimen name="item_group_membership_paddingleft">12dp</dimen>
+	<dimen name="list_separator_textview_height">40dp</dimen>
+	<dimen name="contacts_dividing_line_height">0.5dp</dimen>
+	<dimen name="organization_editor_view_switcher_textview_height">34.5dp</dimen>
+	<dimen name="contact_listitemview_name_height">25dp</dimen>
+	<dimen name="contact_listitemview_label_height">19dp</dimen>
+	<dimen name="contact_listitemview_label_width">28dp</dimen>
+	<dimen name="contact_detail_ringtone_view_textview_height">41dp</dimen>
+	<dimen name="quickcontent_default_height">131dp</dimen>
+	<dimen name="quickcontent_itemview_height">65dp</dimen>
+     
+    <dimen name="contacts_view_name_size">18sp</dimen>
+    <dimen name="fast_search_inputpad_edittext_size">21sp</dimen>
+    <dimen name="contacts_view_box_number_size">20sp</dimen>
+    <dimen name="favorites_item_view_title_size">14sp</dimen>
+    <dimen name="group_editor_actionbar_text_size">18sp</dimen>
+    <dimen name="group_view_count_size">12sp</dimen>
+    <dimen name="contacts_view_header_count_size">16sp</dimen>
+    <dimen name="contacts_text_size">15sp</dimen>
+    <dimen name="contacts_view_actionbar_textview_size">12sp</dimen>
+     
+    <dimen name="edit_delete_button_paddingLeft">2dp</dimen>
+    <dimen name="edit_delete_button_paddingRight">0dp</dimen>
 </resources>

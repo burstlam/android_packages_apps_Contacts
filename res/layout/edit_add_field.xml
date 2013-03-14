@@ -26,13 +26,12 @@
     android:layout_height="wrap_content"
     android:minHeight="32dip"
     android:orientation="vertical"
-	android:layout_marginRight="10dp"
+	android:layout_marginRight="@dimen/account_container_left_padding"
     >
     <View
 		android:layout_width="match_parent"
 		android:layout_height="@dimen/contacts_dividing_line_height"
-		android:layout_marginTop="9dp"
-		android:layout_marginBottom="9dp"
+		android:layout_marginBottom="@dimen/contacts_padding_middle"
 		android:background="@drawable/contacts_dividing_line" />
     <LinearLayout 
     	xmlns:android="http://schemas.android.com/apk/res/android"
@@ -54,6 +53,7 @@
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
 	        android:duplicateParentState="true"
+	        android:textSize="@dimen/favorites_item_view_title_size"
 	        android:textAppearance="?android:attr/textAppearanceMedium"
 	        android:textColor="?android:attr/textColorSecondary"
 	        android:text="@string/add_new_entry_for_section" />

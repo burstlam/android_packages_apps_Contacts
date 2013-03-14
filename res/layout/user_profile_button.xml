@@ -41,7 +41,7 @@
         android:singleLine="true"
         android:text="@string/profile_display_name"
         android:textColor="@color/contacts_view_header_name_color"
-        android:textSize="@dimen/favorites_item_view_title_size" />
+        android:textSize="@dimen/group_editor_actionbar_text_size" />
 
 </FrameLayout>
 

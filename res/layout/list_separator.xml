@@ -34,7 +34,7 @@
     	android:layout_height="@dimen/list_separator_textview_height"
     	android:gravity="bottom"
         android:textSize="@dimen/favorites_item_view_title_size"
-        android:textColor="@color/favorites_item_view_title_color"
+        android:textColor="@color/group_view_count_color"
         android:singleLine="true"
         android:ellipsize="end"
         />

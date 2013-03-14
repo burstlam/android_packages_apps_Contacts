@@ -75,7 +75,7 @@
                 android:layout_marginRight="8dip"
             	android:textSize="@dimen/group_editor_actionbar_text_size"
                 android:text="@string/menu_done"
-                android:textColor="@color/group_item_view_name_color"
+                android:textColor="@color/action_bar_button_text_color"
                 android:drawableLeft="@drawable/ic_menu_done_holo_dark" />
         </LinearLayout>
     </LinearLayout>
