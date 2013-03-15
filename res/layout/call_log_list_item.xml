@@ -77,7 +77,7 @@
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
+                    android:orientation="vertical"
                 >
                     <TextView
                         android:id="@+id/number"
@@ -86,7 +86,7 @@
                         android:layout_marginRight="@dimen/call_log_icon_margin"
                         android:textColor="?attr/call_log_secondary_text_color"
                         android:textSize="14sp"
-                        android:singleLine="true"
+                        android:singleLine="false"
                         android:ellipsize="marquee"
                         />
                     <TextView
@@ -97,7 +97,7 @@
                         android:textColor="?attr/call_log_secondary_text_color"
                         android:textStyle="bold"
                         android:textSize="14sp"
-                        android:singleLine="true"
+                        android:singleLine="false"
                         android:ellipsize="marquee"
                         />
                     </LinearLayout>
