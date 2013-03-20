@@ -49,11 +49,14 @@ import com.android.internal.telephony.ITelephony;
 import com.google.common.annotations.VisibleForTesting;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.SearchManager;
+import android.app.AlertDialog.Builder;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Entity;
 import android.content.Entity.NamedContentValues;
 import android.content.Intent;
@@ -64,6 +67,7 @@ import android.net.ParseException;
 import android.net.Uri;
 import android.net.WebAddress;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Parcelable;
 import android.os.RemoteException;
 import android.os.ServiceManager;
@@ -952,6 +956,9 @@ public class ContactDetailFragment extends Fragment implements FragmentKeyListen
     /**
      * @author Wang
      * @date 2012-11-19
+     * 
+     * @author lys
+     * @date 2013-03-20 update
      * */
     private void addRingTone(){
         String title = mContext.getResources().getString(R.string.ringtone_title);
@@ -959,11 +966,71 @@ public class ContactDetailFragment extends Fragment implements FragmentKeyListen
         View.OnClickListener onClickListener = new OnClickListener() {
             @Override
             public void onClick(View v) {
-                doPickRingtone();
+               // doPickRingtone();
+                dialogShowOption();
             }
         };
         mAllEntries.add(new RingToneViewEntry(mContext, onClickListener));
     }
+    
+    private int loadMediaPath = 0;
+    private String loadMediaTile;
+    /**
+     * @author lys
+     * @date 2013-03-20 update
+     * */
+   private void dialogShowOption(){
+       Builder builder = new AlertDialog.Builder(mContext);
+       
+       //builder.setIcon(R.drawable.ic_dialog_sound);
+       builder.setTitle(R.string.ringtone_title);
+       builder.setSingleChoiceItems(R.array.ringtone_entries, loadMediaPath, new DialogInterface.OnClickListener() {
+           @Override
+           public void onClick(DialogInterface dialog, int which) {
+               // TODO Auto-generated method stub
+               switch (which) {
+                   case 0:
+                       loadMediaPath = 0;
+                       loadMediaTile = mContext.getString(R.string.sound_ringtones);
+                       closeDialog(dialog);
+                       doPickRingtone();
+                       break;
+                   case 1:
+                       loadMediaPath = 1;
+                       loadMediaTile = mContext.getString(R.string.sound_music);
+                       closeDialog(dialog);
+                       if(Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())){
+                           //SoundPreference.super.onClick();
+                           doPickRingtoneLocalSD();
+                       }else{
+                           Toast.makeText(getContext(), R.string.sdcard_not_find, 1).show();
+                       }
+                       break;
+                   default:
+                       loadMediaPath = 0;
+                       break;
+               }
+           }
+       });
+       builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+           @Override
+           public void onClick(DialogInterface dialog, int which) {
+               closeDialog(dialog);
+           }
+       });
+       builder.show();
+   }
+   /**
+    * @author lys
+    * @date 2013-03-20 update
+    * */
+   private void closeDialog(DialogInterface dialog){
+       if(dialog!=null){
+           dialog.cancel();
+           dialog.dismiss();
+           dialog = null;
+       }
+   }
 
     /**
      * Maps group ID to the corresponding group name, collapses all synonymous groups.
@@ -1763,7 +1830,18 @@ public class ContactDetailFragment extends Fragment implements FragmentKeyListen
                 mCustomRingtone = mContactData.getCustomRingtone();
              }
             if(mCustomRingtone != null){
-                title = RingtoneManager.getRingtone(mContext, Uri.parse(mCustomRingtone)).getTitle(mContext);
+                /**
+                 * @author lys
+                 * @date 2013.3.20
+                 */
+                //解决当铃声为音乐时，sdcard不可用时，显示id号，
+                if(mCustomRingtone.contains("external") && !Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)){
+                    //1.当前铃声为本地音乐，sdcard不可用的状态，使用默认的系统铃音
+                    title = mContext.getResources().getString(R.string.default_ringtone);
+                }else{
+                    //2.当前铃声为系统非默认的铃声，和当前本地铃音可用（设置本地铃声并且sdcard可用）
+                    title = RingtoneManager.getRingtone(mContext, Uri.parse(mCustomRingtone)).getTitle(mContext);
+                }
             }else{
                 title = mContext.getResources().getString(R.string.default_ringtone);
             }
@@ -2374,6 +2452,41 @@ public class ContactDetailFragment extends Fragment implements FragmentKeyListen
         public long getItemId(int position) {
             return position;
         }
+    }
+    
+    
+    /**=======================================
+     * etting RingTone 
+     * @author lys
+     * @date 2013-03-18
+     *  =======================================
+     * */
+    private void doPickRingtoneLocalSD() {
+
+        Intent intent = new Intent(RingtoneManager.ACTION_RINGTONE_PICKER);
+        // Allow user to pick 'Default'
+        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_DEFAULT, true);
+        // Show only ringtones
+        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_RINGTONE);
+        // Don't show 'Silent'
+        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_SILENT, false);
+
+        Uri ringtoneUri;
+        if (mCustomRingtone != null) {
+            ringtoneUri = Uri.parse(mCustomRingtone);
+        } else {
+            // Otherwise pick default ringtone Uri so that something is selected.
+            ringtoneUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
+        }
+
+        // Put checkmark next to the current ringtone for this contact
+        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_EXISTING_URI, ringtoneUri);
+
+        intent.putExtra("loadMediaPath", loadMediaPath);
+        intent.putExtra("loadMediaTile", loadMediaTile);
+        
+        // Launch!
+        startActivityForResult(intent, REQUEST_CODE_PICK_RINGTONE);
     }
     
     /**=======================================

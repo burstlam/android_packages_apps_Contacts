@@ -67,4 +67,17 @@
         <item>Send SMS</item>
         <item>Remove From Call Log</item>
     </string-array>
+    
+     
+         <!-- add phone Ringtone -->
+    <string-array name="ringtone_entries">
+        <item>@string/sound_ringtones</item>
+        <item>@string/sound_music</item>
+    </string-array>
+    <!-- add phone Ringtone -->
+    <string-array name="ringtone_values">
+        <item>0</item>
+        <item>1</item>
+    </string-array>
+     
 </resources>
