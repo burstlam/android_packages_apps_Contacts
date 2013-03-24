@@ -581,4 +581,11 @@
     <string name="dialog_voicemail_airplane_mode_message" msgid="530922773669546093">"要呼叫语音信箱，请先关闭飞行模式。"</string>
     <string name="menu_export_database" msgid="2659719297530170820">"导出数据库文件"</string>
     <string name="action_menu_overflow_description" msgid="2303272250613084574">"更多选项"</string>
+
+    <!-- MoKee Add Start -->
+    <string name="dialer_ip_call_prefix_title">IP拨号前缀</string>
+    <string name="dialer_ip_call_prefix_summary">点击设置IP拨号前缀</string>
+    <string name="dialer_ipcall_title">IP拨号</string>
+    <string name="dialer_ipcall_msg">尚未设置IP拨号前缀。您想直接拨打此号码吗？</string>
+    <!-- MoKee Add End -->
 </resources>

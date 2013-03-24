@@ -568,4 +568,11 @@
     <string name="dialog_voicemail_airplane_mode_message" msgid="530922773669546093">"如要聽語音留言，請先關閉飛行模式。"</string>
     <string name="menu_export_database" msgid="2659719297530170820">"匯出資料庫檔案"</string>
     <string name="action_menu_overflow_description" msgid="2303272250613084574">"更多選項"</string>
+
+    <!-- MoKee Add Start -->
+    <string name="dialer_ip_call_prefix_title">IP撥號前置</string>
+    <string name="dialer_ip_call_prefix_summary">點擊設定IP撥號前置</string>
+    <string name="dialer_ipcall_title">IP撥號</string>
+    <string name="dialer_ipcall_msg">尚未設定IP撥號前置。您想直接撥打此號碼嗎？</string>
+    <!-- MoKee Add End -->
 </resources>
