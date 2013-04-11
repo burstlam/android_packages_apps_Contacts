@@ -108,7 +108,7 @@
                         android:textColor="?attr/call_log_secondary_text_color"
                         android:textStyle="bold"
                         android:textSize="14sp"
-                        android:singleLine="true"
+                        android:singleLine="false"
                         android:ellipsize="marquee"
                         />
                     </LinearLayout>
