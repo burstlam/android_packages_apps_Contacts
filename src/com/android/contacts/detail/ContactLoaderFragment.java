@@ -58,7 +58,7 @@ import com.android.internal.util.Objects;
  * This is an invisible worker {@link Fragment} that loads the contact details for the contact card.
  * The data is then passed to the listener, who can then pass the data to other {@link View}s.
  */
-public class ContactLoaderFragment extends Fragment implements FragmentKeyListener {
+public class ContactLoaderFragment extends Fragment implements FragmentKeyListener, java.io.Serializable {
 
     private static final String TAG = ContactLoaderFragment.class.getSimpleName();
 
@@ -129,7 +129,9 @@ public class ContactLoaderFragment extends Fragment implements FragmentKeyListen
     public ContactLoaderFragment() {
     }
 
-    private Handler mHandler = new Handler() {
+    public class CFHandler extends Handler implements java.io.Serializable {
+
+    //private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             VibrationPattern mPattern = (VibrationPattern) msg.obj;
@@ -146,7 +148,9 @@ public class ContactLoaderFragment extends Fragment implements FragmentKeyListen
             }
             super.handleMessage(msg);
         }
-    };
+    }
+
+    CFHandler mHandler = new CFHandler();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
