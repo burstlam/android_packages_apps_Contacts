@@ -210,7 +210,7 @@ public class Contact {
         mSendToVoicemail = from.mSendToVoicemail;
         mCustomRingtone = from.mCustomRingtone;
         mCustomVibration = from.mCustomVibration;
-        mCustomNotification = customNotification;
+        mCustomNotification = from.mCustomNotification;
         mIsUserProfile = from.mIsUserProfile;
     }
 
