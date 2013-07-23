@@ -86,7 +86,7 @@
                         android:layout_marginRight="@dimen/call_log_icon_margin"
                         android:textColor="?attr/call_log_secondary_text_color"
                         android:textSize="14sp"
-                        android:singleLine="false"
+                        android:singleLine="true"
                         android:ellipsize="marquee"
                         />
                     <TextView
@@ -97,7 +97,7 @@
                         android:textColor="?attr/call_log_secondary_text_color"
                         android:textStyle="bold"
                         android:textSize="14sp"
-                        android:singleLine="false"
+                        android:singleLine="true"
                         android:ellipsize="marquee"
                         />
                     <TextView
@@ -107,7 +107,7 @@
                         android:layout_marginRight="@dimen/call_log_icon_margin"
                         android:textColor="?attr/call_log_secondary_text_color"
                         android:textStyle="bold"
-                        android:textSize="14sp"
+                        android:textSize="13sp"
                         android:singleLine="false"
                         android:ellipsize="marquee"
                         />
